@@ -1,0 +1,19 @@
+<button
+  [type]="type"
+  [disabled]="disabled || loading"
+  [class]="buttonClass"
+  (click)="handleClick($event)"
+>
+  <!-- Spinner: absolute so it doesn't shift layout -->
+  <span *ngIf="loading" class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+    <span class="ui-spinner-ring"></span>
+  </span>
+
+  <!-- Content: hidden when loading but preserves button width -->
+  <span class="inline-flex items-center justify-center gap-[inherit]"
+        [class.invisible]="loading">
+    <ui-icon *ngIf="icon && iconPosition === 'start'" [icon]="icon" size="sm" />
+    <ng-content />
+    <ui-icon *ngIf="icon && iconPosition === 'end'" [icon]="icon" size="sm" />
+  </span>
+</button>

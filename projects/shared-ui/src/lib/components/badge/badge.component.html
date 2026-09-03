@@ -1,0 +1,5 @@
+<span [class]="badgeClass">
+  <span *ngIf="showDot" class="w-1.5 h-1.5 rounded-full mr-1.5" [class]="dotClass"></span>
+  <ng-content />
+  <span *ngIf="value !== undefined">{{ value }}</span>
+</span>

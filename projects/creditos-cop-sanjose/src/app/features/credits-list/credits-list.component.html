@@ -1,0 +1,85 @@
+<ui-dashboard-layout
+  [navItems]="navItems"
+  activeRoute="/credits"
+>
+  <!-- Topbar actions -->
+  <div slot="topbar-actions" class="flex items-center gap-3">
+    <button
+      type="button"
+      class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/25 bg-white/10 text-white text-xs font-medium hover:bg-white/20 transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+      (click)="logout()"
+    >
+      <ui-icon icon="@tui.log-out" size="xs" />
+      <span class="hidden sm:inline">Salir</span>
+    </button>
+  </div>
+
+  <!-- Page content -->
+  <div class="flex flex-col gap-5">
+
+    <!-- Header -->
+    <ui-page-header title="Notificaciones de Morosidad" icon="@tui.bell">
+      <div slot="actions" class="flex items-center gap-3 flex-wrap">
+        <ui-button
+          *ngIf="selectedCredits.length > 0"
+          variant="brand"
+          icon="@tui.send"
+          size="sm"
+          (onClick)="onNotifySelected()"
+        >
+          Notificar ({{ selectedCredits.length }})
+        </ui-button>
+
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-medium text-gray-500 whitespace-nowrap" for="daysPastDueInput">
+            Mora ≥ días
+          </label>
+          <div class="w-24">
+            <ui-input
+              size="sm"
+              type="number"
+              placeholder="1"
+              [min]="1"
+              [max]="99999"
+              [formControl]="daysPastDueControl"
+            />
+          </div>
+        </div>
+      </div>
+    </ui-page-header>
+
+    <!-- Table -->
+    <div class="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
+      <ui-table
+        [columns]="tableColumns"
+        [data]="credits"
+        [loading]="isLoading"
+        [selectable]="true"
+        [selectedRows]="selectedCredits"
+        [actions]="tableActions"
+        trackByKey="creditCode"
+        emptyMessage="No se encontraron créditos en mora"
+        (selectionChange)="onSelectionChange($event)"
+        (actionClick)="onActionClick($event)"
+      />
+      <ui-pagination
+        [page]="pageNumber"
+        [pageSize]="pageSize"
+        [total]="totalElements"
+        [disabled]="isLoading"
+        (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
+      />
+    </div>
+
+  </div>
+
+</ui-dashboard-layout>
+
+<!-- Modal -->
+<app-notify-modal
+  [credit]="selectedCredit"
+  [credits]="selectedCredits"
+  [isOpen]="showNotifyModal"
+  (close)="onModalClose()"
+/>

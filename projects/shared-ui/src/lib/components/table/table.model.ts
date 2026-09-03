@@ -1,0 +1,29 @@
+export type ColumnType = 'text' | 'badge' | 'currency' | 'date' | 'number' | 'custom';
+export type BadgeVariantFn<T> = (row: T) => 'info' | 'warning' | 'danger' | 'success' | 'neutral';
+
+export interface TableColumn<T = any> {
+  key: keyof T & string;
+  title: string;
+  /** Tipo de renderizado */
+  type?: ColumnType;
+  /** función que retorna la variante semántica según el valor */
+  badgeVariant?: BadgeVariantFn<T>;
+  /** Sufijo a mostrar luego del valor */
+  suffix?: string;
+  /** Prefijo a mostrar antes del valor */
+  prefix?: string;
+  /** Ancho CSS fijo */
+  width?: string;
+  sortable?: boolean;
+}
+
+export interface TableAction<T = any> {
+  /** Etiqueta del botón */
+  label: string;
+  /** Icono opcional del botón (@tui.*) */
+  icon?: string;
+  /** Variante del botón */
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'brand';
+  /** Si se oculta condicionalmente */
+  hidden?: (row: T) => boolean;
+}

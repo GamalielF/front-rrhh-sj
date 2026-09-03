@@ -1,0 +1,118 @@
+<ui-modal
+  [isOpen]="isOpen"
+  title="Notificar por WhatsApp"
+  subtitle="Envío automatizado de mensajes"
+  (close)="onClose()"
+>
+  <ng-container *ngIf="activeCredits.length > 0">
+
+    <!-- Credit summary pill -->
+    <div class="mb-4 pb-4 border-b border-gray-100">
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+        {{ activeCredits.length > 1
+            ? 'Notificación masiva (' + activeCredits.length + ' créditos)'
+            : 'Crédito #' + activeCredits[0].creditCode }}
+      </p>
+      <p class="text-sm font-semibold text-gray-900 m-0">
+        {{ activeCredits.length > 1 ? 'Socios y garantes seleccionados' : activeCredits[0].fullName }}
+      </p>
+    </div>
+
+    <!-- FORM STATE -->
+    <ng-container *ngIf="!apiResponse">
+      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+        Destinatarios y números de contacto
+      </p>
+
+      <div class="flex flex-col gap-3">
+        <div *ngFor="let group of creditGroups"
+          class="rounded-xl border border-gray-200 p-4 bg-gray-50/60 flex flex-col gap-3">
+
+          <!-- Credit label -->
+          <div *ngIf="activeCredits.length > 1"
+            class="flex items-center justify-between pb-2.5 border-b border-gray-200">
+            <span class="text-xs font-semibold text-[#3B82F6] uppercase tracking-wider">
+              Crédito #{{ group.credit.creditCode }}
+            </span>
+            <span class="text-xs font-medium text-gray-600 truncate max-w-[200px]">
+              {{ group.credit.fullName }}
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <app-recipient-selector
+              *ngFor="let r of group.recipients"
+              [recipient]="r"
+              [initialIncluded]="true"
+              (selectionChange)="onSelectionChange($event)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <p *ngIf="noRecipientsWithPhone" class="text-sm text-gray-500 text-center py-6 m-0">
+        No hay números registrados para los créditos seleccionados.
+      </p>
+    </ng-container>
+
+    <!-- RESULT STATE -->
+    <ng-container *ngIf="apiResponse">
+      <div
+        class="rounded-xl border p-4 mb-4 flex flex-col gap-2"
+        [class.bg-emerald-50]="apiResponse.success"
+        [class.border-emerald-200]="apiResponse.success"
+        [class.bg-red-50]="!apiResponse.success"
+        [class.border-red-200]="!apiResponse.success"
+      >
+        <div class="flex items-center justify-between">
+          <span
+            class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider"
+            [class.text-[#065F46]]="apiResponse.success"
+            [class.text-[#991B1B]]="!apiResponse.success"
+          >
+            <ui-icon [icon]="apiResponse.success ? '@tui.circle-check' : '@tui.circle-alert'" size="sm" />
+            {{ apiResponse.success ? 'Proceso completado con éxito' : 'Error en el envío' }}
+          </span>
+          <span
+            class="text-xs font-semibold px-2.5 py-0.5 rounded-full"
+            [class.bg-emerald-100]="apiResponse.success"
+            [class.text-emerald-900]="apiResponse.success"
+            [class.bg-red-100]="!apiResponse.success"
+            [class.text-red-900]="!apiResponse.success"
+          >
+            {{ apiResponse.status }}
+          </span>
+        </div>
+        <p *ngIf="apiResponse.message" class="text-xs text-gray-600 m-0">
+          {{ apiResponse.message }}
+        </p>
+      </div>
+    </ng-container>
+
+  </ng-container>
+
+  <!-- Footer -->
+  <div slot="footer" class="flex w-full gap-3 justify-center">
+    <ng-container *ngIf="!apiResponse">
+      <ui-button variant="secondary" (onClick)="onClose()" class="flex-1">
+        Cancelar
+      </ui-button>
+      <ui-button
+        variant="primary"
+        icon="@tui.send"
+        [loading]="sending"
+        [disabled]="!canSend"
+        (onClick)="send()"
+        class="flex-1"
+      >
+        Enviar Notificación
+      </ui-button>
+    </ng-container>
+
+    <ng-container *ngIf="apiResponse">
+      <ui-button variant="secondary" (onClick)="onClose()" style="flex:1">
+        Cerrar
+      </ui-button>
+    </ng-container>
+  </div>
+</ui-modal>

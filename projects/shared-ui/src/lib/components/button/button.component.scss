@@ -1,0 +1,24 @@
+:host {
+  display: inline-block;
+}
+
+.ui-spinner-ring {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: ui-spin 0.7s linear infinite;
+}
+
+@keyframes ui-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-spinner-ring {
+    animation: none;
+    border-style: dotted;
+  }
+}

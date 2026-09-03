@@ -1,0 +1,51 @@
+<div class="flex items-center justify-between gap-4 px-6 py-4 border-t border-gray-100 bg-gray-50/50 text-sm flex-wrap">
+
+  <!-- Page size selector -->
+  <div class="flex items-center gap-2">
+    <label [for]="sizeSelectId" class="text-xs font-medium text-gray-500 whitespace-nowrap">
+      Filas por página:
+    </label>
+    <select
+      [id]="sizeSelectId"
+      class="text-xs border border-gray-300 rounded-lg bg-white px-2.5 py-1.5 text-gray-700
+             focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/25 focus:border-[#3B82F6]
+             cursor-pointer"
+      [ngModel]="pageSize"
+      (ngModelChange)="onSizeChange($event)"
+      [disabled]="disabled"
+      aria-label="Seleccionar filas por página"
+    >
+      <option *ngFor="let opt of pageSizeOptions" [value]="opt">{{ opt }}</option>
+    </select>
+  </div>
+
+  <!-- Range info -->
+  <span class="text-xs text-gray-500">
+    <span *ngIf="total > 0">
+      Mostrando <strong class="text-gray-800 font-medium">{{ rangeStart }}–{{ rangeEnd }}</strong>
+      de <strong class="text-gray-800 font-medium">{{ total }}</strong>
+    </span>
+    <span *ngIf="total === 0">Sin registros</span>
+  </span>
+
+  <!-- Page indicator and nav buttons -->
+  <div class="flex items-center gap-1.5">
+    <span class="text-xs text-gray-500 mr-2 whitespace-nowrap">
+      Pág. <strong class="text-gray-800 font-medium">{{ page + 1 }}</strong> / <strong class="text-gray-800 font-medium">{{ totalPages || 1 }}</strong>
+    </span>
+
+    <button type="button" [class]="navBtnClass" [disabled]="page === 0 || disabled" (click)="goFirst()" title="Primera" aria-label="Primera página">
+      <ui-icon icon="@tui.chevrons-left" size="sm" />
+    </button>
+    <button type="button" [class]="navBtnClass" [disabled]="page === 0 || disabled" (click)="goPrev()" title="Anterior" aria-label="Página anterior">
+      <ui-icon icon="@tui.chevron-left" size="sm" />
+    </button>
+    <button type="button" [class]="navBtnClass" [disabled]="page >= totalPages - 1 || disabled" (click)="goNext()" title="Siguiente" aria-label="Página siguiente">
+      <ui-icon icon="@tui.chevron-right" size="sm" />
+    </button>
+    <button type="button" [class]="navBtnClass" [disabled]="page >= totalPages - 1 || disabled" (click)="goLast()" title="Última" aria-label="Última página">
+      <ui-icon icon="@tui.chevrons-right" size="sm" />
+    </button>
+  </div>
+
+</div>

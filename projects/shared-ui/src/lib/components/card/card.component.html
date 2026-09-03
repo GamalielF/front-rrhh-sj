@@ -1,0 +1,26 @@
+<div [class]="hostClass">
+  <div *ngIf="title || hasHeader" class="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-100 bg-white">
+    <div class="flex items-center gap-3">
+      <div *ngIf="headerIcon" class="text-gray-400">
+        <ng-content select="[slot=header-icon]" />
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-gray-900 m-0 leading-tight">{{ title }}</h3>
+        <p *ngIf="subtitle" class="text-xs text-gray-500 mt-1 m-0 leading-normal">{{ subtitle }}</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <ng-content select="[slot=header-actions]" />
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div [class]="bodyClass">
+    <ng-content />
+  </div>
+
+  <!-- Footer -->
+  <div *ngIf="hasFooter" class="px-6 py-3.5 border-t border-gray-100 bg-gray-50/50 rounded-b-xl flex items-center justify-between">
+    <ng-content select="[slot=footer]" />
+  </div>
+</div>

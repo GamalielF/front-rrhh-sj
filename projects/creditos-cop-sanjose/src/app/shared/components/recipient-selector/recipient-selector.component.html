@@ -1,0 +1,61 @@
+<div
+  class="rounded-xl border transition-all duration-150 bg-white overflow-hidden"
+  [class.border-[#4CA42F]]="included && selectedPhones.length > 0"
+  [class.shadow-sm]="included && selectedPhones.length > 0"
+  [class.border-slate-200]="!(included && selectedPhones.length > 0)"
+>
+  <!-- Card header -->
+  <label class="flex items-center gap-3 px-4 py-3 cursor-pointer select-none">
+    <input
+      type="checkbox"
+      class="w-4 h-4 rounded border-slate-300 accent-[#4CA42F] flex-shrink-0"
+      [checked]="included && selectedPhones.length > 0"
+      [disabled]="phones.length === 0"
+      (change)="toggleIncluded()"
+    />
+    <span class="text-[10px] font-bold text-[#0061A1] uppercase tracking-widest w-[4.5rem] flex-shrink-0">
+      {{ recipient.roleLabel }}
+    </span>
+    <span class="text-sm font-semibold text-slate-700 truncate flex-1">
+      {{ recipient.fullName }}
+    </span>
+    <span *ngIf="phones.length === 0" class="text-xs text-slate-400 flex-shrink-0">
+      Sin número
+    </span>
+  </label>
+
+  <!-- Phone list -->
+  <div *ngIf="included && phones.length > 0" class="border-t border-slate-100 bg-slate-50/60 px-4 py-3 flex flex-col gap-1.5">
+
+    <div *ngIf="phones.length > 1" class="flex justify-end mb-1">
+      <button
+        type="button"
+        class="text-xs font-semibold text-[#4CA42F] hover:underline bg-transparent border-none cursor-pointer p-0"
+        (click)="toggleSelectAll()"
+      >
+        {{ allSelected ? 'Desmarcar todos' : 'Seleccionar todos' }}
+      </button>
+    </div>
+
+    <label
+      *ngFor="let phone of phones"
+      class="flex items-center gap-2.5 px-3 py-2 rounded-lg border text-xs font-mono cursor-pointer select-none transition-all duration-100"
+      [class.bg-white]="!isPhoneSelected(phone)"
+      [class.border-slate-200]="!isPhoneSelected(phone)"
+      [class.text-slate-500]="!isPhoneSelected(phone)"
+      [class.bg-[#4CA42F]/8]="isPhoneSelected(phone)"
+      [class.border-[#4CA42F]/40]="isPhoneSelected(phone)"
+      [class.text-slate-800]="isPhoneSelected(phone)"
+      [class.font-semibold]="isPhoneSelected(phone)"
+    >
+      <input
+        type="checkbox"
+        class="w-3.5 h-3.5 rounded border-slate-300 accent-[#4CA42F] flex-shrink-0"
+        [checked]="isPhoneSelected(phone)"
+        (change)="togglePhone(phone)"
+      />
+      {{ phone }}
+    </label>
+
+  </div>
+</div>
