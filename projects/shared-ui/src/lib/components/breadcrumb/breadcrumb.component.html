@@ -1,0 +1,68 @@
+<nav
+  *ngIf="effectiveItems.length > 0 || showHome"
+  class="flex items-center text-xs text-gray-500 font-medium"
+  aria-label="Navegación estructural"
+>
+  <ol class="flex items-center gap-1.5 flex-wrap m-0 p-0 list-none">
+    <li *ngIf="showHome" class="flex items-center gap-1.5">
+      <a
+        *ngIf="homeRoute"
+        [routerLink]="homeRoute"
+        class="inline-flex items-center text-gray-400 hover:text-[#0061A1] transition-colors duration-150 p-1 rounded hover:bg-gray-100"
+        aria-label="Inicio"
+      >
+        <ui-icon [icon]="homeIcon" size="xs" />
+      </a>
+      <ui-icon [icon]="separatorIcon" size="xs" class="text-gray-300 select-none flex-shrink-0" />
+    </li>
+
+    <li
+      *ngFor="let item of effectiveItems; let last = last"
+      class="flex items-center gap-1.5 min-w-0"
+    >
+      <ng-container *ngIf="!last; else lastItem">
+        <a
+          *ngIf="item.routerLink"
+          [routerLink]="item.routerLink"
+          (click)="onItemClick(item, $event)"
+          class="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#0061A1] transition-colors duration-150 truncate hover:underline underline-offset-2"
+        >
+          <ui-icon *ngIf="item.icon" [icon]="item.icon" size="xs" class="flex-shrink-0" />
+          <span class="truncate">{{ item.label }}</span>
+        </a>
+
+        <a
+          *ngIf="!item.routerLink && item.url"
+          [href]="item.url"
+          (click)="onItemClick(item, $event)"
+          class="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#0061A1] transition-colors duration-150 truncate hover:underline underline-offset-2"
+        >
+          <ui-icon *ngIf="item.icon" [icon]="item.icon" size="xs" class="flex-shrink-0" />
+          <span class="truncate">{{ item.label }}</span>
+        </a>
+
+        <button
+          *ngIf="!item.routerLink && !item.url"
+          type="button"
+          (click)="onItemClick(item, $event)"
+          class="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#0061A1] transition-colors duration-150 truncate cursor-pointer hover:underline underline-offset-2 bg-transparent border-0 p-0 font-inherit text-inherit"
+        >
+          <ui-icon *ngIf="item.icon" [icon]="item.icon" size="xs" class="flex-shrink-0" />
+          <span class="truncate">{{ item.label }}</span>
+        </button>
+
+        <ui-icon [icon]="separatorIcon" size="xs" class="text-gray-300 select-none flex-shrink-0" />
+      </ng-container>
+
+      <ng-template #lastItem>
+        <span
+          class="inline-flex items-center gap-1.5 text-gray-800 font-semibold truncate"
+          aria-current="page"
+        >
+          <ui-icon *ngIf="item.icon" [icon]="item.icon" size="xs" class="text-[#0061A1] flex-shrink-0" />
+          <span class="truncate">{{ item.label }}</span>
+        </span>
+      </ng-template>
+    </li>
+  </ol>
+</nav>
