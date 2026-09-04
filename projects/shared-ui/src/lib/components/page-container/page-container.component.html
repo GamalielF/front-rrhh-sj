@@ -1,0 +1,28 @@
+<div class="flex flex-col gap-5 w-full">
+  <div class="flex items-center">
+    <ui-breadcrumb
+      [items]="breadcrumbs"
+      [auto]="autoBreadcrumbs"
+      [showHome]="showHome"
+      [homeRoute]="homeRoute"
+    />
+  </div>
+  <ng-content select="[slot=breadcrumb]" />
+
+  <ui-page-header
+    *ngIf="title"
+    [title]="title"
+    [description]="description"
+    [icon]="icon"
+    [badgeText]="badgeText"
+    [badgeVariant]="badgeVariant"
+  >
+    <div slot="actions">
+      <ng-content select="[slot=actions]" />
+    </div>
+  </ui-page-header>
+
+  <ng-content select="[slot=header]" />
+
+  <ng-content />
+</div>

@@ -11,6 +11,7 @@ export * from './lib/components/kpi-card';
 export * from './lib/components/modal';
 export * from './lib/components/breadcrumb';
 export * from './lib/components/link';
+export * from './lib/components/page-container';
 
 // Layout
 export * from './lib/layout/dashboard-layout';
