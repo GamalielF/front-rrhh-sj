@@ -10,6 +10,7 @@ export * from './lib/components/pagination';
 export * from './lib/components/kpi-card';
 export * from './lib/components/modal';
 export * from './lib/components/breadcrumb';
+export * from './lib/components/link';
 
 // Layout
 export * from './lib/layout/dashboard-layout';

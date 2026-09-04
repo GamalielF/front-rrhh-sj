@@ -1,0 +1,36 @@
+<a
+  *ngIf="routerLink"
+  [routerLink]="routerLink"
+  (click)="onClick($event)"
+  class="inline-flex items-center font-medium cursor-pointer transition-colors duration-150 hover:underline underline-offset-2 select-none"
+  [ngClass]="[variantClasses, sizeClasses]"
+>
+  <ui-icon *ngIf="icon && iconPosition === 'left'" [icon]="icon" size="xs" class="flex-shrink-0" />
+  <span><ng-content /></span>
+  <ui-icon *ngIf="icon && iconPosition === 'right'" [icon]="icon" size="xs" class="flex-shrink-0" />
+</a>
+
+<a
+  *ngIf="!routerLink && href"
+  [href]="href"
+  [target]="target"
+  (click)="onClick($event)"
+  class="inline-flex items-center font-medium cursor-pointer transition-colors duration-150 hover:underline underline-offset-2 select-none"
+  [ngClass]="[variantClasses, sizeClasses]"
+>
+  <ui-icon *ngIf="icon && iconPosition === 'left'" [icon]="icon" size="xs" class="flex-shrink-0" />
+  <span><ng-content /></span>
+  <ui-icon *ngIf="icon && iconPosition === 'right'" [icon]="icon" size="xs" class="flex-shrink-0" />
+</a>
+
+<button
+  *ngIf="!routerLink && !href"
+  type="button"
+  (click)="onClick($event)"
+  class="inline-flex items-center font-medium cursor-pointer transition-colors duration-150 hover:underline underline-offset-2 select-none bg-transparent border-0 p-0 font-inherit"
+  [ngClass]="[variantClasses, sizeClasses]"
+>
+  <ui-icon *ngIf="icon && iconPosition === 'left'" [icon]="icon" size="xs" class="flex-shrink-0" />
+  <span><ng-content /></span>
+  <ui-icon *ngIf="icon && iconPosition === 'right'" [icon]="icon" size="xs" class="flex-shrink-0" />
+</button>
