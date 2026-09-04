@@ -1,6 +1,7 @@
 <div class="flex flex-col gap-1.5">
-  <label *ngIf="label" [for]="inputId" class="text-xs font-medium text-gray-700">
-    {{ label }}
+  <label *ngIf="label" [for]="inputId" class="text-xs font-medium text-gray-700 flex items-center gap-1">
+    <span>{{ label }}</span>
+    <span *ngIf="isRequired" class="text-[#DC2626] font-semibold" aria-hidden="true">*</span>
   </label>
 
   <div
@@ -19,8 +20,10 @@
       [type]="type"
       [placeholder]="placeholder"
       [disabled]="isDisabled"
+      [readonly]="readonly"
       [min]="min"
       [max]="max"
+      [step]="step"
       [value]="innerValue"
       [attr.aria-invalid]="hasError"
       [attr.aria-describedby]="hasError ? errorId : (hint ? hintId : null)"
@@ -28,9 +31,9 @@
              transition-all duration-150 outline-none"
       [class]="inputClasses"
       (input)="onInput($event)"
-      (blur)="onTouched()"
+      (blur)="onBlur()"
     />
-
+    
     <!-- Suffix icon -->
     <span *ngIf="suffixIcon"
       class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none z-10">
@@ -39,5 +42,5 @@
   </div>
 
   <span *ngIf="hint && !hasError" [id]="hintId" class="text-xs text-gray-500">{{ hint }}</span>
-  <span *ngIf="hasError" [id]="errorId" class="text-xs text-[#DC2626] font-medium" role="alert">{{ errorMessage }}</span>
+  <span *ngIf="hasError" [id]="errorId" class="text-xs text-[#DC2626] font-medium" role="alert">{{ currentErrorMessage }}</span>
 </div>

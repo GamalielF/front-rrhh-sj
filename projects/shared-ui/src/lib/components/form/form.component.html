@@ -1,0 +1,26 @@
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit($event)"
+  [class]="customClass || 'flex flex-col gap-5 w-full'"
+  novalidate
+>
+  <div
+    *ngIf="errorMessage"
+    class="flex items-center gap-2 p-3.5 rounded-lg bg-red-50 border border-red-200 text-[#991B1B] text-sm"
+    role="alert"
+  >
+    <ui-icon icon="@tui.circle-alert" size="sm" class="shrink-0" />
+    <span class="font-medium">{{ errorMessage }}</span>
+  </div>
+
+  <div
+    *ngIf="successMessage"
+    class="flex items-center gap-2 p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm"
+    role="status"
+  >
+    <ui-icon icon="@tui.circle-check" size="sm" class="shrink-0" />
+    <span class="font-medium">{{ successMessage }}</span>
+  </div>
+
+  <ng-content></ng-content>
+</form>

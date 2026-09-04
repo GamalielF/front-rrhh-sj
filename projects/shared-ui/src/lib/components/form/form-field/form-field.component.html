@@ -1,0 +1,15 @@
+<div [class]="customClass || 'flex flex-col gap-1.5 w-full'">
+  <label
+    *ngIf="label"
+    [for]="forId || null"
+    class="text-xs font-medium text-gray-700 flex items-center gap-1"
+  >
+    <span>{{ label }}</span>
+    <span *ngIf="isRequired" class="text-[#DC2626] font-semibold" aria-hidden="true">*</span>
+  </label>
+
+  <ng-content></ng-content>
+
+  <span *ngIf="hint && !hasError" [id]="hintId" class="text-xs text-gray-500">{{ hint }}</span>
+  <span *ngIf="hasError" [id]="errorId" class="text-xs text-[#DC2626] font-medium" role="alert">{{ currentErrorMessage }}</span>
+</div>

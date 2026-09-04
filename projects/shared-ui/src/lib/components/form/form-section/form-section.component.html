@@ -1,0 +1,13 @@
+<div [class]="customClass || 'flex flex-col gap-4 w-full'">
+  <div *ngIf="title || description" class="flex flex-col gap-1">
+    <div class="flex items-center gap-2">
+      <ui-icon *ngIf="icon" [icon]="icon" size="sm" class="text-blue-600" />
+      <h3 *ngIf="title" class="text-base font-semibold text-gray-900 m-0">{{ title }}</h3>
+    </div>
+    <p *ngIf="description" class="text-xs text-gray-500 m-0">{{ description }}</p>
+  </div>
+
+  <ng-content></ng-content>
+
+  <hr *ngIf="divider" class="border-t border-gray-200 my-2" />
+</div>
