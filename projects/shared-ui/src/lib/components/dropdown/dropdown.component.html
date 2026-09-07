@@ -1,0 +1,76 @@
+<div class="relative inline-block text-left ui-dropdown-host">
+  <button
+    type="button"
+    [class]="triggerButtonClass"
+    [disabled]="disabled"
+    [attr.aria-expanded]="isOpen"
+    [attr.aria-label]="ariaLabel"
+    aria-haspopup="menu"
+    (click)="toggle($event)"
+  >
+    <ui-icon *ngIf="triggerIcon" [icon]="triggerIcon" [size]="triggerSize === 'lg' ? 'md' : 'sm'" />
+    <span *ngIf="triggerLabel" class="whitespace-nowrap">{{ triggerLabel }}</span>
+    <ui-icon
+      *ngIf="triggerLabel"
+      icon="@tui.chevron-down"
+      size="xs"
+      [extraClass]="'transition-transform duration-200 ' + (isOpen ? 'rotate-180' : '')"
+    />
+  </button>
+
+  <div
+    *ngIf="isOpen"
+    class="absolute z-50 w-max min-w-[8.5rem] max-w-xs p-1 bg-white rounded-xl border border-gray-100 shadow-xl shadow-gray-900/10 focus:outline-none transition-all ui-dropdown-panel animate-in"
+    [ngClass]="[placementClass, menuClass]"
+    role="menu"
+    tabindex="-1"
+    (click)="$event.stopPropagation()"
+  >
+    <div
+      *ngIf="menuTitle"
+      class="px-2.5 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 mb-1"
+    >
+      {{ menuTitle }}
+    </div>
+
+    <ng-container *ngFor="let item of visibleItems; let i = index">
+      <div *ngIf="item.divider" class="my-1 border-t border-gray-100" role="separator"></div>
+
+      <button
+        type="button"
+        class="w-full group flex flex-row items-center gap-2 px-2.5 py-1.5 text-xs font-medium text-left transition-colors duration-100 cursor-pointer rounded-lg whitespace-nowrap"
+        [ngClass]="getItemVariantClass(item)"
+        [disabled]="item.disabled"
+        role="menuitem"
+        (click)="handleItemClick(item, $event)"
+      >
+        <ui-icon
+          *ngIf="item.icon"
+          [icon]="item.icon"
+          size="xs"
+          [extraClass]="'shrink-0 ' + getItemIconClass(item)"
+        />
+
+        <div class="flex flex-col min-w-0 flex-1 text-left" *ngIf="item.description; else simpleLabel">
+          <span class="truncate leading-tight">{{ item.label }}</span>
+          <span class="text-[10px] font-normal text-gray-400 leading-tight mt-0.5">{{ item.description }}</span>
+        </div>
+
+        <ng-template #simpleLabel>
+          <span class="truncate flex-1 leading-tight">{{ item.label }}</span>
+        </ng-template>
+
+        <ui-badge
+          *ngIf="item.badge"
+          [variant]="item.badgeVariant || 'neutral'"
+          size="sm"
+          class="shrink-0 ml-1.5"
+        >
+          {{ item.badge }}
+        </ui-badge>
+      </button>
+    </ng-container>
+
+    <ng-content></ng-content>
+  </div>
+</div>
