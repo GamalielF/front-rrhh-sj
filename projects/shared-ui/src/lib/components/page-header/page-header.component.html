@@ -3,8 +3,8 @@
   <div class="flex items-center gap-2.5 min-w-0">
     <ui-icon *ngIf="icon" [icon]="icon" size="md" class="text-[#0061A1] flex-shrink-0" />
     <div class="min-w-0">
-      <h1 class="text-base font-semibold text-gray-900 m-0 leading-tight">{{ title }}</h1>
-      <p *ngIf="description" class="text-xs text-gray-500 mt-0.5 m-0">{{ description }}</p>
+      <h1 class="text-xl sm:text-2xl font-bold text-gray-900 m-0 leading-tight">{{ title }}</h1>
+      <p *ngIf="description" class="text-sm text-gray-500 mt-1 m-0">{{ description }}</p>
     </div>
     <ui-badge *ngIf="badgeText" [variant]="badgeVariant" size="sm">{{ badgeText }}</ui-badge>
   </div>

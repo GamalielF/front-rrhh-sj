@@ -28,7 +28,7 @@
           class="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#0061A1] transition-colors duration-150 truncate hover:underline underline-offset-2"
         >
           <ui-icon *ngIf="item.icon" [icon]="item.icon" size="xs" class="flex-shrink-0" />
-          <span class="truncate">{{ item.label }}</span>
+          <span class="truncate text-sm">{{ item.label }}</span>
         </a>
 
         <a
@@ -38,7 +38,7 @@
           class="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#0061A1] transition-colors duration-150 truncate hover:underline underline-offset-2"
         >
           <ui-icon *ngIf="item.icon" [icon]="item.icon" size="xs" class="flex-shrink-0" />
-          <span class="truncate">{{ item.label }}</span>
+          <span class="truncate text-sm">{{ item.label }}</span>
         </a>
 
         <button
@@ -48,7 +48,7 @@
           class="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#0061A1] transition-colors duration-150 truncate cursor-pointer hover:underline underline-offset-2 bg-transparent border-0 p-0 font-inherit text-inherit"
         >
           <ui-icon *ngIf="item.icon" [icon]="item.icon" size="xs" class="flex-shrink-0" />
-          <span class="truncate">{{ item.label }}</span>
+          <span class="truncate text-sm">{{ item.label }}</span>
         </button>
 
         <ui-icon [icon]="separatorIcon" size="xs" class="text-gray-300 select-none flex-shrink-0" />
@@ -60,7 +60,7 @@
           aria-current="page"
         >
           <ui-icon *ngIf="item.icon" [icon]="item.icon" size="xs" class="text-[#0061A1] flex-shrink-0" />
-          <span class="truncate">{{ item.label }}</span>
+          <span class="truncate text-sm">{{ item.label }}</span>
         </span>
       </ng-template>
     </li>

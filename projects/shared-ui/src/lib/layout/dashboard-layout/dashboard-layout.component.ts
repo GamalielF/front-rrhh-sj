@@ -32,7 +32,7 @@ export class DashboardLayoutComponent {
   readonly sidebarOpen = signal(false);
   readonly sidebarCollapsed = signal(false);
 
-  readonly sidebarWidthPx = computed(() => (this.sidebarCollapsed() ? 76 : 260));
+  readonly sidebarWidthPx = computed(() => (this.sidebarCollapsed() ? 86 : 260));
 
   toggleMobileSidebar(): void {
     this.sidebarOpen.update(v => !v);
