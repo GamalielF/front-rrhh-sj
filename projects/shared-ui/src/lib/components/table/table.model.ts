@@ -1,5 +1,8 @@
+import { DropdownBadgeVariant } from '../dropdown/dropdown.model';
+
 export type ColumnType = 'text' | 'badge' | 'currency' | 'date' | 'number' | 'custom';
 export type BadgeVariantFn<T> = (row: T) => 'info' | 'warning' | 'danger' | 'success' | 'neutral';
+export type TableActionsLayout = 'dropdown' | 'buttons' | 'auto';
 
 export interface TableColumn<T = any> {
   key: keyof T & string;
@@ -22,8 +25,14 @@ export interface TableAction<T = any> {
   label: string;
   /** Icono opcional del botón (@tui.*) */
   icon?: string;
+  description?: string;
   /** Variante del botón */
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'brand';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'brand' | 'warning' | 'info' | 'default';
+  badge?: string | ((row: T) => string);
+  badgeVariant?: DropdownBadgeVariant | ((row: T) => DropdownBadgeVariant);
+  disabled?: boolean | ((row: T) => boolean);
   /** Si se oculta condicionalmente */
   hidden?: (row: T) => boolean;
+  divider?: boolean;
+  onClick?: (row: T) => void;
 }
