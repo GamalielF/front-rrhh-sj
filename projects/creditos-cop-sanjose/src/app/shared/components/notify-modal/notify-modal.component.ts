@@ -1,9 +1,10 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Credit, WhatsappTemplate, WhatsappRequestFull, WhatsappRequest, WhatsappResponse, WhatsAppVariables } from '@models';
-import { AuthService, WhatsappService } from '@services';
+import { WhatsappService } from '@services';
+import { AuthService } from '@lumen/auth';
 import { RecipientSelectorComponent, RecipientData, RecipientSelection } from '@components/recipient-selector';
-import { ModalComponent, ButtonComponent, IconComponent } from 'shared-ui';
+import { ModalComponent, ButtonComponent, IconComponent } from '@lumen/ui';
 import { CreditGroup } from './notify-modal.model';
 
 @Component({
@@ -50,7 +51,6 @@ export class NotifyModalComponent implements OnChanges {
   onClose(): void { this.close.emit(); }
 
   send(): void {
-    const token = this.auth.getToken() ?? '';
     if (!this.activeCredits.length) return;
 
     const requests: WhatsappRequest[] = [];
@@ -80,7 +80,7 @@ export class NotifyModalComponent implements OnChanges {
     }
     if (!requests.length) return;
     this.sending = true;
-    this.whatsapp.sendNotifications({ notifications: requests } as WhatsappRequestFull, token).subscribe({
+    this.whatsapp.sendNotifications({ notifications: requests } as WhatsappRequestFull).subscribe({
       next: (res) => { this.apiResponse = res; this.sending = false; this.cdr.detectChanges(); },
       error: (err) => {
         this.apiResponse = { success: false, status: err.status || 'ERROR', message: err.message || 'Error al conectar con el servidor', timestamp: new Date().toISOString() };

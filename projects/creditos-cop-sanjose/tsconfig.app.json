@@ -1,17 +1,10 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": [
-      "node"
-    ],
+    "types": [],
     "paths": {
-      "shared-ui": [
-        "../../projects/shared-ui/src/public-api.ts"
-      ],
-      "@/*": [
-        "./src/*"
+      "@lumen/*": [
+        "../../libs/*/src/public-api.ts"
       ],
       "@models": [
         "./src/app/core/models"
@@ -22,14 +15,17 @@
       "@components": [
         "./src/app/shared/components"
       ],
-      "@environments/*": [
-        "./src/environments/*"
-      ],
       "@components/*": [
         "./src/app/shared/components/*"
       ],
+      "@environments/*": [
+        "./src/environments/*"
+      ],
       "@core/*": [
         "./src/app/core/*"
+      ],
+      "@/*": [
+        "./src/*"
       ]
     }
   },

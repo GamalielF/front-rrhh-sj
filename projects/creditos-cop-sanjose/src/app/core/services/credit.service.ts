@@ -1,31 +1,19 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { environment } from '@environments/environment';
+import { ApiService } from '@lumen/http';
 import { Credit, CreditsResponse } from '@models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CreditService {
-  private http = inject(HttpClient);
-  private apiUrl = environment.creditsUrl;
+  private api = inject(ApiService);
 
   getCredits(
-    token: string,
     page: number = 0,
     size: number = 20,
     daysPastDue: number = 1
   ): Observable<CreditsResponse> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString())
-      .set('daysPastDue', daysPastDue.toString());
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
     const mockCreditsResponse: CreditsResponse = {
       content: [
         {
@@ -119,25 +107,19 @@ export class CreditService {
         "pageNumber": 1,
         "pageSize": 2,
         "paged": true,
-        "sort": {
-          "empty": false,
-          "sorted": false,
-          "unsorted": true
-        },
+        "sort": { "empty": false, "sorted": false, "unsorted": true },
         "unpaged": false
       },
       "size": 2,
-      "sort": {
-        "empty": true,
-        "sorted": false,
-        "unsorted": true
-      },
+      "sort": { "empty": true, "sorted": false, "unsorted": true },
       "totalElements": 5,
       "totalPages": 2
     };
 
     return of(mockCreditsResponse);
 
-    return this.http.get<CreditsResponse>(this.apiUrl, { params, headers });
+    return this.api.get<CreditsResponse>('credits', {
+      params: { page, size, daysPastDue }
+    });
   }
 }

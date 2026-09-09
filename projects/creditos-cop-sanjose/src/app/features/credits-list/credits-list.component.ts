@@ -4,22 +4,19 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Credit } from '@models';
-import { AuthService, CreditService } from '@services';
+import { CreditService } from '@services';
+import { AuthService } from '@lumen/auth';
 import { NotifyModalComponent } from '@components/notify-modal';
 
 import {
-  DashboardLayoutComponent,
-  NavItem,
-  PageHeaderComponent,
+  PageContainerComponent,
   TableComponent,
   TableColumn,
   TableAction,
   PaginationComponent,
   ButtonComponent,
   InputComponent,
-  IconComponent,
-  BadgeComponent,
-} from 'shared-ui';
+} from '@lumen/ui';
 
 @Component({
   selector: 'app-credits-list',
@@ -28,17 +25,14 @@ import {
     CommonModule,
     ReactiveFormsModule,
     NotifyModalComponent,
-    // shared-ui
-    DashboardLayoutComponent,
-    PageHeaderComponent,
+    PageContainerComponent,
     TableComponent,
     PaginationComponent,
     ButtonComponent,
     InputComponent,
-    IconComponent,
   ],
   templateUrl: './credits-list.component.html',
-  styleUrls: ['./credits-list.component.scss'],
+  styleUrls: ['./credits-list.component.css'],
 })
 export class CreditsListComponent implements OnInit {
   private creditService = inject(CreditService);
@@ -56,10 +50,6 @@ export class CreditsListComponent implements OnInit {
   selectedCredit: Credit | null = null;
   selectedCredits: Credit[] = [];
   showNotifyModal = false;
-
-  readonly navItems: NavItem[] = [
-    { label: 'Créditos en Mora', icon: '@tui.bell', route: '/credits', active: true },
-  ];
 
   tableColumns: TableColumn<Credit>[] = [
     { key: 'creditCode', title: 'Código', type: 'text', prefix: '#' },
@@ -81,7 +71,8 @@ export class CreditsListComponent implements OnInit {
   ];
 
   tableActions: TableAction<Credit>[] = [
-    { label: 'Notificar', icon: '@tui.send', variant: 'primary' },
+    { label: 'Notificar', icon: '@tui.send', variant: 'brand' },
+    { label: 'aa', icon: '@tui.copy', variant: 'default' }
   ];
 
   daysPastDueControl = new FormControl(1);
@@ -103,9 +94,7 @@ export class CreditsListComponent implements OnInit {
     this.isLoading = true;
     this.cdr.detectChanges();
     const daysPastDue = this.daysPastDueControl.value ?? 1;
-    const token = this.authService.getToken() ?? '';
-
-    this.creditService.getCredits(token, this.pageNumber, this.pageSize, daysPastDue).subscribe({
+    this.creditService.getCredits(this.pageNumber, this.pageSize, daysPastDue).subscribe({
       next: (res: any) => {
         try {
           if (Array.isArray(res)) {
@@ -129,10 +118,6 @@ export class CreditsListComponent implements OnInit {
         console.error('Error cargando créditos:', err);
         this.isLoading = false;
         this.cdr.detectChanges();
-        if (err.status === 401 || err.status === 403) {
-          this.authService.logout();
-          this.router.navigate(['/login']);
-        }
       }
     });
   }
@@ -154,7 +139,13 @@ export class CreditsListComponent implements OnInit {
     this.selectedCredits = selected;
   }
 
-  onActionClick(event: { row: Credit }): void {
+  onActionClick(event: { row: Credit; action: TableAction<Credit>; index: number }): void {
+    if (event.action?.label?.includes('Copiar')) {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        navigator.clipboard.writeText(event.row.creditCode);
+      }
+      return;
+    }
     this.selectedCredit = event.row;
     this.selectedCredits = [event.row];
     this.showNotifyModal = true;
@@ -169,10 +160,5 @@ export class CreditsListComponent implements OnInit {
   onModalClose(): void {
     this.showNotifyModal = false;
     this.selectedCredit = null;
-  }
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }
