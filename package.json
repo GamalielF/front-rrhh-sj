@@ -8,7 +8,14 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:ui": "ng build shared-ui",
-    "start:creditos": "pnpm build:ui && ng serve creditos-cop-sanjose --open"
+    "build:http": "ng build shared-http",
+    "build:auth": "ng build shared-auth",
+    "build:base": "ng build shared-base",
+    "build:libs": "ng build shared-ui && ng build shared-http && ng build shared-auth && ng build shared-base",
+    "new": "node scripts/new-project.mjs",
+    "delete": "node scripts/remove-project.mjs",
+    "start:creditos": "pnpm build:libs && ng serve creditos-cop-sanjose --open",
+    "build:creditos": "pnpm build:libs && ng build creditos-cop-sanjose"
   },
   "private": true,
   "packageManager": "pnpm@11.21.0",

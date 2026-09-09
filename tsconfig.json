@@ -1,5 +1,3 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -12,8 +10,20 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "paths": {
-      "shared-ui": [
-        "./projects/shared-ui/src/public-api.ts"
+      "@lumen/ui": [
+        "./libs/ui/src/public-api.ts"
+      ],
+      "@lumen/auth": [
+        "./libs/auth/src/public-api.ts"
+      ],
+      "@lumen/http": [
+        "./libs/http/src/public-api.ts"
+      ],
+      "@lumen/base": [
+        "./libs/base/src/public-api.ts"
+      ],
+      "@lumen/*": [
+        "./libs/*/src/public-api.ts"
       ]
     },
     "target": "ES2022",
@@ -27,10 +37,28 @@
   "files": [],
   "references": [
     {
-      "path": "./projects/shared-ui/tsconfig.lib.json"
+      "path": "./libs/ui/tsconfig.lib.json"
     },
     {
-      "path": "./projects/shared-ui/tsconfig.spec.json"
+      "path": "./libs/ui/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/auth/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/auth/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/http/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/http/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/base/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/base/tsconfig.spec.json"
     },
     {
       "path": "./projects/creditos-cop-sanjose/tsconfig.app.json"

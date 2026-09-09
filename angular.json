@@ -8,18 +8,18 @@
   "projects": {
     "shared-ui": {
       "projectType": "library",
-      "root": "projects/shared-ui",
-      "sourceRoot": "projects/shared-ui/src",
+      "root": "libs/ui",
+      "sourceRoot": "libs/ui/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
           "configurations": {
             "production": {
-              "tsConfig": "projects/shared-ui/tsconfig.lib.prod.json"
+              "tsConfig": "libs/ui/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/shared-ui/tsconfig.lib.json"
+              "tsConfig": "libs/ui/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -27,7 +27,85 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/shared-ui/tsconfig.spec.json"
+            "tsConfig": "libs/ui/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "shared-auth": {
+      "projectType": "library",
+      "root": "libs/auth",
+      "sourceRoot": "libs/auth/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/auth/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/auth/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "libs/auth/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "shared-http": {
+      "projectType": "library",
+      "root": "libs/http",
+      "sourceRoot": "libs/http/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/http/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/http/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "libs/http/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "shared-base": {
+      "projectType": "library",
+      "root": "libs/base",
+      "sourceRoot": "libs/base/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/base/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/base/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "libs/base/tsconfig.spec.json"
           }
         }
       }
@@ -36,7 +114,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "css"
         }
       },
       "root": "projects/creditos-cop-sanjose",
@@ -48,25 +126,29 @@
           "options": {
             "browser": "projects/creditos-cop-sanjose/src/main.ts",
             "tsConfig": "projects/creditos-cop-sanjose/tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
+            "inlineStyleLanguage": "css",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "projects/creditos-cop-sanjose/public"
-              },
               {
                 "glob": "**/*",
                 "input": "node_modules/@taiga-ui/icons/src",
                 "output": "assets/taiga-ui/icons"
+              },
+              {
+                "glob": "**/*",
+                "input": "libs/base/src/assets",
+                "output": ""
               }
             ],
             "styles": [
               "node_modules/@taiga-ui/styles/taiga-ui-theme.less",
-              "projects/creditos-cop-sanjose/src/styles.scss",
-              "projects/shared-ui/src/styles.scss"
+              "projects/creditos-cop-sanjose/src/styles.css",
+              "libs/ui/src/styles.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["projects"]
+              "includePaths": [
+                "projects",
+                "libs"
+              ]
             }
           },
           "configurations": {
