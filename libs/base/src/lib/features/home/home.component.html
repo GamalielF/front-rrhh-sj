@@ -1,0 +1,20 @@
+<ui-page-container
+  [title]="title"
+  [description]="description"
+>
+  <ui-card title="Documentación">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <p class="text-sm text-gray-600 m-0">
+        Guías de componentes del sistema.
+      </p>
+      <ui-button
+        variant="brand"
+        size="sm"
+        icon="@tui.external-link"
+        (onClick)="openDocs()"
+      >
+        Ver Documentación
+      </ui-button>
+    </div>
+  </ui-card>
+</ui-page-container>

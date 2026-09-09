@@ -1,0 +1,64 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-200 p-4">
+  <div class="w-full max-w-[860px] rounded-2xl overflow-hidden shadow-lg border border-gray-200 flex flex-col md:flex-row min-h-[480px]">
+    <!-- Left brand panel -->
+    <div
+      class="flex flex-col justify-between bg-gradient-to-br from-[#0061A1] via-[#004e82] to-[#00385c] md:w-5/12"
+      aria-hidden="true"
+    >
+      <div class="flex-[6] p-10 flex flex-col justify-center bg-[#0061A1]">
+        <h1 class="text-2xl font-bold leading-tight text-white m-0">
+          {{ systemTitle }}
+        </h1>
+      </div>
+
+      <div class="hidden md:block flex-1 p-10 flex flex-col justify-center bg-[#003358]">
+        <p class="text-sm leading-relaxed" style="color: rgba(186,210,255,0.8);">
+          {{ systemDescription }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="flex-1 bg-white flex items-center justify-center p-8 sm:p-10">
+      <div class="w-full max-w-sm flex flex-col gap-5">
+        <div class="flex justify-start mb-1" *ngIf="logoSrc">
+          <img [src]="logoSrc" alt="Logo" class="h-11 w-auto object-contain" />
+        </div>
+
+        <ui-form
+          [formGroup]="loginForm"
+          (formSubmit)="onSubmit()"
+          [errorMessage]="errorMessage"
+          customClass="flex flex-col gap-4 w-full"
+        >
+          <ui-input
+            label="Usuario"
+            placeholder="iquiroz"
+            prefixIcon="@tui.user"
+            formControlName="username"
+            [customErrorMessages]="{ required: 'El usuario es requerido' }"
+          />
+
+          <ui-input
+            type="password"
+            label="Contraseña"
+            placeholder="••••••••"
+            prefixIcon="@tui.lock"
+            formControlName="password"
+            [customErrorMessages]="{ required: 'La contraseña es requerida' }"
+          />
+
+          <ui-button
+            type="submit"
+            variant="brand"
+            size="lg"
+            [loading]="isLoading"
+            style="width: 100%"
+          >
+            Iniciar Sesión
+          </ui-button>
+        </ui-form>
+      </div>
+    </div>
+  </div>
+</div>

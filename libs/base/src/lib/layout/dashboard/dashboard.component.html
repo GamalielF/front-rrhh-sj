@@ -1,0 +1,18 @@
+<ui-dashboard-layout
+  [logoSrc]="logoSrc"
+  [logoCompactSrc]="logoCompactSrc"
+  [appTitle]="appTitle"
+  [showTitle]="showTitle"
+  [navItems]="navItems"
+  [activeRoute]="currentUrl()"
+  (navClick)="onNavClick($event)"
+>
+  <div slot="topbar-actions" class="flex items-center gap-3">
+    <ui-user-profile-menu
+      [user]="userProfile()"
+      [items]="userMenuItems"
+    />
+  </div>
+
+  <router-outlet />
+</ui-dashboard-layout>

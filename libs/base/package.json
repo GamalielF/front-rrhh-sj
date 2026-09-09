@@ -1,0 +1,16 @@
+{
+  "name": "@lumen/base",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^22.1.0",
+    "@angular/core": "^22.1.0",
+    "@angular/forms": "^22.1.0",
+    "@angular/router": "^22.1.0",
+    "@lumen/auth": "0.0.1",
+    "@lumen/ui": "0.0.1"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}

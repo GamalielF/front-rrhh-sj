@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/lib",
+    "declaration": true,
+    "declarationMap": true,
+    "paths": {
+      "@lumen/ui": ["../../dist/shared-ui"],
+      "@lumen/auth": ["../../dist/auth"],
+      "@lumen/http": ["../../dist/http"]
+    },
+    "types": []
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/*.spec.ts"]
+}
