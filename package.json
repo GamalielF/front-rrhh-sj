@@ -14,6 +14,7 @@
     "build:libs": "ng build shared-ui && ng build shared-http && ng build shared-auth && ng build shared-base",
     "new": "node scripts/new-project.mjs",
     "delete": "node scripts/remove-project.mjs",
+    "register": "node scripts/register-project.mjs",
     "start:creditos": "pnpm build:libs && ng serve creditos-cop-sanjose --open",
     "build:creditos": "pnpm build:libs && ng build creditos-cop-sanjose"
   },
