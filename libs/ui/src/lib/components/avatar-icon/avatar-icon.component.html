@@ -1,0 +1,14 @@
+<div
+    class="relative flex items-center justify-center w-8 h-8 rounded-full font-semibold text-xs tracking-wider text-white shadow-xs overflow-hidden flex-shrink-0"
+    [ngClass]="bgColor"
+    >
+    <img
+        *ngIf="iconUrl"
+        [src]="iconUrl"
+        [alt]="displayName"
+        class="w-full h-full object-cover"
+    />
+    <span *ngIf="!iconUrl" class="select-none">
+        {{ initials }}
+    </span>
+</div>

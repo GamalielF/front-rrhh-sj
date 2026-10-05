@@ -18,6 +18,7 @@ export * from './lib/components/dropdown';
 export * from './lib/components/user-profile-menu';
 export * from './lib/components/pin-input';
 export * from './lib/components/qr-code';
+export * from './lib/components/avatar-icon';
 
 // Layout
 export * from './lib/layout/dashboard-layout';
