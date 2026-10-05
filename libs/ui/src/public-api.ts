@@ -16,6 +16,7 @@ export * from './lib/components/grid';
 export * from './lib/components/form';
 export * from './lib/components/dropdown';
 export * from './lib/components/user-profile-menu';
+export * from './lib/components/pin-input';
 
 // Layout
 export * from './lib/layout/dashboard-layout';
