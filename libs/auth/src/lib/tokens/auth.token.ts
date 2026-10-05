@@ -2,11 +2,12 @@ import { InjectionToken, Provider } from '@angular/core';
 import { AuthConfig } from '../models/auth.models';
 
 export const DEFAULT_AUTH_CONFIG: Required<AuthConfig> = {
-  loginUrl: '/api/auth/login',
+  loginUrl: '/api/v1/auth/login',
+  mfaVerifyUrl: '/api/v1/auth/mfa/verify',
   tokenName: 'access_token',
   defaultRedirectUrl: '/',
   loginRedirectUrl: '/login',
-  refreshUrl: '/api/auth/refresh',
+  refreshUrl: '/api/v1/auth/refresh',
   enableRefreshToken: false,
   forbiddenRedirectUrl: '/forbidden',
 };

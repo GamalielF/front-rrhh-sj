@@ -14,15 +14,18 @@ export interface UserSession {
 
 export interface LoginResponse {
   accessToken?: string;
-  token?: string;
+  tokenType?: string;
+  expiresIn?: number;
   refreshToken?: string;
   user?: UserSession;
+  otpauthUrl?: string;
   message?: string;
   [key: string]: unknown;
 }
 
 export interface AuthConfig {
-  loginUrl?: string;
+  loginUrl: string;
+  mfaVerifyUrl: string;
   tokenName?: string;
   defaultRedirectUrl?: string;
   loginRedirectUrl?: string;

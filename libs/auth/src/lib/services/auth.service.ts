@@ -30,23 +30,30 @@ export class AuthService {
   readonly user$ = this.userSubject.asObservable();
   readonly isAuthenticated$ = this.tokenSubject.pipe(map((token) => !!token));
 
-  login(username: string, password: string, customUrl?: string): Observable<LoginResponse> {
-    const url = customUrl || this.config.loginUrl;
-    const payload = {
-      username,
-      password,
-    };
-
-    return this.http.post<LoginResponse>(url, payload).pipe(
+  login(username: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(this.config.loginUrl, { username, password }).pipe(
       tap((response) => {
-        const token = response.accessToken || response.token;
-        if (token) {
-          const user = response.user || { username: payload.username };
-          this.setSession(token, user, response.refreshToken);
+        if (response.accessToken && response.tokenType) {
+          const user = response.user || { username };
+          this.setSession(response.accessToken, user, response.refreshToken);
         }
       }),
       catchError((error) => throwError(() => error))
     );
+  }
+
+  verifyMfa(accessToken: string, totpCode: string): Observable<LoginResponse> {
+    return this.http
+      .post<LoginResponse>(this.config.mfaVerifyUrl, { accessToken, totpCode })
+      .pipe(
+        tap((response) => {
+          if (response.accessToken) {
+            const user = response.user || this.getUser() || { username: '' };
+            this.setSession(response.accessToken, user, response.refreshToken);
+          }
+        }),
+        catchError((error) => throwError(() => error))
+      );
   }
 
   setSession(token: string, user?: UserSession, refreshToken?: string): void {
@@ -114,7 +121,7 @@ export class AuthService {
       .post<LoginResponse>(this.config.refreshUrl, { refreshToken })
       .pipe(
         tap((response) => {
-          const newToken = response.accessToken || response.token;
+          const newToken = response.accessToken;
           if (newToken) {
             this.setToken(newToken);
             if (response.refreshToken) {

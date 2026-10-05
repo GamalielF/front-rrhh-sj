@@ -37,7 +37,7 @@ export function handleTokenRefresh(
   return authService.refreshAccessToken().pipe(
     switchMap((response) => {
       isRefreshing = false;
-      const newToken = response.accessToken || response.token;
+      const newToken = response.accessToken;
       if (!newToken) {
         authService.logout();
         router.navigateByUrl(loginUrl);
