@@ -19,6 +19,7 @@ export * from './lib/components/user-profile-menu';
 export * from './lib/components/pin-input';
 export * from './lib/components/qr-code';
 export * from './lib/components/avatar-icon';
+export * from './lib/components/ripple-effect';
 
 // Layout
 export * from './lib/layout/dashboard-layout';
