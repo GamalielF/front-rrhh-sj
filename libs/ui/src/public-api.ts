@@ -17,6 +17,7 @@ export * from './lib/components/form';
 export * from './lib/components/dropdown';
 export * from './lib/components/user-profile-menu';
 export * from './lib/components/pin-input';
+export * from './lib/components/qr-code';
 
 // Layout
 export * from './lib/layout/dashboard-layout';
