@@ -67,7 +67,9 @@
 
             <!-- Label and Badge -->
             <ng-container *ngIf="!sidebarCollapsed()">
-              <span class="flex-1 text-left truncate tracking-tight text-[15.5px]">{{ item.label }}</span>
+              <span class="flex-1 text-left tracking-tight text-[15.5px] whitespace-normal break-words leading-snug">
+                {{ item.label }}
+              </span>
               <span
                 *ngIf="item.badge"
                 class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/20 text-white leading-none shadow-xs"

@@ -1,5 +1,12 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-200 p-4">
-  <div class="w-full max-w-[860px] rounded-2xl overflow-hidden shadow-lg border border-gray-200 flex flex-col md:flex-row min-h-[480px]">
+<div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" [ngClass]="!backgroundImage ? 'bg-gray-200' : ''">
+  <ui-ripple-effect 
+    *ngIf="backgroundImage"
+    [imageUrl]="backgroundImage"
+    [config]="{ resolution: 512, dropRadius: 25, perturbance: 0.004, damping: 0.95, interactive: true }"
+    class="absolute inset-0 w-full h-full"
+  ></ui-ripple-effect>
+  
+  <div class="w-full max-w-[860px] rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[480px] relative z-10 shadow-2xl">
     <!-- Left brand panel -->
     <div
       class="flex flex-col justify-between bg-gradient-to-br from-[#0061A1] via-[#004e82] to-[#00385c] md:w-5/12"
@@ -11,8 +18,8 @@
         </h1>
       </div>
 
-      <div class="hidden md:block flex-1 p-10 flex flex-col justify-center bg-[#003358]">
-        <p class="text-sm leading-relaxed" style="color: rgba(186,210,255,0.8);">
+      <div class="hidden md:block flex-1 p-10 flex flex-col justify-center bg-[#4d93c5]">
+        <p class="text-sm leading-relaxed text-white">
           {{ systemDescription }}
         </p>
       </div>
@@ -20,44 +27,185 @@
 
     <!-- Right form panel -->
     <div class="flex-1 bg-white flex items-center justify-center p-8 sm:p-10">
-      <div class="w-full max-w-sm flex flex-col gap-5">
-        <div class="flex justify-start mb-1" *ngIf="logoSrc">
-          <img [src]="logoSrc" alt="Logo" class="h-11 w-auto object-contain" />
+      <div class="w-full max-w-sm flex flex-col gap-4">
+        <div
+          class="flex items-center justify-between mb-1"
+          *ngIf="logoSrc || (step !== 'credentials' && totpTimeoutSeconds > 0)"
+        >
+          <div *ngIf="logoSrc">
+            <img [src]="logoSrc" alt="Logo" class="h-12 w-auto object-contain" />
+          </div>
+          <div *ngIf="!logoSrc"></div>
+
+          <!-- Countdown Timer -->
+          <div
+            *ngIf="step !== 'credentials' && totpTimeoutSeconds > 0"
+            class="px-3 py-1 rounded-md text-sm font-mono font-bold tracking-wider transition-colors border"
+            [ngClass]="
+              remainingSeconds <= 30
+                ? 'bg-red-50 text-red-600 border-red-200'
+                : remainingSeconds <= 60
+                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                : 'bg-gray-100 text-gray-700 border-gray-200'
+            "
+            title="Tiempo restante para ingresar el código"
+          >
+            <span>{{ formattedRemainingTime }}</span>
+          </div>
         </div>
 
-        <ui-form
-          [formGroup]="loginForm"
-          (formSubmit)="onSubmit()"
-          [errorMessage]="errorMessage"
-          customClass="flex flex-col gap-4 w-full"
-        >
-          <ui-input
-            label="Usuario"
-            placeholder="iquiroz"
-            prefixIcon="@tui.user"
-            formControlName="username"
-            [customErrorMessages]="{ required: 'El usuario es requerido' }"
-          />
-
-          <ui-input
-            type="password"
-            label="Contraseña"
-            placeholder="••••••••"
-            prefixIcon="@tui.lock"
-            formControlName="password"
-            [customErrorMessages]="{ required: 'La contraseña es requerida' }"
-          />
-
-          <ui-button
-            type="submit"
-            variant="brand"
-            size="lg"
-            [loading]="isLoading"
-            style="width: 100%"
+        <!--  Credenciales -->
+        <ng-container *ngIf="step === 'credentials'">
+          <ui-form
+            [formGroup]="loginForm"
+            (formSubmit)="onSubmitCredentials()"
+            [errorMessage]="errorMessage"
+            customClass="flex flex-col gap-4 w-full"
           >
-            Iniciar Sesión
-          </ui-button>
-        </ui-form>
+            <ui-input
+              label="Usuario"
+              placeholder="iquiroz"
+              prefixIcon="@tui.user"
+              formControlName="username"
+              [customErrorMessages]="{ required: 'El usuario es requerido' }"
+            />
+
+            <ui-input
+              type="password"
+              label="Contraseña"
+              placeholder="••••••••"
+              prefixIcon="@tui.lock"
+              formControlName="password"
+              [customErrorMessages]="{ required: 'La contraseña es requerida' }"
+            />
+
+            <ui-button
+              type="submit"
+              variant="brand"
+              size="lg"
+              [loading]="isLoading"
+              style="width: 100%"
+            >
+              Iniciar Sesión
+            </ui-button>
+          </ui-form>
+        </ng-container>
+
+        <!--Google Authenticator -->
+        <ng-container *ngIf="step === 'totp'">
+          <div class="flex flex-col gap-1 text-center items-center">
+            <h2 class="text-lg font-semibold text-gray-900 m-0 flex items-center justify-center gap-2">
+              <img src="icon/gauth.svg" alt="Google Authenticator" class="w-6 h-6 object-contain" />
+              <span>Google Authenticator</span>
+            </h2>
+            <p class="text-xs text-gray-500 m-0">
+              Ingresa el código de 6 dígitos para <b>{{ loginForm.value.username }}</b>.
+            </p>
+          </div>
+
+          <ui-form
+            [formGroup]="totpForm"
+            (formSubmit)="onSubmitTotp()"
+            [errorMessage]="errorMessage"
+            customClass="flex flex-col gap-4 w-full"
+          >
+            <ui-pin-input
+              [length]="6"
+              type="number"
+              [autofocus]="true"
+              formControlName="totpCode"
+              (completed)="onSubmitTotp()"
+              [customErrorMessages]="{
+                required: 'El código de autenticación es requerido',
+                pattern: 'Debe ser un código de 6 dígitos'
+              }"
+            />
+
+            <div class="flex gap-2 w-full">
+              <ui-button
+                type="button"
+                variant="outline"
+                size="lg"
+                [disabled]="isLoading"
+                (onClick)="backToCredentials()"
+                style="flex: 1"
+              >
+                Volver
+              </ui-button>
+
+              <ui-button
+                type="submit"
+                variant="brand"
+                size="lg"
+                [loading]="isLoading"
+                style="flex: 2"
+              >
+                Ingresar
+              </ui-button>
+            </div>
+          </ui-form>
+        </ng-container>
+
+        <!-- Escaneo de QR -->
+        <ng-container *ngIf="step === 'totp-setup' && otpauthUrl">
+          <div class="flex flex-col gap-1 text-center items-center">
+            <h2 class="text-lg font-semibold text-gray-900 m-0 flex items-center justify-center gap-2">
+              <img src="icon/gauth.svg" alt="Google Authenticator" class="w-6 h-6 object-contain" />
+              <span>Google Authenticator</span>
+            </h2>
+            <p class="text-xs text-gray-500 m-0">
+              Escanea el código QR para completar el registro
+            </p>
+          </div>
+
+          <div class="flex flex-col items-center justify-center my-1">
+            <ui-qr-code [value]="otpauthUrl" [size]="150" />
+          </div>
+
+          <ui-form
+            [formGroup]="totpForm"
+            (formSubmit)="onSubmitTotp()"
+            [errorMessage]="errorMessage"
+            customClass="flex flex-col gap-3 w-full"
+          >
+            <ui-pin-input
+              label="Código de verificación"
+              [length]="6"
+              type="number"
+              [autofocus]="true"
+              formControlName="totpCode"
+              (completed)="onSubmitTotp()"
+              [customErrorMessages]="{
+                required: 'El código es requerido',
+                pattern: 'Debe ser un código de 6 dígitos'
+              }"
+            />
+
+            <div class="flex gap-2 w-full">
+              <ui-button
+                type="button"
+                variant="outline"
+                size="lg"
+                [disabled]="isLoading"
+                (onClick)="backToCredentials()"
+                style="flex: 1"
+              >
+                Volver
+              </ui-button>
+
+              <ui-button
+                type="submit"
+                variant="brand"
+                size="lg"
+                [loading]="isLoading"
+                style="flex: 2"
+              >
+                Ingresar
+              </ui-button>
+            </div>
+          </ui-form>
+        </ng-container>
+
       </div>
     </div>
   </div>

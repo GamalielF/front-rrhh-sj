@@ -36,8 +36,8 @@ export class LumenDashboardComponent {
   protected router = inject(Router);
   protected authService = inject(AuthService);
 
-  @Input() logoSrc = '/logo-white.png';
-  @Input() logoCompactSrc = '/logo-compact-white.png';
+  @Input() logoSrc = 'img/logo-white.png';
+  @Input() logoCompactSrc = 'img/logo-compact-white.png';
   @Input() appTitle = '';
   @Input() showTitle = false;
 
