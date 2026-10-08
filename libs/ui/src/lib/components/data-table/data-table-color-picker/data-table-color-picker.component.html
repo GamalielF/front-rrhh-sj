@@ -1,0 +1,46 @@
+<div class="flex flex-col gap-2 p-2 bg-white rounded-lg border border-gray-100 shadow-xs">
+  <div class="flex items-center justify-between text-xs text-gray-500 font-medium">
+    <span>Color de resaltado</span>
+    <button
+      *ngIf="allowNone && selectedColor"
+      type="button"
+      class="text-xs text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
+      (click)="clearColor()"
+    >
+      Quitar
+    </button>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-1.5">
+    <button
+      *ngFor="let p of presets"
+      type="button"
+      [style.backgroundColor]="p.value"
+      [title]="p.label"
+      class="w-5 h-5 rounded-full border border-black/10 transition-transform cursor-pointer hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500"
+      [class.ring-2]="selectedColor === p.value"
+      [class.ring-offset-1]="selectedColor === p.value"
+      [class.ring-blue-600]="selectedColor === p.value"
+      (click)="selectPreset(p.value)"
+    ></button>
+  </div>
+
+  <div class="flex items-center gap-2 pt-1 border-t border-gray-100">
+    <label class="text-[11px] text-gray-400 font-medium">Personalizado:</label>
+    <div class="flex items-center gap-1.5 flex-1">
+      <input
+        type="color"
+        [value]="selectedColor || '#3B82F6'"
+        class="w-6 h-6 p-0 border border-gray-200 rounded cursor-pointer"
+        (input)="selectPreset($any($event.target).value)"
+      />
+      <input
+        type="text"
+        placeholder="#3B82F6"
+        [ngModel]="customHex || selectedColor"
+        (ngModelChange)="onCustomHexChange($event)"
+        class="w-full text-xs px-2 py-1 border border-gray-200 rounded focus:border-blue-500 focus:outline-none"
+      />
+    </div>
+  </div>
+</div>

@@ -20,6 +20,7 @@ export * from './lib/components/pin-input';
 export * from './lib/components/qr-code';
 export * from './lib/components/avatar-icon';
 export * from './lib/components/ripple-effect';
+export * from './lib/components/data-table';
 
 // Layout
 export * from './lib/layout/dashboard-layout';

@@ -1,0 +1,207 @@
+<div
+  class="w-full flex flex-col bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden"
+  [class.h-full]="fullHeight"
+  [class.flex-1]="fullHeight"
+>
+  <!-- Top Active Filter Bar -->
+  <ui-data-table-filter-bar
+    *ngIf="showFilterBar"
+    [filters]="activeFilters"
+    [columns]="columns"
+    (removeFilter)="onFilterRemove($event)"
+    (filterUpdate)="onFilterUpdate($event)"
+    (clearAll)="onClearAllFilters()"
+  />
+
+  <!-- Table Content -->
+  <div class="table-responsive overflow-x-auto w-full pb-21" [class.flex-1]="fullHeight">
+    <table class="w-full text-left text-sm border-collapse" [class.opacity-60]="loading">
+
+      <!-- Header -->
+      <thead>
+        <tr class="border-b border-gray-200 bg-gray-50/75">
+          <th *ngIf="selectable" class="w-12 px-5 py-4 text-left">
+            <input
+              type="checkbox"
+              class="w-4 h-4 rounded border-gray-300 text-[#3B82F6] accent-[#3B82F6] cursor-pointer focus:ring-2 focus:ring-[#3B82F6]/25"
+              [checked]="isAllSelected"
+              [indeterminate]="isSomeSelected"
+              (change)="toggleAll($event)"
+              aria-label="Seleccionar todas las filas"
+            />
+          </th>
+
+          <th
+            *ngFor="let col of columns"
+            [style.width]="col.width"
+            class="px-5 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap"
+          >
+            <ui-data-table-filter-popover
+              *ngIf="col.filters && col.filters.length > 0; else plainTitle"
+              [column]="col"
+              [activeFilters]="activeFilters"
+              (filterAdd)="onFilterAdd($event)"
+              (filterUpdate)="onFilterUpdate($event)"
+              (filterRemove)="onFilterRemove($event)"
+            />
+            <ng-template #plainTitle>
+              <span>{{ col.title }}</span>
+            </ng-template>
+          </th>
+
+          <th
+            *ngIf="actions.length > 0"
+            class="px-5 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap"
+            [class.w-16]="useDropdownLayout"
+          >
+            {{ actionsColumnTitle }}
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Body -->
+      <tbody class="divide-y divide-gray-100">
+
+        <!-- Skeleton Rows -->
+        <ng-container *ngIf="loading">
+          <tr *ngFor="let _ of skeletonRows" class="bg-white animate-pulse">
+            <td *ngIf="selectable" class="px-5 py-4">
+              <div class="w-4 h-4 rounded bg-gray-200"></div>
+            </td>
+            <td *ngFor="let col of columns" class="px-5 py-4">
+              <div class="h-3.5 rounded bg-gray-200" [class]="randomSkeletonWidth()"></div>
+            </td>
+            <td *ngIf="actions.length > 0" class="px-5 py-4 text-right">
+              <div
+                [class]="useDropdownLayout ? 'h-8 w-8 rounded-lg bg-gray-200 ml-auto' : 'h-7 w-20 rounded bg-gray-200 ml-auto'"
+              ></div>
+            </td>
+          </tr>
+        </ng-container>
+
+        <!-- Data Rows -->
+        <ng-container *ngIf="!loading && tableData.length > 0">
+          <tr
+            *ngFor="let row of tableData; trackBy: trackRow"
+            class="bg-white transition-colors duration-100 hover:bg-gray-50/80"
+            [class.bg-blue-50_50]="selectable && isSelected(row)"
+            [style.backgroundColor]="getRowHighlightColor(row) ? getRowHighlightColor(row) + '18' : null"
+            [style.borderLeft]="getRowHighlightColor(row) ? '4px solid ' + getRowHighlightColor(row) : null"
+          >
+            <!-- Checkbox column -->
+            <td *ngIf="selectable" class="px-5 py-4">
+              <input
+                type="checkbox"
+                class="w-4 h-4 rounded border-gray-300 accent-[#3B82F6] cursor-pointer focus:ring-2 focus:ring-[#3B82F6]/25"
+                [checked]="isSelected(row)"
+                (change)="toggleRow(row)"
+                aria-label="Seleccionar fila"
+              />
+            </td>
+
+            <!-- Data columns -->
+            <td
+              *ngFor="let col of columns"
+              class="px-5 py-4 transition-colors justify-between"
+              [style.backgroundColor]="getCellHighlightColor(row, col) ? getCellHighlightColor(row, col) + '22' : null"
+              [style.borderLeft]="getCellHighlightColor(row, col) ? '3px solid ' + getCellHighlightColor(row, col) : null"
+            >
+              <ng-container [ngSwitch]="col.type">
+                <ui-badge
+                  *ngSwitchCase="'badge'"
+                  [variant]="col.badgeVariant ? col.badgeVariant(row) : 'info'"
+                >
+                  {{ col.prefix || '' }}{{ getValue(row, col) }}{{ col.suffix || '' }}
+                </ui-badge>
+
+                <span *ngSwitchCase="'currency'" class="font-medium text-gray-900 tabular-nums">
+                  {{ col.prefix || '' }}{{ getValue(row, col) | currency:'COP':'symbol':'1.0-0':'es-CO' }}
+                </span>
+
+                <span *ngSwitchCase="'date'" class="text-gray-600 tabular-nums text-xs">
+                  {{ getValue(row, col) | date:'dd/MM/yyyy' }}
+                </span>
+                
+                <div *ngSwitchCase="'avatar'" class="flex items-center gap-2">
+                  <ui-avatar-icon 
+                    [fullName]="getValue(row, col)">
+                  </ui-avatar-icon>
+                  <span class="ml-2">{{ col.prefix || '' }}{{ getValue(row, col) }}{{ col.suffix || '' }}</span>
+                </div>
+
+                <span
+                  *ngSwitchDefault
+                  [class]="isPrimaryColumn(col) ? 'font-medium text-gray-900' : 'text-gray-600'"
+                >
+                  {{ col.prefix || '' }}{{ getValue(row, col) ?? '—' }}{{ col.suffix || '' }}
+                </span>
+              </ng-container>
+            </td>
+
+            <!-- Actions column -->
+            <td *ngIf="actions.length > 0" class="px-5 py-3 text-right whitespace-nowrap">
+              <ng-container *ngIf="useDropdownLayout">
+                <ui-dropdown
+                  [items]="getRowDropdownItems(row)"
+                  [triggerIcon]="actionsTriggerIcon"
+                  [triggerVariant]="actionsTriggerVariant"
+                  [menuTitle]="actionsMenuTitle"
+                  placement="bottom-end"
+                  (itemClick)="onDropdownItemClick(row, $event)"
+                />
+              </ng-container>
+
+              <ng-container *ngIf="!useDropdownLayout">
+                <div class="flex items-center justify-end gap-2">
+                  <ng-container *ngFor="let action of actions; let i = index">
+                    <button
+                      *ngIf="!action.hidden || !action.hidden(row)"
+                      type="button"
+                      [class]="getActionClass(action)"
+                      [disabled]="isActionDisabled(action, row)"
+                      (click)="actionClick.emit({ row, action, index: i }); action.onClick?.(row)"
+                    >
+                      <ui-icon *ngIf="action.icon" [icon]="action.icon" size="xs" />
+                      <span>{{ action.label }}</span>
+                    </button>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-container>
+
+        <!-- Empty State -->
+        <tr *ngIf="!loading && tableData.length === 0">
+          <td
+            class="px-6 py-16 text-center"
+            [attr.colspan]="columns.length + (selectable ? 1 : 0) + (actions.length > 0 ? 1 : 0)"
+          >
+            <div class="flex flex-col items-center justify-center gap-3 text-gray-400">
+              <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+                <ui-icon icon="@tui.inbox" size="lg" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <p class="text-sm font-medium text-gray-800 m-0">{{ emptyMessage }}</p>
+                <p class="text-xs text-gray-500 m-0">Intenta ajustar los filtros de búsqueda</p>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Bottom -->
+  <ui-pagination
+    *ngIf="showPagination"
+    [page]="computedPage"
+    [pageSize]="computedPageSize"
+    [total]="computedTotal"
+    [pageSizeOptions]="pageSizeOptions"
+    [disabled]="loading"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  />
+</div>

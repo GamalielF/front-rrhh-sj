@@ -1,0 +1,274 @@
+<div
+  *ngIf="hasFilters"
+  class="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 bg-gray-50/80 border-b border-gray-200"
+>
+  <div class="flex items-center gap-2 flex-wrap flex-1">
+    <div class="flex items-center gap-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+      <ui-icon icon="@tui.filter" size="xs" class="text-blue-600" />
+      <span>Filtros:</span>
+    </div>
+
+    <div class="flex items-center gap-2 flex-wrap">
+      <div
+        *ngFor="let f of filters"
+        [class]="chipBaseClass"
+        [style.borderColor]="f.color ? f.color + '55' : '#E5E7EB'"
+        [style.backgroundColor]="f.color ? f.color + '15' : '#FFFFFF'"
+        class="group hover:border-blue-400 cursor-pointer select-none"
+        (click)="openEditPopover(f, $event)"
+      >
+        <!-- Color dot (clickable for quick color modification) -->
+        <button
+          type="button"
+          class="w-3.5 h-3.5 rounded-full shadow-2xs cursor-pointer border border-black/15 hover:scale-125 transition-transform flex-shrink-0"
+          [style.backgroundColor]="f.color || '#94A3B8'"
+          [title]="'Cambiar color (' + (f.color || 'sin color') + ')'"
+          (click)="openColorPopover(f, $event)"
+        ></button>
+
+        <!-- Column name -->
+        <span class="font-semibold text-gray-700">{{ f.columnTitle }}:</span>
+
+        <!-- Condition -->
+        <span class="text-gray-500">{{ operatorLabels[f.operator] || f.operator }}</span>
+
+        <!-- Value -->
+        <span class="font-bold text-gray-900">
+          <ng-container *ngIf="f.label && (f.type === 'dropdown-range'); else defaultValue">
+            {{ f.label }}
+          </ng-container>
+          <ng-template #defaultValue>
+            {{ f.value }}{{ f.valueEnd ? ' - ' + f.valueEnd : '' }}
+          </ng-template>
+        </span>
+
+        <!-- Edit icon hint -->
+        <span class="text-gray-400 group-hover:text-blue-600 transition-colors">
+          <ui-icon icon="@tui.pencil" size="xs" />
+        </span>
+
+        <!-- Remove button -->
+        <button
+          *ngIf="!f.locked"
+          type="button"
+          class="ml-0.5 p-0.5 text-gray-400 hover:text-red-600 rounded cursor-pointer transition-colors"
+          title="Eliminar filtro"
+          (click)="onRemove(f.id, $event)"
+        >
+          <ui-icon icon="@tui.x" size="xs" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clear All -->
+  <button
+    type="button"
+    class="text-xs font-medium text-gray-500 hover:text-red-600 cursor-pointer flex items-center gap-1 transition-colors px-2 py-1 rounded hover:bg-red-50"
+    (click)="onClearAll()"
+  >
+    <ui-icon icon="@tui.trash-2" size="xs" />
+    <span>Limpiar todos</span>
+  </button>
+</div>
+
+<!-- Floating Quick Color Picker Popover (Fixed, doesn't clip) -->
+<div
+  *ngIf="quickColorFilterId"
+  id="filter-bar-color-popover"
+  class="fixed z-[9999] w-64 rounded-xl bg-white p-3 shadow-2xl border border-gray-200 focus:outline-none animate-in fade-in zoom-in-95 duration-150"
+  [style.top.px]="popoverTop"
+  [style.left.px]="popoverLeft"
+  (click)="$event.stopPropagation()"
+>
+  <div class="flex items-center justify-between pb-2 mb-2 border-b border-gray-100">
+    <span class="text-xs font-semibold text-gray-700">Modificar Color</span>
+    <button
+      type="button"
+      class="text-gray-400 hover:text-gray-600 p-0.5 rounded cursor-pointer"
+      (click)="closePopovers()"
+    >
+      <ui-icon icon="@tui.x" size="xs" />
+    </button>
+  </div>
+
+  <ng-container *ngFor="let f of filters">
+    <div *ngIf="f.id === quickColorFilterId">
+      <ui-data-table-color-picker
+        [selectedColor]="f.color"
+        (colorChange)="updateColor(f, $event)"
+      />
+    </div>
+  </ng-container>
+</div>
+
+<!-- Edit Filter Popover -->
+<div
+  *ngIf="editingFilter"
+  id="filter-bar-edit-popover"
+  class="fixed z-[9999] w-72 rounded-xl bg-white p-3.5 shadow-2xl border border-gray-200 focus:outline-none animate-in fade-in zoom-in-95 duration-150 text-left"
+  [style.top.px]="popoverTop"
+  [style.left.px]="popoverLeft"
+  (click)="$event.stopPropagation()"
+>
+  <!-- Header -->
+  <div class="flex items-center justify-between pb-2.5 border-b border-gray-100">
+    <div class="flex items-center gap-1.5 text-xs font-semibold text-gray-800">
+      <ui-icon icon="@tui.pencil" size="xs" class="text-blue-600" />
+      <span>Editar: {{ editingFilter.columnTitle }}</span>
+    </div>
+    <button
+      type="button"
+      class="text-gray-400 hover:text-gray-600 cursor-pointer p-0.5 rounded transition-colors"
+      (click)="closePopovers()"
+    >
+      <ui-icon icon="@tui.x" size="xs" />
+    </button>
+  </div>
+
+  <div class="flex flex-col gap-2.5 pt-2.5 text-left">
+    <!-- Operator selector -->
+    <div *ngIf="availableOperators.length > 1" class="flex flex-col gap-1">
+      <label class="text-[11px] font-medium text-gray-500">
+        {{ editingFilter.type === 'sort' ? 'Dirección de orden' : 'Condición' }}
+      </label>
+      <select
+        [(ngModel)]="editOperator"
+        class="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:outline-none"
+      >
+        <option *ngFor="let op of availableOperators" [value]="op">
+          {{ operatorLabels[op] || op }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Value Input based on definition type -->
+    <div class="flex flex-col gap-1" *ngIf="editingFilter.type !== 'sort'">
+      <label class="text-[11px] font-medium text-gray-500">{{ currentEditingDefinition?.texts?.valueLabel || 'Valor' }}</label>
+
+      <!-- Text / Default -->
+      <input
+        *ngIf="editingFilter.type === 'text'"
+        type="text"
+        [(ngModel)]="editValue"
+        [placeholder]="currentEditingDefinition?.texts?.placeholder || 'Valor a filtrar...'"
+        class="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:outline-none"
+        (keydown.enter)="saveEdit()"
+      />
+
+      <!-- Number -->
+      <input
+        *ngIf="editingFilter.type === 'number'"
+        type="number"
+        [(ngModel)]="editValue"
+        [placeholder]="currentEditingDefinition?.texts?.placeholder || 'Valor numérico...'"
+        class="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:outline-none"
+        (keydown.enter)="saveEdit()"
+      />
+
+      <!-- Number Range -->
+      <div *ngIf="editingFilter.type === 'number-range'" class="flex items-center gap-1.5">
+        <input
+          type="number"
+          [(ngModel)]="editValue"
+          [placeholder]="currentEditingDefinition?.texts?.placeholder || 'Mín'"
+          class="w-1/2 text-xs px-2 py-1.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:outline-none"
+        />
+        <span class="text-xs text-gray-400">-</span>
+        <input
+          type="number"
+          [(ngModel)]="editValueEnd"
+          [placeholder]="currentEditingDefinition?.texts?.placeholderEnd || 'Máx'"
+          class="w-1/2 text-xs px-2 py-1.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:outline-none"
+        />
+      </div>
+
+      <!-- Date -->
+      <input
+        *ngIf="editingFilter.type === 'date'"
+        type="date"
+        [(ngModel)]="editValue"
+        class="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:outline-none"
+      />
+
+      <!-- Date Range -->
+      <div *ngIf="editingFilter.type === 'date-range'" class="flex flex-col gap-1">
+        <input
+          type="date"
+          [(ngModel)]="editValue"
+          class="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:outline-none"
+        />
+        <input
+          type="date"
+          [(ngModel)]="editValueEnd"
+          class="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:outline-none"
+        />
+      </div>
+
+      <!-- Select Options -->
+      <select
+        *ngIf="editingFilter.type === 'select'"
+        [(ngModel)]="editValue"
+        class="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:outline-none"
+      >
+        <option value="">{{ currentEditingDefinition?.texts?.selectPlaceholder || 'Seleccionar opción...' }}</option>
+        <option *ngFor="let opt of currentEditingDefinition?.options" [value]="opt.value">
+          {{ opt.label }}
+        </option>
+      </select>
+
+      <!-- Dropdown Range -->
+      <div *ngIf="editingFilter.type === 'dropdown-range'">
+        <select
+          *ngIf="currentEditingDefinition?.presetRanges?.length"
+          class="w-full text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:outline-none cursor-pointer"
+          [ngModel]="editPresetIndex"
+          (ngModelChange)="onEditPresetIndexChange($event)"
+        >
+          <option [value]="-1">{{ currentEditingDefinition?.texts?.selectPlaceholder || 'Seleccionar etapa...' }}</option>
+          <option
+            *ngFor="let preset of currentEditingDefinition?.presetRanges; let i = index"
+            [value]="i"
+          >{{ preset.label }} · {{ preset.min }} a {{ preset.max }} días</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Color Picker -->
+    <div *ngIf="currentEditingColumn?.allowColorHighlight && editingFilter.type !== 'sort'">
+      <ui-data-table-color-picker
+        [selectedColor]="editColor"
+        (colorChange)="editColor = $event"
+      />
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-between gap-2 pt-1">
+      <button
+        type="button"
+        class="px-2.5 py-1 text-xs font-medium text-red-600 hover:text-red-700 rounded-lg hover:bg-red-50 cursor-pointer transition-colors"
+        (click)="onRemove(editingFilter.id, $event)"
+      >
+        Eliminar
+      </button>
+
+      <div class="flex items-center gap-2 ml-auto">
+        <button
+          type="button"
+          class="px-2.5 py-1 text-xs font-medium text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
+          (click)="closePopovers()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="px-3 py-1 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg shadow-xs cursor-pointer flex items-center gap-1 transition-colors"
+          (click)="saveEdit()"
+        >
+          <ui-icon icon="@tui.check" size="xs" />
+          <span>Guardar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
