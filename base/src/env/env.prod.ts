@@ -1,0 +1,7 @@
+export const env =  {
+  loginUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/auth/login',
+  mfaVerifyUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/auth/mfa/verify',
+  refreshUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/auth/refresh',
+  apiBaseUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/v1/analitics/',
+  userProfileUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/v1/analitics/Usuarios/busca-usuario',
+};

@@ -19,6 +19,7 @@ export class DashboardShellComponent {
 
   readonly navItems: NavItem[] = [
     { label: 'Inicio', icon: '@tui.house', route: '/home' },
+    { label: 'Test', icon: '@tui.settings', route: '/test' },
   ];
 
   readonly userMenuItems: DropdownItem[] = [
