@@ -64,7 +64,7 @@ function updateTsConfigApp(name) {
   config.compilerOptions.paths['@services'] = ['./src/app/core/services'];
   config.compilerOptions.paths['@components'] = ['./src/app/shared/components'];
   config.compilerOptions.paths['@components/*'] = ['./src/app/shared/components/*'];
-  config.compilerOptions.paths['@environments/*'] = ['./src/environments/*'];
+  config.compilerOptions.paths['@env'] = ['./src/env'];
   config.compilerOptions.paths['@core/*'] = ['./src/app/core/*'];
   config.compilerOptions.paths['@/*'] = ['./src/*'];
 
