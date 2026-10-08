@@ -1,6 +1,7 @@
 import {
   Component,
   Input,
+  HostBinding,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -22,15 +23,27 @@ export class CardComponent {
   @Input() hasHeader = false;
   @Input() hasFooter = false;
   @Input() headerIcon = false;
+  @Input() hasHeaderExtra = false;
+  @Input() fullHeight = false;
+
+  @HostBinding('class.h-full')
+  @HostBinding('class.flex-1')
+  get isFullHeight(): boolean {
+    return this.fullHeight;
+  }
 
   get hostClass(): string {
     const base = 'bg-white rounded-xl overflow-hidden transition-shadow';
     const border = this.bordered ? 'border border-gray-200' : '';
     const shadow = this.elevated ? 'shadow-xs hover:shadow-sm' : '';
-    return [base, border, shadow].filter(Boolean).join(' ');
+    const height = this.fullHeight ? 'h-full flex-1 flex flex-col' : '';
+    return [base, border, shadow, height].filter(Boolean).join(' ');
   }
 
   get bodyClass(): string {
-    return this.noPadding ? '' : 'p-6';
+    const padding = this.noPadding ? '' : 'p-6';
+    const flex = this.fullHeight ? 'flex-1 flex flex-col' : '';
+    return [padding, flex].filter(Boolean).join(' ');
   }
 }
+

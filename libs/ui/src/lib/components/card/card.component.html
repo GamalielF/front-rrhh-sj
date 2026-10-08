@@ -1,5 +1,5 @@
 <div [class]="hostClass">
-  <div *ngIf="title || hasHeader" class="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-100 bg-white">
+  <div *ngIf="title || hasHeader" class="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-100 bg-white flex-wrap">
     <div class="flex items-center gap-3">
       <div *ngIf="headerIcon" class="text-gray-400">
         <ng-content select="[slot=header-icon]" />
@@ -9,6 +9,7 @@
         <p *ngIf="subtitle" class="text-xs text-gray-500 mt-1 m-0 leading-normal">{{ subtitle }}</p>
       </div>
     </div>
+    <ng-content select="[slot=header-extra]" />
     <div class="flex items-center gap-2">
       <ng-content select="[slot=header-actions]" />
     </div>
