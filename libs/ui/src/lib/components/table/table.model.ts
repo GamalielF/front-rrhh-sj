@@ -1,7 +1,8 @@
 import { DropdownBadgeVariant } from '../dropdown/dropdown.model';
 
-export type ColumnType = 'text' | 'badge' | 'currency' | 'date' | 'number' | 'custom';
+export type ColumnType = 'text' | 'badge' | 'currency' | 'date' | 'number' | 'avatar' | 'custom';
 export type BadgeVariantFn<T> = (row: T) => 'info' | 'warning' | 'danger' | 'success' | 'neutral';
+export type CustomRowValueFn<T> = (row: T) => string;
 export type TableActionsLayout = 'dropdown' | 'buttons' | 'auto';
 
 export interface TableColumn<T = any> {

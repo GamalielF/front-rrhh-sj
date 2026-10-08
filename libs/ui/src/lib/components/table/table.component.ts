@@ -3,6 +3,7 @@ import {
   Input,
   Output,
   EventEmitter,
+  HostBinding,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
@@ -48,6 +49,13 @@ export class TableComponent<T extends Record<string, any> = Record<string, any>>
   @Input() emptyMessage = 'No se encontraron registros';
   @Input() trackByKey = '';
   @Input() skeletonCount = 5;
+  @Input() fullHeight = false;
+
+  @HostBinding('class.h-full')
+  @HostBinding('class.flex-1')
+  get isFullHeight(): boolean {
+    return this.fullHeight;
+  }
 
   @Output() selectionChange = new EventEmitter<T[]>();
   @Output() actionClick = new EventEmitter<{ row: T; action: TableAction<T>; index: number }>();
