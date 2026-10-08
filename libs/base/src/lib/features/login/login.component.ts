@@ -16,7 +16,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '@lumen/auth';
+import { AuthService, AUTH_CONFIG } from '@lumen/auth';
 import {
   InputComponent,
   ButtonComponent,
@@ -45,15 +45,20 @@ import {
 export class LumenLoginComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private authConfig = inject(AUTH_CONFIG, { optional: true });
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
   @Input() systemTitle = 'Portal Institucional';
   @Input() systemDescription = 'Acceda con sus credenciales institucionales autorizadas.';
   @Input() logoSrc = 'img/logo-blue.png';
-  @Input() redirectUrl = '/home';
-  @Input() backgroundImage = '';
-  @Input() enableTotp = false;
+  @Input() redirectUrl?: string;
+  @Input() backgroundImage = '/img/sanjose-bg.jpg';
+  @Input() enableTotp = true;
+
+  get targetRedirectUrl(): string {
+    return this.redirectUrl || this.authConfig?.defaultRedirectUrl || '/home';
+  }
 
   // Countdown timer configuration for MFA steps
   @Input() totpTimeoutSeconds = 300; // <= 0 to disable
@@ -156,7 +161,7 @@ export class LumenLoginComponent implements OnInit, OnDestroy {
 
         // Passed MFA directly
         if (response.accessToken && response.tokenType) {
-          this.router.navigate([this.redirectUrl]);
+          this.router.navigate([this.targetRedirectUrl]);
           return;
         }
 
@@ -195,7 +200,7 @@ export class LumenLoginComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         if (response.accessToken) {
           this.stopTotpTimer();
-          this.router.navigate([this.redirectUrl]);
+          this.router.navigate([this.targetRedirectUrl]);
         }
         this.cdr.detectChanges();
       },
