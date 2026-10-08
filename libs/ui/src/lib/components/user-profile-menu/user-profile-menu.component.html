@@ -9,29 +9,21 @@
     [class]="triggerButtonClass"
   >
     <ng-content select="[slot=trigger]">
-      <!-- Avatar -->
-      <div
-        class="relative flex items-center justify-center w-8 h-8 rounded-full font-semibold text-xs tracking-wider text-white shadow-xs overflow-hidden flex-shrink-0"
-        [ngClass]="avatarBgColor"
-      >
-        <img
-          *ngIf="user?.avatarUrl"
-          [src]="user?.avatarUrl"
-          [alt]="displayName"
-          class="w-full h-full object-cover"
-        />
-        <span *ngIf="!user?.avatarUrl" class="select-none">
-          {{ initials }}
-        </span>
-      </div>
-
+      <ui-avatar-icon 
+        [user]="user" 
+        [bgColor]="avatarBgColor"
+        [iconUrl]="user?.avatarUrl"
+      />
+      
       <!-- Info -->
       <div
-        *ngIf="!compact"
-        class="hidden sm:flex flex-col items-start text-left min-w-0 max-w-[140px] md:max-w-[180px]"
+        class="hidden sm:flex flex-col items-start text-left min-w-0 max-w-[160px] md:max-w-[220px]"
       >
-        <span class="truncate text-xs font-semibold text-white leading-tight w-full">
-          {{ displayName }}
+        <span
+          class="text-xs font-semibold text-white leading-tight w-full truncate"
+          [title]="fullName"
+        >
+          {{ triggerDisplayName }}
         </span>
         <span *ngIf="displayRole" class="truncate text-[10px] text-white/75 font-normal leading-tight w-full">
           {{ displayRole }}
@@ -39,7 +31,6 @@
       </div>
 
       <span
-        *ngIf="!compact"
         class="hidden sm:inline-flex text-white/80 transition-transform duration-200 ease-out"
         [class.rotate-180]="isOpen"
       >
@@ -47,7 +38,7 @@
       </span>
     </ng-content>
   </button>
-
+  
   <!-- Dropdown -->
   <div
     *ngIf="isOpen"
@@ -57,49 +48,58 @@
     (click)="$event.stopPropagation()"
   >
     <ng-content select="[slot=header]">
-      <div *ngIf="showHeader" class="px-3.5 py-3 rounded-xl bg-slate-50/80 border border-slate-100 flex items-center gap-3 mb-1.5">
-        <!-- Avatar -->
+      <div class="px-3.5 py-3 rounded-xl bg-slate-50/80 border border-slate-100 flex items-start sm:items-center gap-3 mb-1.5">
         <div
-          class="flex items-center justify-center w-11 h-11 rounded-full font-bold text-sm text-white shadow-sm overflow-hidden flex-shrink-0"
+          class="flex items-center justify-center w-11 h-11 rounded-full font-bold text-sm text-white shadow-sm overflow-hidden shrink-0 mt-0.5 sm:mt-0"
           [ngClass]="avatarBgColor"
         >
           <img
             *ngIf="user?.avatarUrl"
             [src]="user?.avatarUrl"
-            [alt]="displayName"
+            [alt]="fullName"
             class="w-full h-full object-cover"
           />
           <span *ngIf="!user?.avatarUrl" class="select-none">
             {{ initials }}
           </span>
         </div>
-
+        
         <!-- User Details -->
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-semibold text-slate-800 truncate" [title]="displayName">
-            {{ displayName }}
+          <p
+            class="text-sm font-semibold text-slate-800 leading-snug truncate"
+            [title]="fullName"
+          >
+            {{ fullName }}
           </p>
-          <p *ngIf="displayEmail" class="text-xs text-slate-500 truncate" [title]="displayEmail">
+          <p
+            *ngIf="displayEmail"
+            class="text-xs text-slate-500 mt-0.5 truncate"
+            [title]="displayEmail"
+          >
             {{ displayEmail }}
           </p>
-          <p *ngIf="!displayEmail && displayUsername" class="text-xs text-slate-500 truncate">
+          <p
+            *ngIf="!displayEmail && displayUsername"
+            class="text-xs text-slate-500 mt-0.5 truncate"
+          >
             {{ displayUsername }}
           </p>
           <div *ngIf="displayRole" class="mt-1 flex items-center">
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#0061A1]/10 text-[#0061A1] border border-[#0061A1]/20">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#0061A1]/10 text-[#0061A1] border border-[#0061A1]/20 max-w-full">
               {{ displayRole }}
             </span>
           </div>
         </div>
       </div>
     </ng-content>
-
+    
     <!-- Menu Items -->
     <div class="space-y-0.5" role="none">
       <ng-container *ngFor="let item of visibleItems; let i = index">
         <!-- Divider -->
         <div *ngIf="item.divider" class="h-px bg-slate-100 my-1" role="separator"></div>
-
+        
         <!-- Item -->
         <button
           *ngIf="!item.divider"
@@ -139,10 +139,10 @@
           </ui-badge>
         </button>
       </ng-container>
-
+      
       <!-- Extra Content-->
       <ng-content />
-
+      
       <!-- Footer -->
       <ng-content select="[slot=footer]" />
     </div>

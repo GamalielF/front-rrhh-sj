@@ -1,5 +1,7 @@
 import { DropdownItem, DropdownPlacement } from '../dropdown/dropdown.model';
 
+export type UserProfileNameFormat = 'first-last' | 'full' | 'first-name';
+
 export interface UserProfileData {
   id?: string | number;
   name?: string;

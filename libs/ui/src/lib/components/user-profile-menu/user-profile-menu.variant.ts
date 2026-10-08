@@ -14,7 +14,7 @@ export const USER_PROFILE_TRIGGER_BASE = [
 export const USER_PROFILE_TRIGGER_OPEN_CLASS = 'bg-white/25 border-white/40 ring-2 ring-white/30';
 
 export const USER_PROFILE_PANEL_BASE = [
-  'absolute z-50 w-72 origin-top-right rounded-2xl bg-white p-2',
+  'absolute z-50 w-72 sm:w-80 max-w-[calc(100vw-2rem)] origin-top-right rounded-2xl bg-white p-2',
   'shadow-2xl ring-1 ring-black/5 border border-slate-100',
   'animate-in fade-in-0 zoom-in-95 duration-150 ease-out',
 ].join(' ');

@@ -12,8 +12,13 @@ import {
 import { CommonModule } from '@angular/common';
 import { IconComponent } from '../icon/icon.component';
 import { BadgeComponent } from '../badge/badge.component';
+import { AvatarIconComponent } from '../avatar-icon/avatar-icon.component';
 import { DropdownItem, DropdownPlacement } from '../dropdown/dropdown.model';
-import { UserProfileData } from './user-profile-menu.model';
+import { formatUserProfileName } from './user-profile-menu.util';
+import {
+  UserProfileData,
+  UserProfileNameFormat,
+} from './user-profile-menu.model';
 import {
   USER_PROFILE_TRIGGER_BASE,
   USER_PROFILE_TRIGGER_OPEN_CLASS,
@@ -28,7 +33,7 @@ import {
 @Component({
   selector: 'ui-user-profile-menu',
   standalone: true,
-  imports: [CommonModule, IconComponent, BadgeComponent],
+  imports: [CommonModule, IconComponent, BadgeComponent, AvatarIconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './user-profile-menu.component.html',
   styleUrls: ['./user-profile-menu.component.css'],
@@ -39,12 +44,9 @@ export class UserProfileMenuComponent {
 
   @Input() user: UserProfileData | null = null;
   @Input() items: DropdownItem[] = [];
-  @Input() compact = false;
+  @Input() nameFormat: UserProfileNameFormat = 'first-last';
   @Input() placement: DropdownPlacement = 'bottom-end';
-  @Input() showHeader = true;
   @Input() closeOnClick = true;
-  @Input() triggerClass = '';
-  @Input() menuClass = '';
   @Input() avatarBgColor = 'bg-[#0061A1]';
   @Input() ariaLabel = 'Menú de usuario';
 
@@ -53,9 +55,17 @@ export class UserProfileMenuComponent {
 
   isOpen = false;
 
-  get displayName(): string {
+  get fullName(): string {
     if (!this.user) return 'Usuario';
-    return this.user.name || this.user.username || 'Usuario';
+    return (this.user.name || this.user.username || 'Usuario').trim();
+  }
+
+  get triggerDisplayName(): string {
+    return formatUserProfileName(this.user, this.nameFormat);
+  }
+
+  get displayName(): string {
+    return this.fullName;
   }
 
   get displayUsername(): string {
@@ -80,11 +90,14 @@ export class UserProfileMenuComponent {
   }
 
   get initials(): string {
-    const name = this.displayName.trim();
-    if (!name) return 'U';
+    const name = this.fullName;
+    if (!name || name === 'Usuario') return 'U';
     const parts = name.split(/\s+/);
+    if (parts.length >= 4) {
+      return (parts[0][0] + (parts[2]?.[0] || parts[1][0])).toUpperCase();
+    }
     if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     }
     return name.slice(0, 2).toUpperCase();
   }
@@ -93,7 +106,6 @@ export class UserProfileMenuComponent {
     return [
       USER_PROFILE_TRIGGER_BASE,
       this.isOpen ? USER_PROFILE_TRIGGER_OPEN_CLASS : '',
-      this.triggerClass,
     ]
       .filter(Boolean)
       .join(' ');
@@ -103,7 +115,6 @@ export class UserProfileMenuComponent {
     return [
       USER_PROFILE_PANEL_BASE,
       USER_PROFILE_PLACEMENT_CLASSES[this.placement] || USER_PROFILE_PLACEMENT_CLASSES['bottom-end'],
-      this.menuClass,
     ]
       .filter(Boolean)
       .join(' ');
