@@ -15,6 +15,7 @@ import {
   NavItem,
   UserProfileMenuComponent,
   UserProfileData,
+  UserProfileNameFormat,
   DropdownItem,
 } from '@lumen/ui';
 import { AuthService } from '@lumen/auth';
@@ -40,6 +41,7 @@ export class LumenDashboardComponent {
   @Input() logoCompactSrc = 'img/logo-compact-white.png';
   @Input() appTitle = '';
   @Input() showTitle = false;
+  @Input() nameFormat: UserProfileNameFormat = 'first-last';
 
   @Input() navItems: NavItem[] = [
     { label: 'Inicio', icon: '@tui.house', route: '/home' },
@@ -87,17 +89,22 @@ export class LumenDashboardComponent {
             role: 'DEFAULT_ROLE',
           };
         }
+        const name = (u['name'] as string) || u.username || 'DEFAULT_NAME';
+        const username = u.username || 'DEFAULT_USERNAME';
+        const email = (u['email'] as string) || `${username}@coopsanjose.com`;
+        const roles = u.roles ?? [];
         return {
           id: u.id,
-          name: u.name || u.username || 'DEFAULT_NAME',
-          username: u.username || 'DEFAULT_USERNAME',
-          email: u.email || `${u.username || 'DEFAULT_USERNAME'}@coopsanjose.com`,
-          role: (u.roles && u.roles.length > 0) ? u.roles[0] : 'DEFAULT_ROLE',
-          roles: u.roles || ['DEFAULT_ROLE'],
+          name,
+          username,
+          email,
+          role: roles.length > 0 ? roles[0] : 'DEFAULT_ROLE',
+          roles,
           avatarUrl: (u['avatarUrl'] as string) || (u['avatar'] as string) || undefined,
         };
       })
     ),
+
     {
       initialValue: {
         name: 'DEFAULT_NAME',
