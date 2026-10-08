@@ -1,0 +1,277 @@
+---
+sidebar_position: 2
+id: base-home
+title: LumenHomeComponent
+description: Componente de página de inicio personalizable.
+---
+
+# LumenHomeComponent
+
+Componente de página de inicio personalizable que proporciona una bienvenida al portal institucional con acceso a documentación.
+
+## Selector
+
+```html
+<lumen-home></lumen-home>
+```
+
+## Inputs
+
+| Input | Tipo | Default | Descripción |
+|-------|------|---------|-------------|
+| title | string | 'Inicio' | Título principal de la página de inicio |
+| description | string | 'Bienvenido al portal institucional' | Descripción o mensaje de bienvenida |
+| docsUrl | string | 'https://docs.coopsanjose.fin.ec' | URL de la documentación externa |
+
+## Métodos
+
+### openDocs()
+
+Abre la URL de documentación en una nueva pestaña.
+
+```typescript
+openDocs(): void
+```
+
+**Comportamiento**: Abre la URL configurada en `docsUrl` en una nueva pestaña del navegador con atributos de seguridad `noopener,noreferrer`.
+
+## Ejemplos de Uso
+
+### Uso básico
+
+```typescript
+import { LumenHomeComponent } from '@lumen/base';
+
+@Component({
+  selector: 'app-home-page',
+  standalone: true,
+  imports: [LumenHomeComponent],
+  template: `
+    <lumen-home></lumen-home>
+  `
+})
+export class HomePageComponent {}
+```
+
+### Personalización de título y descripción
+
+```typescript
+@Component({
+  selector: 'app-home-page',
+  standalone: true,
+  imports: [LumenHomeComponent],
+  template: `
+    <lumen-home
+      [title]="'Bienvenido a Cooperativa San José'"
+      [description]="'Portal de servicios financieros y gestión institucional'">
+    </lumen-home>
+  `
+})
+export class HomePageComponent {}
+```
+
+### URL de documentación personalizada
+
+```typescript
+@Component({
+  selector: 'app-home-page',
+  standalone: true,
+  imports: [LumenHomeComponent],
+  template: `
+    <lumen-home
+      [title]="'Centro de Ayuda'"
+      [description]="'Acceda a la documentación y guías de uso'"
+      [docsUrl]="'https://docs.miempresa.com/guias'">
+    </lumen-home>
+  `
+})
+export class HelpCenterComponent {}
+```
+
+### Configuración dinámica desde componente
+
+```typescript
+@Component({
+  selector: 'app-home-page',
+  standalone: true,
+  imports: [LumenHomeComponent],
+  template: `
+    <lumen-home
+      [title]="pageTitle"
+      [description]="pageDescription"
+      [docsUrl]="documentationUrl">
+    </lumen-home>
+  `
+})
+export class DynamicHomeComponent {
+  pageTitle = 'Portal de Empleados';
+  pageDescription = 'Acceda a sus recursos y herramientas de trabajo';
+  documentationUrl = 'https://internal.docs.company.com';
+
+  constructor(private configService: ConfigService) {
+    this.configService.getHomeConfig().subscribe(config => {
+      this.pageTitle = config.title;
+      this.pageDescription = config.description;
+      this.documentationUrl = config.docsUrl;
+    });
+  }
+}
+```
+
+### Integración en routing
+
+```typescript
+import { Routes } from '@angular/router';
+import { LumenHomeComponent } from '@lumen/base';
+
+const routes: Routes = [
+  {
+    path: 'home',
+    component: LumenHomeComponent
+  },
+  {
+    path: '',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  }
+];
+```
+
+### Personalización con estilos adicionales
+
+```typescript
+@Component({
+  selector: 'app-home-page',
+  standalone: true,
+  imports: [LumenHomeComponent],
+  template: `
+    <div class="custom-home-container">
+      <lumen-home
+        [title]="'Mi Portal Personalizado'"
+        [description]="'Descripción personalizada'">
+      </lumen-home>
+    </div>
+  `,
+  styles: [`
+    .custom-home-container {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+  `]
+})
+export class StyledHomeComponent {}
+```
+
+### Uso con datos de usuario
+
+```typescript
+@Component({
+  selector: 'app-home-page',
+  standalone: true,
+  imports: [LumenHomeComponent],
+  template: `
+    <lumen-home
+      [title]="greeting"
+      [description]="welcomeMessage"
+      [docsUrl]="userDocsUrl">
+    </lumen-home>
+  `
+})
+export class PersonalizedHomeComponent {
+  greeting = 'Bienvenido';
+  welcomeMessage = 'Acceda a su área personal';
+  userDocsUrl = 'https://docs.company.com/user-guide';
+
+  constructor(private authService: AuthService) {
+    this.authService.user$.subscribe(user => {
+      if (user) {
+        this.greeting = `Hola, ${user.name || user.username}`;
+        this.welcomeMessage = `Último acceso: ${new Date().toLocaleDateString()}`;
+      }
+    });
+  }
+}
+```
+
+### Variante para landing page pública
+
+```typescript
+@Component({
+  selector: 'app-landing',
+  standalone: true,
+  imports: [LumenHomeComponent],
+  template: `
+    <lumen-home
+      [title]="'Soluciones Financieras para su Empresa'"
+      [description]="'Descubra nuestros servicios de crédito, inversión y asesoria'"
+      [docsUrl]="'https://public.coopsanjose.fin.ec/servicios'">
+    </lumen-home>
+  `
+})
+export class PublicLandingComponent {}
+```
+
+### Configuración multi-idioma
+
+```typescript
+@Component({
+  selector: 'app-home-page',
+  standalone: true,
+  imports: [LumenHomeComponent],
+  template: `
+    <lumen-home
+      [title]="translatedTitle"
+      [description]="translatedDescription"
+      [docsUrl]="localizedDocsUrl">
+    </lumen-home>
+  `
+})
+export class I18nHomeComponent {
+  translatedTitle = 'Home';
+  translatedDescription = 'Welcome to our portal';
+  localizedDocsUrl = 'https://docs.company.com/en';
+
+  constructor(private translateService: TranslateService) {
+    this.translateService.onLangChange.subscribe(event => {
+      this.updateContent(event.lang);
+    });
+  }
+
+  private updateContent(lang: string) {
+    this.translatedTitle = this.translateService.instant('home.title');
+    this.translatedDescription = this.translateService.instant('home.description');
+    this.localizedDocsUrl = `https://docs.company.com/${lang}`;
+  }
+}
+```
+
+## Dependencias
+
+El componente utiliza los siguientes componentes de `@lumen/ui`:
+
+- `PageContainerComponent` - Contenedor de página
+- `CardComponent` - Tarjeta de contenido
+- `ButtonComponent` - Botón de acción
+
+## Personalización Visual
+
+El componente usa clases de Tailwind CSS y puede ser personalizado mediante:
+
+1. **Sobreescritura de estilos**: Agrega estilos globales que afecten las clases utilizadas
+2. **Wrapper components**: Envuelve el componente en contenedores con estilos personalizados
+3. **Inputs dinámicos**: Usa los inputs para cambiar contenido según contexto
+
+## Casos de Uso Recomendados
+
+1. **Página de inicio autenticada**: Dashboard principal para usuarios logueados
+2. **Landing page institucional**: Página pública de bienvenida
+3. **Portal de empleados**: Home interno para personal
+4. **Centro de ayuda**: Página de acceso a documentación
+5. **Bienvenida personalizada**: Home con mensajes personalizados por usuario
+
+## Consideraciones
+
+- El componente abre enlaces con `noopener,noreferrer` por seguridad
+- La URL de documentación debe ser una URL absoluta válida
+- Para contenido más complejo, considera extender el componente o crear uno propio

@@ -1,0 +1,10 @@
+just-chat:
+  label: Just chat
+  permalink: /just-chat
+  description: Casual messages
+
+news:
+  label: News
+  permalink: /news
+  description: News and updates
+

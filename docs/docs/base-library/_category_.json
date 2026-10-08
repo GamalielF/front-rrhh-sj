@@ -1,0 +1,8 @@
+{
+  "label": "Base Library",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Componentes base y layouts preconfigurados para aplicaciones Angular incluyendo páginas de login, home y layouts de dashboard."
+  }
+}

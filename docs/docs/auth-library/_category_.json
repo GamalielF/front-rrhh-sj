@@ -1,0 +1,8 @@
+{
+  "label": "Auth Library",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Sistema de autenticación y autorización para aplicaciones Angular con gestión de sesiones, guards, interceptores y manejo de tokens."
+  }
+}
