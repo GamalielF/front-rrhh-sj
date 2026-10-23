@@ -19,6 +19,7 @@ export class DashboardShellComponent {
 
   readonly navItems: NavItem[] = [
     { label: 'Inicio', icon: '@tui.house', route: '/home' },
+    { label: 'Mi rol de pago', icon: '@tui.file-text', route: '/mi-rol' },
     { label: 'Test', icon: '@tui.settings', route: '/test' },
   ];
 

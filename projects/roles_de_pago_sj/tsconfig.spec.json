@@ -3,7 +3,17 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "paths": {
+      "@lumen/*": ["../../libs/*/src/public-api.ts"],
+      "@models": ["./src/app/core/models"],
+      "@services": ["./src/app/core/services"],
+      "@components": ["./src/app/shared/components"],
+      "@components/*": ["./src/app/shared/components/*"],
+      "@env": ["./src/env"],
+      "@core/*": ["./src/app/core/*"],
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*.d.ts", "src/**/*.spec.ts"]
 }

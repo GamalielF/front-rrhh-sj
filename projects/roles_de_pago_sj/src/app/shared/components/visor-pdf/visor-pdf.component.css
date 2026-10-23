@@ -1,0 +1,9 @@
+:host {
+  display: block;
+}
+
+.visor {
+  width: 100%;
+  height: 75vh;
+  border: 0;
+}

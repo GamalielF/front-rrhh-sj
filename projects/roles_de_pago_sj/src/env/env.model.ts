@@ -6,4 +6,5 @@ export interface AppEnvironment {
   refreshUrl: string;
   apiBaseUrl: string;
   userProfileUrl: string;
+  rolesPagoApiUrl: string;
 }

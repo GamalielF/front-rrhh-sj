@@ -20,6 +20,13 @@ export const routes: Routes = [
         loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent),
       },
       {
+        path: 'mi-rol',
+        data: {
+          breadcrumb: { label: 'Mi rol de pago', icon: '@tui.file-text' },
+        },
+        loadComponent: () => import('./features/mi-rol-pago/mi-rol-pago.component').then(m => m.MiRolPagoComponent),
+      },
+      {
         path: 'test',
         data: {
           breadcrumb: { label: 'Página de Prueba', icon: '@tui.info' },

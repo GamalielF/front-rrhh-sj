@@ -1,0 +1,58 @@
+<ui-page-container title="Mi rol de pago" description="Consulte su rol de pago de los meses ya publicados">
+  <div class="flex flex-col gap-4">
+    <ui-card title="Datos de la consulta" subtitle="Elija el mes e ingrese su número de cédula">
+      @if (periodos().length > 0) {
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-wrap gap-2">
+            @for (periodo of periodos(); track periodo) {
+              <ui-button
+                size="sm"
+                [variant]="periodo === periodoSeleccionado() ? 'brand' : 'outline'"
+                (onClick)="seleccionar(periodo)"
+              >
+                {{ etiqueta(periodo) }}
+              </ui-button>
+            }
+          </div>
+          <ui-form
+            [formGroup]="formulario"
+            [errorMessage]="error()"
+            (formSubmit)="consultar()"
+            customClass="flex flex-col gap-4"
+          >
+            <ui-input
+              type="text"
+              label="Cédula"
+              formControlName="cedula"
+              placeholder="10 dígitos"
+              prefixIcon="@tui.credit-card"
+              [hint]="pistaCedula()"
+              [customErrorMessages]="mensajesCedula"
+            />
+            <div>
+              <ui-button
+                type="submit"
+                variant="brand"
+                icon="@tui.file-text"
+                [loading]="consultando()"
+                [disabled]="bloqueado()"
+              >
+                Ver mi rol de pago
+              </ui-button>
+            </div>
+          </ui-form>
+        </div>
+      } @else if (!cargandoPeriodos()) {
+        <p class="text-sm text-gray-600 m-0">
+          {{ errorPeriodos() || 'Todavía no hay roles de pago publicados.' }}
+        </p>
+      }
+    </ui-card>
+
+    @if (rol(); as consultado) {
+      <ui-card [title]="'Rol de pago de ' + etiqueta(consultado.periodo)">
+        <app-visor-pdf [pdf]="consultado" />
+      </ui-card>
+    }
+  </div>
+</ui-page-container>
