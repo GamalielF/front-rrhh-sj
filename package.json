@@ -16,10 +16,12 @@
     "delete": "node scripts/remove-project.mjs",
     "register": "node scripts/register-project.mjs",
     "start:creditos": "pnpm build:libs && ng serve creditos-cop-sanjose --open",
-    "build:creditos": "pnpm build:libs && ng build creditos-cop-sanjose"
+    "build:creditos": "pnpm build:libs && ng build creditos-cop-sanjose",
+    "start:roles_de_pago_sj": "pnpm build:libs && ng serve roles_de_pago_sj --open",
+    "build:roles_de_pago_sj": "pnpm build:libs && ng build roles_de_pago_sj"
   },
   "private": true,
-  "packageManager": "pnpm@12.6.0",
+  "packageManager": "pnpm@12.15.0",
   "dependencies": {
     "@angular/common": "^22.1.0",
     "@angular/compiler": "^22.1.0",

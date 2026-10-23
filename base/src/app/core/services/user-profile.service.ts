@@ -21,7 +21,7 @@ export class UserProfileService implements UserProfileLoader<UserSession> {
       return of(null);
     }
 
-    const url = env.userProfileUrl || `${env.apiBaseUrl}/Usuarios/busca-usuario`;
+    const url = env.userProfileUrl;
 
     return this.api.get<UserProfileResponse>(url, {
       params: { codUsuario: context.username },

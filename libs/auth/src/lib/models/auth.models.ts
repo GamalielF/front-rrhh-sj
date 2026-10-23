@@ -42,6 +42,7 @@ export interface AuthConfig {
   withCredentials?: boolean;
   tokenStorage?: TokenStorageType;
   persistUserInStorage?: boolean;
+  enableDebugMode?: boolean;
 }
 
 export interface UserProfileLoader<TUser extends UserSession = UserSession> {

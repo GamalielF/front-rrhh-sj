@@ -1,4 +1,4 @@
-import { inject, PLATFORM_ID } from '@angular/core';
+import { inject, isDevMode, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
@@ -11,9 +11,14 @@ export const authGuard: CanActivateFn = () => {
     return true;
   }
 
+  const config = inject(AUTH_CONFIG, { optional: true });
+
+  if (config?.enableDebugMode && isDevMode()) {
+    return true;
+  }
+
   const authService = inject(AuthService);
   const router = inject(Router);
-  const config = inject(AUTH_CONFIG, { optional: true });
   const loginUrl = config?.loginRedirectUrl || DEFAULT_AUTH_CONFIG.loginRedirectUrl;
 
   if (authService.isAuthenticated()) {

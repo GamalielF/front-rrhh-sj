@@ -1,0 +1,14 @@
+<!--
+// OTP
+[enableTotp]="true"                                                // Usar 2FA con código OTP
+[totpTimeoutSeconds] = "300"                                       // Tiempo de espera para ingresar el código OTP (segundos)
+onTimeoutAction = "reset" | "redirect" | "none" = "redirect"       // Acción cuando expira el tiempo de espera
+timeoutRedirectUrl = "/login"                                      // Esto es opcional, por defecto en "redirect" vuelve al paso anterior
+
+// Extra
+backgroundImage="/img/sanjose-bg.jpg"                              // Imagen de fondo
+-->
+<lumen-login
+  systemTitle="Sistema de [Título del proyecto]"
+  systemDescription="Descripción breve del sistema"
+/>

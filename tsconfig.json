@@ -10,21 +10,11 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "paths": {
-      "@lumen/ui": [
-        "./libs/ui/src/public-api.ts"
-      ],
-      "@lumen/auth": [
-        "./libs/auth/src/public-api.ts"
-      ],
-      "@lumen/http": [
-        "./libs/http/src/public-api.ts"
-      ],
-      "@lumen/base": [
-        "./libs/base/src/public-api.ts"
-      ],
-      "@lumen/*": [
-        "./libs/*/src/public-api.ts"
-      ]
+      "@lumen/ui": ["./libs/ui/src/public-api.ts"],
+      "@lumen/auth": ["./libs/auth/src/public-api.ts"],
+      "@lumen/http": ["./libs/http/src/public-api.ts"],
+      "@lumen/base": ["./libs/base/src/public-api.ts"],
+      "@lumen/*": ["./libs/*/src/public-api.ts"]
     },
     "target": "ES2022",
     "module": "preserve"
@@ -59,6 +49,12 @@
     },
     {
       "path": "./libs/base/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/roles_de_pago_sj/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/roles_de_pago_sj/tsconfig.spec.json"
     }
   ]
 }
