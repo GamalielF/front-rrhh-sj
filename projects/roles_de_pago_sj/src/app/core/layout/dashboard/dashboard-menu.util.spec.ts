@@ -8,8 +8,11 @@ describe('construirMenu', () => {
     expect(etiquetas([])).toEqual(['Inicio', 'Mi rol de pago']);
   });
 
-  it('RRHH y ADMIN ven además Períodos', () => {
+  it('RRHH ve además Períodos, pero no la administración', () => {
     expect(etiquetas(['RRHH', 'EMPLEADO'])).toEqual(['Inicio', 'Mi rol de pago', 'Períodos']);
-    expect(etiquetas(['ADMIN', 'EMPLEADO'])).toEqual(['Inicio', 'Mi rol de pago', 'Períodos']);
+  });
+
+  it('ADMIN ve además Períodos, Usuarios y roles, y Directorio', () => {
+    expect(etiquetas(['ADMIN', 'EMPLEADO'])).toEqual(['Inicio', 'Mi rol de pago', 'Períodos', 'Usuarios y roles', 'Directorio']);
   });
 });

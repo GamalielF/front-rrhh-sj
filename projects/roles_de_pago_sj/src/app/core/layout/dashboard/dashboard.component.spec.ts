@@ -28,6 +28,17 @@ describe('DashboardShellComponent', () => {
     expect(mostrar(['ADMIN', 'EMPLEADO'])).toContain('Períodos');
   });
 
+  it('solo un administrador ve las opciones de administración', () => {
+    const admin = mostrar(['ADMIN', 'EMPLEADO']);
+    expect(admin).toContain('Usuarios y roles');
+    expect(admin).toContain('Directorio');
+    TestBed.resetTestingModule();
+    const rrhh = mostrar(['RRHH', 'EMPLEADO']);
+    expect(rrhh).toContain('Períodos');
+    expect(rrhh).not.toContain('Usuarios y roles');
+    expect(rrhh).not.toContain('Directorio');
+  });
+
   it('el menú de un empleado no incluye Períodos pero sí su rol de pago', () => {
     const texto = mostrar(['EMPLEADO']);
     expect(texto).toContain('Mi rol de pago');

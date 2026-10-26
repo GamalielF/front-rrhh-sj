@@ -1,0 +1,30 @@
+<ui-card title="Buscar por cédula" subtitle="Consulta al directorio del AD en vivo; una cédula puede tener varias cuentas">
+  <div class="flex flex-col gap-4">
+    <ui-form [formGroup]="formulario" (formSubmit)="buscar()" customClass="flex flex-col gap-4">
+      <ui-input
+        type="text"
+        label="Cédula"
+        formControlName="cedula"
+        placeholder="10 dígitos"
+        prefixIcon="@tui.id-card"
+        [customErrorMessages]="mensajesCedula"
+      />
+      <div>
+        <ui-button type="submit" variant="brand" icon="@tui.search" [loading]="buscando()">Buscar</ui-button>
+      </div>
+    </ui-form>
+
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+
+    @if (buscado()) {
+      <ui-table
+        [columns]="columnas"
+        [data]="resultados()"
+        trackByKey="username"
+        emptyMessage="No hay ninguna cuenta con esa cédula en el directorio"
+      />
+    }
+  </div>
+</ui-card>

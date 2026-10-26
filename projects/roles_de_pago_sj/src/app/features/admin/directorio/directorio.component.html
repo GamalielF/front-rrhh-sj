@@ -1,0 +1,45 @@
+<ui-page-container title="Directorio" description="Las personas que vienen del AD: de ahí salen los empleados y sus cédulas">
+  <div class="flex flex-col gap-4">
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+
+    <ui-card title="Estado del directorio" subtitle="Se sincroniza con el AD a pedido; la última vez fue la que se muestra aquí">
+      <div class="flex flex-col gap-4">
+        @if (estado(); as datosEstado) {
+          <ui-grid [cols]="1" [colsMd]="2" [colsLg]="4" gap="md">
+            <ui-kpi-card label="Personas activas" [value]="datosEstado.activos" icon="@tui.users" accentColor="green" />
+            <ui-kpi-card label="Dadas de baja" [value]="datosEstado.inactivos" icon="@tui.user-cog" accentColor="info" />
+            <ui-kpi-card label="Última sincronización" [value]="ultimaSincronizacion()" icon="@tui.refresh-cw" accentColor="blue" />
+            <ui-kpi-card
+              label="Resultado"
+              [value]="ultimoResultado()"
+              icon="@tui.database"
+              [accentColor]="datosEstado.resultadoUltima === 'FALLIDA' ? 'danger' : 'purple'"
+            />
+          </ui-grid>
+
+          @if (datosEstado.resultadoUltima === 'FALLIDA' && datosEstado.mensajeUltima) {
+            <app-aviso variante="warning">La última sincronización falló: {{ datosEstado.mensajeUltima }}</app-aviso>
+          }
+        }
+
+        @if (datos().length > 0) {
+          <div class="flex flex-wrap items-center gap-2">
+            @for (dato of datos(); track dato.etiqueta) {
+              <ui-badge [variant]="dato.variante">{{ dato.valor }} {{ dato.etiqueta }}</ui-badge>
+            }
+          </div>
+        }
+
+        <div>
+          <ui-button variant="brand" icon="@tui.refresh-cw" [loading]="sincronizando()" (onClick)="sincronizar()">
+            Sincronizar ahora
+          </ui-button>
+        </div>
+      </div>
+    </ui-card>
+
+    <app-buscador-cedula />
+  </div>
+</ui-page-container>

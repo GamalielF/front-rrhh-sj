@@ -48,6 +48,30 @@ export const routes: Routes = [
         ],
       },
       {
+        path: 'admin',
+        canActivate: [rolesAplicacionGuard('ADMIN')],
+        data: {
+          breadcrumb: { label: 'Administración', icon: '@tui.shield-check' },
+        },
+        children: [
+          { path: '', redirectTo: 'usuarios', pathMatch: 'full' },
+          {
+            path: 'usuarios',
+            data: {
+              breadcrumb: { label: 'Usuarios y roles', icon: '@tui.user-cog' },
+            },
+            loadComponent: () => import('./features/admin/usuarios').then(m => m.UsuariosComponent),
+          },
+          {
+            path: 'directorio',
+            data: {
+              breadcrumb: { label: 'Directorio', icon: '@tui.database' },
+            },
+            loadComponent: () => import('./features/admin/directorio').then(m => m.DirectorioComponent),
+          },
+        ],
+      },
+      {
         path: 'test',
         data: {
           breadcrumb: { label: 'Página de Prueba', icon: '@tui.info' },

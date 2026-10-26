@@ -1,0 +1,64 @@
+<ui-page-container
+  title="Usuarios y roles"
+  description="Quién puede gestionar los roles de pago. Todo usuario activo del directorio ya es empleado."
+>
+  <div class="flex flex-col gap-4">
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+    @if (mensaje()) {
+      <app-aviso variante="success">{{ mensaje() }}</app-aviso>
+    }
+
+    <ui-card title="Con acceso especial" subtitle="Administradores y personal de RRHH, incluidos los dados de baja">
+      <ui-table
+        [columns]="columnas"
+        [data]="privilegiados()"
+        [loading]="cargandoPrivilegiados()"
+        [actions]="acciones()"
+        trackByKey="username"
+        emptyMessage="Nadie tiene acceso especial todavía"
+      />
+    </ui-card>
+
+    <ui-card title="Directorio" subtitle="Busque a una persona para asignarle un rol">
+      <div class="flex flex-col gap-4">
+        <ui-input
+          type="search"
+          placeholder="Buscar por usuario o nombre"
+          prefixIcon="@tui.search"
+          [formControl]="busqueda"
+        />
+        <ui-table
+          [columns]="columnas"
+          [data]="usuarios()"
+          [loading]="cargando()"
+          [actions]="acciones()"
+          trackByKey="username"
+          emptyMessage="No hay personas que coincidan con la búsqueda"
+        />
+        <ui-pagination
+          [page]="pagina()"
+          [pageSize]="tamano()"
+          [total]="total()"
+          [disabled]="cargando()"
+          (pageChange)="cambiarPagina($event)"
+          (pageSizeChange)="cambiarTamano($event)"
+        />
+      </div>
+    </ui-card>
+  </div>
+</ui-page-container>
+
+<app-confirmacion
+  [abierta]="!!pendiente()"
+  [titulo]="pendiente()?.titulo ?? ''"
+  [subtitulo]="pendiente()?.fila?.nombre ?? ''"
+  [mensaje]="pendiente()?.mensaje ?? ''"
+  [etiquetaConfirmar]="pendiente()?.etiquetaConfirmar ?? 'Confirmar'"
+  [peligro]="pendiente()?.peligro ?? false"
+  [procesando]="aplicando()"
+  [error]="errorCambio()"
+  (confirmar)="confirmar()"
+  (cancelar)="cancelar()"
+/>
