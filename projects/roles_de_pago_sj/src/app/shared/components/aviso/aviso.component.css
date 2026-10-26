@@ -1,0 +1,34 @@
+:host {
+  display: block;
+}
+
+.aviso {
+  padding: 0.75rem 1rem;
+  border: 1px solid;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.aviso[data-variante='success'] {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.aviso[data-variante='warning'] {
+  color: #92400e;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.aviso[data-variante='danger'] {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.aviso[data-variante='info'] {
+  color: #1e40af;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}

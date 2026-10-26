@@ -1,25 +1,5 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
-import {
-  cedulaCoincideConSesion,
-  cedulaDeSesion,
-  estadoHttp,
-  formatearPeriodo,
-  mascararCedula,
-  mensajeDeError,
-} from './mi-rol-pago.util';
-import { MENSAJE_GENERICO, MENSAJES_POR_ESTADO } from './mi-rol-pago.model';
-
-describe('formatearPeriodo', () => {
-  it('escribe el mes en español con mayúscula inicial y sin "de"', () => {
-    expect(formatearPeriodo('2026-09')).toBe('Septiembre 2026');
-    expect(formatearPeriodo('2026-01')).toBe('Enero 2026');
-  });
-
-  it('devuelve el texto tal cual si no es un período', () => {
-    expect(formatearPeriodo('abc')).toBe('abc');
-  });
-});
+import { cedulaCoincideConSesion, cedulaDeSesion, mascararCedula } from './mi-rol-pago.util';
 
 describe('cedulaDeSesion', () => {
   it('toma la identificación de la sesión cuando es una cédula de 10 dígitos', () => {
@@ -56,35 +36,5 @@ describe('cedulaCoincideConSesion', () => {
   it('no opina mientras la cédula está incompleta ni si la sesión no la conoce', () => {
     expect(validar('1712345675', '17123')).toBeNull();
     expect(validar(null, '1712345676')).toBeNull();
-  });
-});
-
-describe('mensajeDeError', () => {
-  const error = (status: number, cuerpo: unknown) => new HttpErrorResponse({ status, error: cuerpo });
-
-  it('usa el mensaje que envía el servidor', () => {
-    expect(mensajeDeError(error(403, { message: 'La cédula ingresada no corresponde a su cuenta' })))
-      .toBe('La cédula ingresada no corresponde a su cuenta');
-  });
-
-  it('si hay errores de validación los junta', () => {
-    expect(mensajeDeError(error(400, { message: 'Validación fallida', errors: ['A', 'B'] }))).toBe('A B');
-  });
-
-  it('sin cuerpo útil, usa el texto del código de estado', () => {
-    expect(mensajeDeError(error(429, null))).toBe(MENSAJES_POR_ESTADO[429]);
-    expect(mensajeDeError(error(0, new ProgressEvent('error')))).toBe(MENSAJES_POR_ESTADO[0]);
-  });
-
-  it('cualquier otra cosa recibe el mensaje genérico', () => {
-    expect(mensajeDeError(error(500, null))).toBe(MENSAJE_GENERICO);
-    expect(mensajeDeError(new Error('x'))).toBe(MENSAJE_GENERICO);
-  });
-});
-
-describe('estadoHttp', () => {
-  it('devuelve el código de una respuesta HTTP y null para lo demás', () => {
-    expect(estadoHttp(new HttpErrorResponse({ status: 429 }))).toBe(429);
-    expect(estadoHttp(new Error('x'))).toBeNull();
   });
 });

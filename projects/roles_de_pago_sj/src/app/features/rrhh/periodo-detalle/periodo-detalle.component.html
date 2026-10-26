@@ -1,0 +1,16 @@
+<ui-page-container [title]="'Período ' + mes()" description="Cargue los roles, revise el cuadre y publique">
+  <div class="flex flex-col gap-4">
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+    @if (esNuevo()) {
+      <app-aviso variante="info">Este período todavía no existe: se creará al cargar su primer rol.</app-aviso>
+    }
+
+    <app-selector-periodo [periodos]="periodos()" [seleccionado]="periodo()" (seleccionar)="irA($event)" />
+
+    <app-resumen-periodo [periodo]="periodo()" [resumen]="resumen()" (publicado)="recargar()" />
+    <app-carga-masiva [periodo]="periodo()" (cargaFinalizada)="recargar()" />
+    <app-roles-periodo [roles]="listado()?.roles ?? []" [cargando]="cargando()" />
+  </div>
+</ui-page-container>

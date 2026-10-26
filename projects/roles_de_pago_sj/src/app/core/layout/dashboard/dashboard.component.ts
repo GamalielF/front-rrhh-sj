@@ -1,9 +1,14 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LumenDashboardComponent } from '@lumen/base';
 import { NavItem, DropdownItem } from '@lumen/ui';
 import { AuthService } from '@lumen/auth';
+import { PerfilAplicacionService } from '@services';
+import type { NombreRol } from '@models';
+import { map } from 'rxjs/operators';
+import { construirMenu } from './dashboard-menu.util';
 
 @Component({
   selector: 'app-dashboard-shell',
@@ -17,11 +22,16 @@ export class DashboardShellComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
 
-  readonly navItems: NavItem[] = [
-    { label: 'Inicio', icon: '@tui.house', route: '/home' },
-    { label: 'Mi rol de pago', icon: '@tui.file-text', route: '/mi-rol' },
-    { label: 'Test', icon: '@tui.settings', route: '/test' },
-  ];
+  private perfilAplicacion = inject(PerfilAplicacionService);
+  private roles = toSignal(this.perfilAplicacion.perfil().pipe(map((perfil) => perfil?.roles ?? [])), {
+    initialValue: [] as NombreRol[],
+  });
+  private opcionesMenu = computed(() => construirMenu(this.roles()));
+
+  get navItems(): NavItem[] {
+    return this.opcionesMenu();
+  }
+
 
   readonly userMenuItems: DropdownItem[] = [
     {

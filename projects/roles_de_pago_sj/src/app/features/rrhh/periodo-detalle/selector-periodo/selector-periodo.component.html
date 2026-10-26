@@ -1,0 +1,30 @@
+<div class="flex flex-wrap items-center gap-3">
+  <ui-dropdown
+    triggerIcon="@tui.calendar"
+    triggerVariant="outline"
+    triggerSize="md"
+    placement="bottom-start"
+    menuTitle="Períodos cargados"
+    ariaLabel="Elegir período"
+    [triggerLabel]="etiqueta()"
+    [items]="opciones()"
+    (itemClick)="elegir($event)"
+  />
+  <ui-button variant="brand" icon="@tui.plus" (onClick)="abrirCreacion()">Nuevo período</ui-button>
+</div>
+
+<ui-modal [isOpen]="creando()" title="Nuevo período" subtitle="Se creará al cargar su primer rol" size="sm" (close)="cerrarCreacion()">
+  <ui-input
+    type="text"
+    label="Período"
+    placeholder="aaaa-mm"
+    prefixIcon="@tui.calendar"
+    hint="Por ejemplo 2026-10"
+    [formControl]="periodoNuevo"
+    [customErrorMessages]="mensajesPeriodo"
+  />
+  <div slot="footer" class="flex justify-end gap-2">
+    <ui-button variant="ghost" (onClick)="cerrarCreacion()">Cancelar</ui-button>
+    <ui-button variant="brand" icon="@tui.folder-open" (onClick)="crear()">Abrir período</ui-button>
+  </div>
+</ui-modal>

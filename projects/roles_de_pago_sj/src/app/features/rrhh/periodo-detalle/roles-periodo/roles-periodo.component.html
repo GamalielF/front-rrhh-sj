@@ -1,0 +1,17 @@
+<ui-card title="Roles cargados" [subtitle]="subtitulo()">
+  <div class="flex flex-col gap-4">
+    <ui-input
+      type="search"
+      placeholder="Buscar por nombre o cédula"
+      prefixIcon="@tui.search"
+      [formControl]="filtro"
+    />
+    <ui-table
+      [columns]="columnas"
+      [data]="filas()"
+      [loading]="cargando()"
+      trackByKey="id"
+      emptyMessage="Todavía no hay roles cargados en este período"
+    />
+  </div>
+</ui-card>

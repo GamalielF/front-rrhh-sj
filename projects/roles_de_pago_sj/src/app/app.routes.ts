@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@lumen/auth';
 import { DashboardShellComponent } from './core/layout/dashboard';
+import { rolesAplicacionGuard } from './core/guards';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,26 @@ export const routes: Routes = [
           breadcrumb: { label: 'Mi rol de pago', icon: '@tui.file-text' },
         },
         loadComponent: () => import('./features/mi-rol-pago/mi-rol-pago.component').then(m => m.MiRolPagoComponent),
+      },
+      {
+        path: 'rrhh/periodos',
+        canActivate: [rolesAplicacionGuard('RRHH', 'ADMIN')],
+        data: {
+          breadcrumb: { label: 'Períodos', icon: '@tui.calendar' },
+        },
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/rrhh/periodos').then(m => m.PeriodosComponent),
+          },
+          {
+            path: ':periodo',
+            data: {
+              breadcrumb: { label: 'Detalle', icon: '@tui.folder-open' },
+            },
+            loadComponent: () => import('./features/rrhh/periodo-detalle').then(m => m.PeriodoDetalleComponent),
+          },
+        ],
       },
       {
         path: 'test',

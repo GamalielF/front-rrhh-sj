@@ -1,0 +1,68 @@
+<ui-card title="Cuadre y publicación" [subtitle]="'Compara las personas activas del directorio con los roles cargados de ' + mes()">
+  <div class="flex flex-col gap-4">
+    @if (resumen(); as datos) {
+      <ui-grid [cols]="1" [colsMd]="2" [colsLg]="4" gap="md">
+        <ui-kpi-card label="Roles activos" [value]="datos.rolesActivos" icon="@tui.file-text" accentColor="blue" />
+        <ui-kpi-card label="Personas activas" [value]="datos.personasActivas" icon="@tui.users" accentColor="info" />
+        <ui-kpi-card
+          label="Personas sin rol"
+          [value]="datos.sinRol"
+          icon="@tui.triangle-alert"
+          [accentColor]="datos.sinRol > 0 ? 'warning' : 'green'"
+        />
+        <ui-kpi-card
+          label="Roles sin persona activa"
+          [value]="datos.rolesSinPersonaActiva"
+          icon="@tui.triangle-alert"
+          [accentColor]="datos.rolesSinPersonaActiva > 0 ? 'warning' : 'green'"
+        />
+      </ui-grid>
+
+      @if (datos.sinRol > 0) {
+        <p class="m-0 text-sm text-gray-600"><strong>Sin rol:</strong> {{ nombresSinRol() }}</p>
+      }
+      @if (datos.rolesSinPersonaActiva > 0) {
+        <p class="m-0 text-sm text-gray-600"><strong>Roles sin persona activa:</strong> {{ nombresRolesSinPersona() }}</p>
+      }
+    } @else {
+      <app-aviso variante="info">Aún no hay roles cargados en este período: suba los PDF para ver el cuadre.</app-aviso>
+    }
+
+    @if (resultado(); as publicacion) {
+      <app-aviso variante="success">
+        Período publicado: {{ publicacion.rolesPublicados }} roles disponibles y {{ publicacion.avisosEncolados }} avisos por correo en cola.
+      </app-aviso>
+    }
+
+    <div class="flex flex-wrap items-center gap-3">
+      <ui-button variant="brand" icon="@tui.send" [disabled]="!puedePublicar()" (onClick)="abrirConfirmacion()">
+        Publicar período
+      </ui-button>
+      @if (estaPublicado()) {
+        <ui-badge variant="success">Publicado</ui-badge>
+      }
+    </div>
+  </div>
+</ui-card>
+
+<ui-modal [isOpen]="confirmando()" title="Publicar período" [subtitle]="mes()" size="md" (close)="cerrarConfirmacion()">
+  <div class="flex flex-col gap-3">
+    <p class="m-0 text-sm text-gray-700">
+      Al publicar, las personas con rol podrán verlo y recibirán un aviso por correo. Esta acción no se puede deshacer.
+    </p>
+    @if (hayDiferencias()) {
+      <app-aviso variante="warning">
+        Hay diferencias en el cuadre (personas sin rol o roles sin persona activa). Si continúa, se publicará de todas formas.
+      </app-aviso>
+    }
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+  </div>
+  <div slot="footer" class="flex justify-end gap-2">
+    <ui-button variant="ghost" [disabled]="publicando()" (onClick)="cerrarConfirmacion()">Cancelar</ui-button>
+    <ui-button variant="brand" icon="@tui.send" [loading]="publicando()" (onClick)="publicar()">
+      {{ hayDiferencias() ? 'Publicar con diferencias' : 'Publicar' }}
+    </ui-button>
+  </div>
+</ui-modal>

@@ -7,16 +7,10 @@ import { AuthService } from '@lumen/auth';
 import { ButtonComponent, CardComponent, FormComponent, InputComponent, PageContainerComponent } from '@lumen/ui';
 import type { RolPagoPdfResponse } from '@models';
 import { VisorPdfComponent } from '@components';
-import { CEDULA_DE_10_DIGITOS, MENSAJES_CEDULA, TIEMPO_BLOQUEO_MS } from './mi-rol-pago.model';
+import { estadoHttp, formatearPeriodo, mensajeDeError } from '@core/utils';
+import { CEDULA_DE_10_DIGITOS, MENSAJES_CEDULA, MENSAJES_CONSULTA, TIEMPO_BLOQUEO_MS } from './mi-rol-pago.model';
 import { MiRolPagoService } from './mi-rol-pago.service';
-import {
-  cedulaCoincideConSesion,
-  cedulaDeSesion,
-  estadoHttp,
-  formatearPeriodo,
-  mascararCedula,
-  mensajeDeError,
-} from './mi-rol-pago.util';
+import { cedulaCoincideConSesion, cedulaDeSesion, mascararCedula } from './mi-rol-pago.util';
 
 @Component({
   selector: 'app-mi-rol-pago',
@@ -113,12 +107,12 @@ export class MiRolPagoComponent {
           this.periodos.set(periodos);
           this.periodoSeleccionado.set(periodos[0] ?? null);
         },
-        error: (error: unknown) => this.errorPeriodos.set(mensajeDeError(error)),
+        error: (error: unknown) => this.errorPeriodos.set(mensajeDeError(error, MENSAJES_CONSULTA)),
       });
   }
 
   private manejarError(error: unknown): void {
-    this.error.set(mensajeDeError(error));
+    this.error.set(mensajeDeError(error, MENSAJES_CONSULTA));
     if (estadoHttp(error) === 429) {
       this.bloqueado.set(true);
       timer(TIEMPO_BLOQUEO_MS)
