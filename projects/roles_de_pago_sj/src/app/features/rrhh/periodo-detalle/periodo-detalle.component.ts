@@ -1,19 +1,23 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { finalize, forkJoin } from 'rxjs';
+import { Observable, finalize, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PageContainerComponent } from '@lumen/ui';
 import { AvisoComponent } from '@components';
+import { PerfilAplicacionService, puedeVerRolesAjenos } from '@services';
 import { formatearPeriodo, ignorarNoEncontrado, mensajeDeError } from '@core/utils';
 import type { ListadoPeriodoResponse, ResumenPeriodoResponse } from '@models';
-import { PATRON_PERIODO, PeriodoFila } from '../rrhh.model';
+import { PATRON_PERIODO, PeriodoFila, RolFila } from '../rrhh.model';
 import { RrhhService } from '../rrhh.service';
 import { aFilasPeriodos } from '../rrhh.util';
 import { CargaMasivaComponent } from './carga-masiva';
+import { CoberturaPeriodoComponent } from './cobertura-periodo';
+import { NotificacionesPeriodoComponent } from './notificaciones-periodo';
 import { ResumenPeriodoComponent } from './resumen-periodo';
 import { RolesPeriodoComponent } from './roles-periodo';
 import { SelectorPeriodoComponent } from './selector-periodo';
+import { VerRolComponent } from './ver-rol';
 
 @Component({
   selector: 'app-periodo-detalle',
@@ -25,6 +29,9 @@ import { SelectorPeriodoComponent } from './selector-periodo';
     ResumenPeriodoComponent,
     CargaMasivaComponent,
     RolesPeriodoComponent,
+    NotificacionesPeriodoComponent,
+    CoberturaPeriodoComponent,
+    VerRolComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './periodo-detalle.component.html',
@@ -35,17 +42,23 @@ export class PeriodoDetalleComponent {
   private router = inject(Router);
   private servicio = inject(RrhhService);
   private destroyRef = inject(DestroyRef);
+  private perfilAplicacion = inject(PerfilAplicacionService);
 
   readonly periodo = toSignal(this.ruta.paramMap.pipe(map((parametros) => parametros.get('periodo') ?? '')), {
     initialValue: '',
   });
   readonly mes = computed(() => formatearPeriodo(this.periodo()));
+  readonly puedeVerAjenos = toSignal(this.perfilAplicacion.perfil().pipe(map(puedeVerRolesAjenos)), { initialValue: false });
 
   readonly periodos = signal<PeriodoFila[]>([]);
   readonly listado = signal<ListadoPeriodoResponse | null>(null);
   readonly resumen = signal<ResumenPeriodoResponse | null>(null);
   readonly cargando = signal(true);
+  readonly rolSeleccionado = signal<RolFila | null>(null);
   readonly error = signal('');
+  readonly estaPublicado = computed(
+    () => (this.resumen() ?? this.listado())?.estadoPeriodo === 'PUBLICADO',
+  );
   readonly esNuevo = computed(() => !this.cargando() && !this.error() && !this.listado());
 
   constructor() {
@@ -63,8 +76,28 @@ export class PeriodoDetalleComponent {
     this.router.navigate(['/rrhh/periodos', periodo]);
   }
 
+  verRol(rol: RolFila): void {
+    this.rolSeleccionado.set(rol);
+  }
+
+  inactivar(rol: RolFila): void {
+    this.cambiarEstado(this.servicio.inactivarRol(this.periodo(), rol.id));
+  }
+
+  activar(rol: RolFila): void {
+    this.cambiarEstado(this.servicio.activarRol(this.periodo(), rol.id));
+  }
+
   recargar(): void {
     this.cargar(this.periodo());
+  }
+
+  private cambiarEstado(operacion: Observable<unknown>): void {
+    this.error.set('');
+    operacion.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => this.recargar(),
+      error: (error: unknown) => this.error.set(mensajeDeError(error)),
+    });
   }
 
   private cargar(periodo: string): void {

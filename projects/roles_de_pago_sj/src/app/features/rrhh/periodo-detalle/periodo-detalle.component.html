@@ -10,7 +10,21 @@
     <app-selector-periodo [periodos]="periodos()" [seleccionado]="periodo()" (seleccionar)="irA($event)" />
 
     <app-resumen-periodo [periodo]="periodo()" [resumen]="resumen()" (publicado)="recargar()" />
+    @if (estaPublicado()) {
+      <app-notificaciones-periodo [periodo]="periodo()" />
+      <app-cobertura-periodo [periodo]="periodo()" />
+    }
+
     <app-carga-masiva [periodo]="periodo()" (cargaFinalizada)="recargar()" />
-    <app-roles-periodo [roles]="listado()?.roles ?? []" [cargando]="cargando()" />
+    <app-roles-periodo
+      [roles]="listado()?.roles ?? []"
+      [cargando]="cargando()"
+      [publicado]="estaPublicado()"
+      [puedeVerAjenos]="puedeVerAjenos()"
+      (ver)="verRol($event)"
+      (inactivar)="inactivar($event)"
+      (activar)="activar($event)"
+    />
+    <app-ver-rol [periodo]="periodo()" [rol]="rolSeleccionado()" (cerrado)="rolSeleccionado.set(null)" />
   </div>
 </ui-page-container>

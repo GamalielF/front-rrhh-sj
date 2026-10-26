@@ -1,0 +1,35 @@
+<ui-modal
+  [isOpen]="!!rol()"
+  [title]="pdf() ? 'Rol de pago' : 'Ver rol de pago'"
+  [subtitle]="rol()?.nombre ?? ''"
+  [size]="pdf() ? 'xl' : 'md'"
+  (close)="cerrar()"
+>
+  @if (pdf(); as consultado) {
+    <app-visor-pdf [pdf]="consultado" />
+  } @else {
+    <div class="flex flex-col gap-4">
+      <p class="m-0 text-sm text-gray-700">
+        Está por ver el rol de pago de otra persona. Este acceso queda registrado en la auditoría con su motivo.
+      </p>
+      <ui-input
+        type="text"
+        label="Motivo de la consulta"
+        placeholder="Por ejemplo: revisión solicitada por el empleado"
+        [formControl]="motivo"
+        [customErrorMessages]="mensajesMotivo"
+      />
+      @if (error()) {
+        <app-aviso variante="danger">{{ error() }}</app-aviso>
+      }
+    </div>
+  }
+  <div slot="footer" class="flex justify-end gap-2">
+    @if (pdf()) {
+      <ui-button variant="brand" (onClick)="cerrar()">Cerrar</ui-button>
+    } @else {
+      <ui-button variant="ghost" [disabled]="consultando()" (onClick)="cerrar()">Cancelar</ui-button>
+      <ui-button variant="brand" icon="@tui.eye" [loading]="consultando()" (onClick)="consultar()">Ver rol</ui-button>
+    }
+  </div>
+</ui-modal>

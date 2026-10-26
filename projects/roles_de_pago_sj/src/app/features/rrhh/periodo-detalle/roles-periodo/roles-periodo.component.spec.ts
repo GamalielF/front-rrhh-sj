@@ -52,4 +52,26 @@ describe('RolesPeriodoComponent', () => {
     const { html } = crear([]);
     expect(html.textContent).toContain('Todavía no hay roles cargados');
   });
+
+  it('las acciones de la tabla avisan a la página qué rol y qué se pidió', () => {
+    const { fixture, componente } = crear([rol(1, 'PEREZ JUAN')]);
+    fixture.componentRef.setInput('puedeVerAjenos', true);
+    const ver = vi.fn();
+    const inactivar = vi.fn();
+    componente.ver.subscribe(ver);
+    componente.inactivar.subscribe(inactivar);
+
+    const [accionVer, accionInactivar] = componente.acciones();
+    accionVer.onClick?.(componente.filas()[0]);
+    accionInactivar.onClick?.(componente.filas()[0]);
+
+    expect(ver).toHaveBeenCalledWith(expect.objectContaining({ id: 1, cedula: '1712345675' }));
+    expect(inactivar).toHaveBeenCalledWith(expect.objectContaining({ id: 1 }));
+  });
+
+  it('con el período publicado y sin permiso la tabla no ofrece acciones', () => {
+    const { fixture, componente } = crear([rol(1, 'PEREZ JUAN')]);
+    fixture.componentRef.setInput('publicado', true);
+    expect(componente.acciones()).toEqual([]);
+  });
 });

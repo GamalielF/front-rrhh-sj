@@ -1,0 +1,28 @@
+<ui-card title="Lectura de roles" subtitle="Quiénes ya abrieron su rol de pago">
+  <div class="flex flex-col gap-4">
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+
+    @if (cobertura(); as datos) {
+      <ui-grid [cols]="1" [colsMd]="3" gap="md">
+        <ui-kpi-card label="Roles publicados" [value]="datos.rolesPublicados" icon="@tui.file-text" accentColor="blue" />
+        <ui-kpi-card label="Ya lo abrieron" [value]="datos.leidos + ' (' + porcentaje() + '%)'" icon="@tui.eye" accentColor="green" />
+        <ui-kpi-card
+          label="Todavía no lo abren"
+          [value]="datos.pendientes"
+          icon="@tui.users"
+          [accentColor]="datos.pendientes > 0 ? 'warning' : 'green'"
+        />
+      </ui-grid>
+
+      @if (datos.pendientes > 0) {
+        <p class="m-0 text-sm text-gray-600"><strong>Pendientes:</strong> {{ nombresPendientes() }}</p>
+      }
+    }
+
+    <div>
+      <ui-button variant="outline" icon="@tui.refresh-cw" [loading]="cargando()" (onClick)="actualizar()">Actualizar</ui-button>
+    </div>
+  </div>
+</ui-card>

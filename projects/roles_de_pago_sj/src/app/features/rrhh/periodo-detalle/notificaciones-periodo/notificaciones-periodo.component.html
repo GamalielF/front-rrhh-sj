@@ -1,0 +1,44 @@
+<ui-card title="Avisos por correo" subtitle="Se envían solos al publicar; aquí se ve cómo van">
+  <div class="flex flex-col gap-4">
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+    @if (mensaje()) {
+      <app-aviso variante="success">{{ mensaje() }}</app-aviso>
+    }
+
+    @if (informe(); as datos) {
+      @if (!datos.habilitadas) {
+        <app-aviso variante="info">Los avisos por correo están deshabilitados en este entorno.</app-aviso>
+      }
+
+      <div class="flex flex-wrap items-center gap-2">
+        <ui-badge variant="neutral">{{ datos.total }} avisos</ui-badge>
+        <ui-badge variant="success">{{ datos.enviadas }} enviados</ui-badge>
+        <ui-badge variant="info">{{ datos.pendientes }} pendientes ({{ datos.reintentando }} reintentando)</ui-badge>
+        <ui-badge [variant]="datos.fallidas > 0 ? 'danger' : 'neutral'">{{ datos.fallidas }} fallidos</ui-badge>
+        <ui-badge [variant]="datos.omitidas > 0 ? 'warning' : 'neutral'">{{ datos.omitidas }} sin correo</ui-badge>
+      </div>
+
+      @if (problemas().length > 0) {
+        <ui-table [columns]="columnas" [data]="problemas()" emptyMessage="Sin problemas" />
+      }
+
+      <div class="flex flex-wrap gap-2">
+        <ui-button variant="outline" icon="@tui.refresh-cw" [loading]="cargando()" (onClick)="actualizar()">
+          Actualizar
+        </ui-button>
+        @if (datos.habilitadas) {
+          <ui-button variant="outline" icon="@tui.send" [loading]="trabajando()" (onClick)="generar()">
+            Generar los que falten
+          </ui-button>
+          @if (datos.fallidas > 0) {
+            <ui-button variant="brand" icon="@tui.refresh-cw" [loading]="trabajando()" (onClick)="reintentar()">
+              Reintentar fallidos
+            </ui-button>
+          }
+        }
+      </div>
+    }
+  </div>
+</ui-card>

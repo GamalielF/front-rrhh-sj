@@ -3,8 +3,10 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import type { ListadoPeriodoResponse, PeriodoResumenResponse, ResumenPeriodoResponse } from '@models';
+import { PerfilAplicacionService } from '@services';
 import { RrhhService } from '../rrhh.service';
 import { CargaMasivaService } from './carga-masiva';
+import { NotificacionesService } from './notificaciones-periodo';
 import { PeriodoDetalleComponent } from './periodo-detalle.component';
 
 const listado: ListadoPeriodoResponse = {
@@ -37,7 +39,18 @@ const PERIODOS: PeriodoResumenResponse[] = [
 const noExiste = () => throwError(() => new HttpErrorResponse({ status: 404, error: { message: 'El periodo no existe' } }));
 
 describe('PeriodoDetalleComponent', () => {
-  const servicio = { periodos: vi.fn(), listado: vi.fn(), resumen: vi.fn(), publicar: vi.fn() };
+  const servicio = {
+    periodos: vi.fn(),
+    listado: vi.fn(),
+    resumen: vi.fn(),
+    publicar: vi.fn(),
+    cobertura: vi.fn(),
+    inactivarRol: vi.fn(),
+    activarRol: vi.fn(),
+    verRol: vi.fn(),
+  };
+  const avisos = { informe: vi.fn(), generar: vi.fn(), reintentar: vi.fn() };
+  const perfil = (roles: string[], permisos: string[] = []) => ({ perfil: () => of({ roles, permisos }) });
   let navegar: ReturnType<typeof vi.spyOn>;
   const parametros$ = new BehaviorSubject(convertToParamMap({ periodo: '2026-09' }));
 
@@ -49,6 +62,14 @@ describe('PeriodoDetalleComponent', () => {
 
   beforeEach(() => {
     servicio.periodos.mockReset().mockReturnValue(of(PERIODOS));
+    servicio.cobertura
+      .mockReset()
+      .mockReturnValue(of({ periodo: '2026-09', rolesPublicados: 1, leidos: 0, pendientes: 1, nombresPendientes: ['PEREZ JUAN'] }));
+    servicio.inactivarRol.mockReset();
+    servicio.activarRol.mockReset();
+    avisos.informe.mockReset().mockReturnValue(
+      of({ periodo: '2026-09', habilitadas: true, total: 1, pendientes: 0, reintentando: 0, enviadas: 1, fallidas: 0, omitidas: 0, problemas: [] }),
+    );
     servicio.listado.mockReset().mockReturnValue(of(listado));
     servicio.resumen.mockReset().mockReturnValue(of(resumen));
     parametros$.next(convertToParamMap({ periodo: '2026-09' }));
@@ -58,6 +79,8 @@ describe('PeriodoDetalleComponent', () => {
         provideRouter([]),
         { provide: RrhhService, useValue: servicio },
         { provide: CargaMasivaService, useValue: { cargarEnLotes: vi.fn() } },
+        { provide: NotificacionesService, useValue: avisos },
+        { provide: PerfilAplicacionService, useValue: perfil(['ADMIN']) },
         { provide: ActivatedRoute, useValue: { paramMap: parametros$ } },
       ],
     });
@@ -110,5 +133,52 @@ describe('PeriodoDetalleComponent', () => {
     const { componente } = crear();
     componente.recargar();
     expect(servicio.listado).toHaveBeenCalledTimes(2);
+  });
+
+  it('mientras el período no está publicado no muestra avisos ni lectura', () => {
+    const { html } = crear();
+    expect(html.querySelector('app-notificaciones-periodo')).toBeNull();
+    expect(html.querySelector('app-cobertura-periodo')).toBeNull();
+  });
+
+  it('con el período publicado muestra el seguimiento: avisos por correo y lectura de roles', () => {
+    servicio.resumen.mockReturnValue(of({ ...resumen, estadoPeriodo: 'PUBLICADO' }));
+    const { componente, html } = crear();
+    expect(componente.estaPublicado()).toBe(true);
+    expect(html.querySelector('app-notificaciones-periodo')).not.toBeNull();
+    expect(html.querySelector('app-cobertura-periodo')).not.toBeNull();
+    expect(html.textContent).toContain('Avisos por correo');
+    expect(html.textContent).toContain('Lectura de roles');
+  });
+
+  it('inactivar un rol llama al servidor y vuelve a cargar el período', () => {
+    servicio.inactivarRol.mockReturnValue(of({}));
+    const { componente } = crear();
+    componente.inactivar(componente.listado()!.roles.map((rol) => ({ id: rol.id }) as never)[0]);
+    expect(servicio.inactivarRol).toHaveBeenCalledWith('2026-09', 1);
+    expect(servicio.listado).toHaveBeenCalledTimes(2);
+  });
+
+  it('si el servidor no deja cambiar el rol (por ejemplo ya publicado) muestra su motivo', () => {
+    servicio.activarRol.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 409, error: { message: 'El período ya fue publicado: sus roles no se modifican' } })),
+    );
+    const { fixture, componente, html } = crear();
+    componente.activar({ id: 1 } as never);
+    fixture.detectChanges();
+    expect(html.textContent).toContain('sus roles no se modifican');
+  });
+
+  it('un administrador puede ver roles ajenos y RRHH solo con el permiso', () => {
+    const { componente } = crear();
+    expect(componente.puedeVerAjenos()).toBe(true);
+  });
+
+  it('elegir Ver rol abre la ventana del motivo con esa persona', () => {
+    const { fixture, componente, html } = crear();
+    componente.verRol({ id: 1, nombre: 'PEREZ JUAN' } as never);
+    fixture.detectChanges();
+    expect(componente.rolSeleccionado()).toMatchObject({ id: 1 });
+    expect(html.textContent).toContain('Motivo de la consulta');
   });
 });
