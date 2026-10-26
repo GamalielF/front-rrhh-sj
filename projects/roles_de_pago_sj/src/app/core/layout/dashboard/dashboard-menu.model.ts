@@ -5,3 +5,4 @@ export const OPCION_MI_ROL: NavItem = { label: 'Mi rol de pago', icon: '@tui.fil
 export const OPCION_PERIODOS: NavItem = { label: 'Períodos', icon: '@tui.calendar', route: '/rrhh/periodos' };
 export const OPCION_USUARIOS: NavItem = { label: 'Usuarios y roles', icon: '@tui.user-cog', route: '/admin/usuarios' };
 export const OPCION_DIRECTORIO: NavItem = { label: 'Directorio', icon: '@tui.database', route: '/admin/directorio' };
+export const OPCION_AUDITORIA: NavItem = { label: 'Auditoría', icon: '@tui.clipboard-list', route: '/admin/auditoria' };

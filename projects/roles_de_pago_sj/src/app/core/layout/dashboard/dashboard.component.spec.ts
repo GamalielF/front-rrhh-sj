@@ -32,11 +32,13 @@ describe('DashboardShellComponent', () => {
     const admin = mostrar(['ADMIN', 'EMPLEADO']);
     expect(admin).toContain('Usuarios y roles');
     expect(admin).toContain('Directorio');
+    expect(admin).toContain('Auditoría');
     TestBed.resetTestingModule();
     const rrhh = mostrar(['RRHH', 'EMPLEADO']);
     expect(rrhh).toContain('Períodos');
     expect(rrhh).not.toContain('Usuarios y roles');
     expect(rrhh).not.toContain('Directorio');
+    expect(rrhh).not.toContain('Auditoría');
   });
 
   it('el menú de un empleado no incluye Períodos pero sí su rol de pago', () => {

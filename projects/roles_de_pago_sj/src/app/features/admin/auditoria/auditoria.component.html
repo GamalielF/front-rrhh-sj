@@ -1,0 +1,28 @@
+<ui-page-container
+  title="Auditoría"
+  description="Quién consultó cada rol de pago y quién hizo cambios en el sistema"
+>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-wrap gap-2">
+      @for (opcion of modos; track opcion.id) {
+        <ui-button size="sm" [variant]="opcion.id === modo() ? 'brand' : 'outline'" (onClick)="cambiarModo(opcion.id)">
+          {{ opcion.etiqueta }}
+        </ui-button>
+      }
+    </div>
+
+    <app-filtros-auditoria [modo]="modo()" (buscar)="filtros.set($event)" />
+
+    @switch (modo()) {
+      @case ('accesos') {
+        <app-panel-accesos [filtros]="filtros()" />
+      }
+      @case ('acciones') {
+        <app-panel-acciones [filtros]="filtros()" />
+      }
+      @case ('denegados') {
+        <app-panel-denegados [filtros]="filtros()" />
+      }
+    }
+  </div>
+</ui-page-container>

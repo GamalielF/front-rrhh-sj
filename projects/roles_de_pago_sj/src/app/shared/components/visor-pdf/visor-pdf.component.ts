@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { base64ToBlob } from '@core/utils';
 import type { RolPagoPdfResponse } from '@models';
-import { base64ToBlob } from './visor-pdf.util';
 
 @Component({
   selector: 'app-visor-pdf',

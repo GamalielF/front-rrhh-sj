@@ -1,0 +1,30 @@
+<ui-card title="Filtros" subtitle="Sin fechas se muestran los últimos 30 días; el rango máximo es de 366 días">
+  <div class="flex flex-col gap-4">
+    <ui-grid [cols]="1" [colsMd]="2" [colsLg]="4" gap="md">
+      <ui-input type="date" label="Desde" [formControl]="formulario.controls.desde" />
+      <ui-input type="date" label="Hasta" [formControl]="formulario.controls.hasta" />
+      @if (modo() === 'denegados') {
+        <ui-input type="number" label="Mínimo de intentos denegados" [formControl]="formulario.controls.minimo" />
+      } @else {
+        <ui-input type="text" label="Usuario" placeholder="Código de usuario" [formControl]="formulario.controls.usuario" />
+        <ui-input type="text" label="Período" placeholder="aaaa-mm" [formControl]="formulario.controls.periodo" />
+      }
+    </ui-grid>
+
+    <div class="flex flex-wrap items-center gap-2">
+      @if (modo() === 'accesos') {
+        <ui-dropdown triggerVariant="outline" triggerSize="md" ariaLabel="Filtrar por resultado" [triggerLabel]="etiquetaResultado()" [items]="itemsResultado()" (itemClick)="elegirResultado($event)" />
+        <ui-dropdown triggerVariant="outline" triggerSize="md" ariaLabel="Filtrar por tipo" [triggerLabel]="etiquetaTipoAcceso()" [items]="itemsTipoAcceso()" (itemClick)="elegirTipoAcceso($event)" />
+      }
+      @if (modo() === 'acciones') {
+        <ui-dropdown triggerVariant="outline" triggerSize="md" ariaLabel="Filtrar por acción" [triggerLabel]="etiquetaTipoAccion()" [items]="itemsTipoAccion()" (itemClick)="elegirTipoAccion($event)" />
+      }
+      <ui-button variant="brand" icon="@tui.search" (onClick)="aplicar()">Buscar</ui-button>
+      <ui-button variant="ghost" (onClick)="limpiar()">Limpiar</ui-button>
+    </div>
+
+    @if (error()) {
+      <app-aviso variante="warning">{{ error() }}</app-aviso>
+    }
+  </div>
+</ui-card>

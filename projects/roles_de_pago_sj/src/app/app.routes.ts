@@ -69,6 +69,13 @@ export const routes: Routes = [
             },
             loadComponent: () => import('./features/admin/directorio').then(m => m.DirectorioComponent),
           },
+          {
+            path: 'auditoria',
+            data: {
+              breadcrumb: { label: 'Auditoría', icon: '@tui.clipboard-list' },
+            },
+            loadComponent: () => import('./features/admin/auditoria').then(m => m.AuditoriaComponent),
+          },
         ],
       },
       {

@@ -1,0 +1,22 @@
+<ui-card title="Acciones de gestión" subtitle="Cargas, publicaciones, avisos y cambios de roles hechos por RRHH y administradores">
+  <div class="flex flex-col gap-4">
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+    <ui-table
+      [columns]="columnas"
+      [data]="filas()"
+      [loading]="cargando()"
+      trackByKey="id"
+      emptyMessage="No hay acciones en el rango elegido"
+    />
+    <ui-pagination
+      [page]="pagina()"
+      [pageSize]="tamano()"
+      [total]="total()"
+      [disabled]="cargando()"
+      (pageChange)="cambiarPagina($event)"
+      (pageSizeChange)="cambiarTamano($event)"
+    />
+  </div>
+</ui-card>

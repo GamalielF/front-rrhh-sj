@@ -1,0 +1,14 @@
+<ui-card title="Intentos denegados" subtitle="Quién tecleó cédulas que no eran suyas: muchas cédulas distintas es una señal de alerta">
+  <div class="flex flex-col gap-4">
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+    <ui-table
+      [columns]="columnas"
+      [data]="filas()"
+      [loading]="cargando()"
+      trackByKey="usuario"
+      emptyMessage="Nadie alcanzó el mínimo de intentos denegados en el rango elegido"
+    />
+  </div>
+</ui-card>
