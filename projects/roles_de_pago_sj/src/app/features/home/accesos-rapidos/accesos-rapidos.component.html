@@ -1,0 +1,10 @@
+<ui-grid [cols]="1" [colsMd]="2" [colsLg]="3" gap="md">
+  @for (acceso of accesos(); track acceso.ruta) {
+    <ui-card [title]="acceso.titulo">
+      <div class="flex flex-col items-start gap-3">
+        <p class="m-0 text-sm text-gray-600">{{ acceso.descripcion }}</p>
+        <ui-button variant="outline" size="sm" [icon]="acceso.icono" (onClick)="abrir(acceso.ruta)">Abrir</ui-button>
+      </div>
+    </ui-card>
+  }
+</ui-grid>

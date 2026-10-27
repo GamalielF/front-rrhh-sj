@@ -1,5 +1,5 @@
 import type { DropdownItem } from '@lumen/ui';
-import { formatearFechaHora, formatearPeriodo } from '@core/utils';
+import { fechaIso, formatearFechaHora, formatearPeriodo } from '@core/utils';
 import type { AccesoAuditoriaResponse, AccionAuditoriaResponse, DenegadosPorUsuarioResponse } from '@models';
 import {
   AccesoFila,
@@ -103,9 +103,6 @@ function base(filtros: FiltrosAuditoria): Record<string, string> {
   return { desde: filtros.desde, hasta: filtros.hasta, usuario: filtros.usuario.trim(), periodo: filtros.periodo.trim() };
 }
 
-function fechaIso(fecha: Date): string {
-  return `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
-}
 
 function diasEntre(inicio: string, fin: string): number {
   const [a1, m1, d1] = inicio.split('-').map(Number);

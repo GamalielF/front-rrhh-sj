@@ -1,0 +1,18 @@
+<ui-card title="Mi rol de pago" subtitle="Para verlo se le pedirá su número de cédula">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    } @else if (ultimo()) {
+      <div class="flex flex-col gap-1">
+        <span class="text-xs text-gray-500">Último rol disponible</span>
+        <strong class="text-lg">{{ etiqueta() }}</strong>
+        <span class="text-sm text-gray-600">
+          {{ periodos().length === 1 ? '1 mes disponible' : periodos().length + ' meses disponibles' }}
+        </span>
+      </div>
+      <ui-button variant="brand" icon="@tui.file-text" (onClick)="abrir()">Ver mi rol de pago</ui-button>
+    } @else if (!cargando()) {
+      <p class="m-0 text-sm text-gray-600">Todavía no hay roles de pago publicados.</p>
+    }
+  </div>
+</ui-card>

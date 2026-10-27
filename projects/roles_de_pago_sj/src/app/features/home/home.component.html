@@ -1,20 +1,17 @@
-<ui-page-container
-  title="Inicio"
-  description="Alguna descripción"
->
-    <ui-card title="Documentación">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <p class="text-sm text-gray-600 m-0">
-          Guías de componentes del sistema.
-        </p>
-        <ui-button
-          variant="brand"
-          size="sm"
-          icon="@tui.external-link"
-          (onClick)="openDocs()"
-        >
-          Ver Documentación
-        </ui-button>
-      </div>
-    </ui-card>
+<ui-page-container title="Inicio" description="Roles de pago de COOPSANJOSE LTDA">
+  <div class="flex flex-col gap-4">
+    <app-rol-reciente />
+
+    @if (esGestor()) {
+      <app-estado-periodo />
+    }
+
+    @if (esAdmin()) {
+      <app-alertas-admin />
+    }
+
+    @if (accesos().length > 0) {
+      <app-accesos-rapidos [accesos]="accesos()" />
+    }
+  </div>
 </ui-page-container>

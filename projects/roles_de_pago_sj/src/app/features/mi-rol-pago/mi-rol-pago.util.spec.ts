@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { cedulaCoincideConSesion, cedulaDeSesion, mascararCedula } from './mi-rol-pago.util';
+import { cedulaCoincideConSesion, cedulaDeSesion, elegirPeriodoInicial, mascararCedula } from './mi-rol-pago.util';
 
 describe('cedulaDeSesion', () => {
   it('toma la identificación de la sesión cuando es una cédula de 10 dígitos', () => {
@@ -36,5 +36,22 @@ describe('cedulaCoincideConSesion', () => {
   it('no opina mientras la cédula está incompleta ni si la sesión no la conoce', () => {
     expect(validar('1712345675', '17123')).toBeNull();
     expect(validar(null, '1712345676')).toBeNull();
+  });
+});
+
+describe('elegirPeriodoInicial', () => {
+  const periodos = ['2026-10', '2026-09', '2026-08'];
+
+  it('usa el mes pedido si está entre los publicados', () => {
+    expect(elegirPeriodoInicial(periodos, '2026-09')).toBe('2026-09');
+  });
+
+  it('si el mes pedido no existe o no se pidió ninguno, usa el más reciente', () => {
+    expect(elegirPeriodoInicial(periodos, '2020-01')).toBe('2026-10');
+    expect(elegirPeriodoInicial(periodos, null)).toBe('2026-10');
+  });
+
+  it('sin meses publicados no hay nada que elegir', () => {
+    expect(elegirPeriodoInicial([], '2026-09')).toBeNull();
   });
 });

@@ -1,0 +1,26 @@
+<ui-card title="Alertas" subtitle="Lo que conviene revisar del directorio y de la seguridad">
+  <div class="flex flex-col gap-3">
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+
+    @for (alerta of alertas(); track alerta.mensaje) {
+      <app-aviso [variante]="alerta.variante">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <span>{{ alerta.mensaje }}</span>
+          <ui-button size="sm" variant="outline" (onClick)="abrir(alerta.ruta)">Revisar</ui-button>
+        </div>
+      </app-aviso>
+    }
+
+    @if (incompleto()) {
+      <app-aviso variante="info">No se pudieron comprobar todas las alertas. Intente recargar la página.</app-aviso>
+    }
+
+    @if (!cargando() && !error() && !incompleto() && alertas().length === 0) {
+      <app-aviso variante="success">
+        Sin alertas: el directorio está al día y no hay intentos denegados repetidos.
+      </app-aviso>
+    }
+  </div>
+</ui-card>

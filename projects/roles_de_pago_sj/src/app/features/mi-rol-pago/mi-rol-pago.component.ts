@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { finalize, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '@lumen/auth';
@@ -10,7 +11,7 @@ import { VisorPdfComponent } from '@components';
 import { estadoHttp, formatearPeriodo, mensajeDeError } from '@core/utils';
 import { CEDULA_DE_10_DIGITOS, MENSAJES_CEDULA, MENSAJES_CONSULTA, TIEMPO_BLOQUEO_MS } from './mi-rol-pago.model';
 import { MiRolPagoService } from './mi-rol-pago.service';
-import { cedulaCoincideConSesion, cedulaDeSesion, mascararCedula } from './mi-rol-pago.util';
+import { cedulaCoincideConSesion, cedulaDeSesion, elegirPeriodoInicial, mascararCedula } from './mi-rol-pago.util';
 
 @Component({
   selector: 'app-mi-rol-pago',
@@ -33,6 +34,7 @@ export class MiRolPagoComponent {
   private servicio = inject(MiRolPagoService);
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
+  private ruta = inject(ActivatedRoute);
 
   readonly etiqueta = formatearPeriodo;
   readonly mensajesCedula = MENSAJES_CEDULA;
@@ -105,7 +107,7 @@ export class MiRolPagoComponent {
       .subscribe({
         next: (periodos) => {
           this.periodos.set(periodos);
-          this.periodoSeleccionado.set(periodos[0] ?? null);
+          this.periodoSeleccionado.set(elegirPeriodoInicial(periodos, this.ruta.snapshot.queryParamMap.get('periodo')));
         },
         error: (error: unknown) => this.errorPeriodos.set(mensajeDeError(error, MENSAJES_CONSULTA)),
       });

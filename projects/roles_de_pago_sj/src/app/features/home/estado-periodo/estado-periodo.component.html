@@ -1,0 +1,44 @@
+<ui-card title="Período más reciente" subtitle="Cómo va la carga y la publicación de los roles">
+  <div class="flex flex-col gap-4">
+    @if (error()) {
+      <app-aviso variante="danger">{{ error() }}</app-aviso>
+    }
+
+    @if (estado(); as datos) {
+      @if (datos.periodo && datos.resumen) {
+        <div class="flex flex-wrap items-center gap-2">
+          <strong class="text-lg">{{ mes() }}</strong>
+          <ui-badge [variant]="publicado() ? 'success' : 'warning'">{{ publicado() ? 'Publicado' : 'En preparación' }}</ui-badge>
+        </div>
+
+        <ui-grid [cols]="1" [colsMd]="2" [colsLg]="4" gap="md">
+          @for (indicador of indicadores(); track indicador.etiqueta) {
+            <ui-kpi-card
+              [label]="indicador.etiqueta"
+              [value]="indicador.valor"
+              [icon]="indicador.icono"
+              [accentColor]="indicador.acento"
+            />
+          }
+        </ui-grid>
+      } @else {
+        <app-aviso variante="info">Todavía no hay períodos registrados.</app-aviso>
+      }
+
+      @if (!datos.existeActual) {
+        <app-aviso variante="info">Todavía no existe el período de {{ mesActual }}.</app-aviso>
+      }
+
+      <div class="flex flex-wrap gap-2">
+        @if (datos.periodo) {
+          <ui-button variant="brand" icon="@tui.folder-open" (onClick)="abrir(datos.periodo)">Abrir {{ mes() }}</ui-button>
+        }
+        @if (!datos.existeActual) {
+          <ui-button variant="outline" icon="@tui.plus" (onClick)="abrir(actual)">Crear el de {{ mesActual }}</ui-button>
+        }
+      </div>
+    } @else if (cargando()) {
+      <p class="m-0 text-sm text-gray-600">Cargando…</p>
+    }
+  </div>
+</ui-card>

@@ -23,3 +23,13 @@ export function formatearTamano(bytes: number): string {
   }
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
+
+export function fechaIso(fecha: Date): string {
+  return `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
+}
+
+export function restarDias(fecha: Date, dias: number): Date {
+  const resultado = new Date(fecha);
+  resultado.setDate(resultado.getDate() - dias);
+  return resultado;
+}

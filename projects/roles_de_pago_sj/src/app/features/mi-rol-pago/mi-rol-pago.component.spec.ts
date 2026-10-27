@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { AuthService, UserSession } from '@lumen/auth';
 import type { RolPagoPdfResponse } from '@models';
@@ -36,6 +37,7 @@ describe('MiRolPagoComponent', () => {
     TestBed.configureTestingModule({
       imports: [MiRolPagoComponent],
       providers: [
+        provideRouter([]),
         { provide: MiRolPagoService, useValue: servicio },
         { provide: AuthService, useValue: { user$: sesion$ } },
       ],
@@ -117,5 +119,19 @@ describe('MiRolPagoComponent', () => {
     expect(componente.bloqueado()).toBe(true);
     componente.consultar();
     expect(servicio.consultar).toHaveBeenCalledTimes(1);
+  });
+
+  it('abre el mes que pide la dirección (?periodo=) si está publicado', async () => {
+    const ruta = TestBed.inject(ActivatedRoute);
+    Object.defineProperty(ruta.snapshot, 'queryParamMap', { value: convertToParamMap({ periodo: '2026-08' }), configurable: true });
+    const { componente } = await crear();
+    expect(componente.periodoSeleccionado()).toBe('2026-08');
+  });
+
+  it('si el mes pedido no está publicado, deja el más reciente', async () => {
+    const ruta = TestBed.inject(ActivatedRoute);
+    Object.defineProperty(ruta.snapshot, 'queryParamMap', { value: convertToParamMap({ periodo: '2020-01' }), configurable: true });
+    const { componente } = await crear();
+    expect(componente.periodoSeleccionado()).toBe('2026-09');
   });
 });

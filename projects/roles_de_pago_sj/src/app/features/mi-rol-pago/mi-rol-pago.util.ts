@@ -7,6 +7,10 @@ export function cedulaDeSesion(usuario: UserSession | null): string | null {
   return CEDULA_DE_10_DIGITOS.test(identificacion) ? identificacion : null;
 }
 
+export function elegirPeriodoInicial(periodos: string[], solicitado: string | null): string | null {
+  return solicitado && periodos.includes(solicitado) ? solicitado : (periodos[0] ?? null);
+}
+
 export function mascararCedula(cedula: string): string {
   return `${cedula.slice(0, 2)}******${cedula.slice(-2)}`;
 }

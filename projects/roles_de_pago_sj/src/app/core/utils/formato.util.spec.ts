@@ -1,4 +1,4 @@
-import { formatearFechaHora, formatearPeriodo, formatearTamano } from './formato.util';
+import { fechaIso, formatearFechaHora, formatearPeriodo, formatearTamano, restarDias } from './formato.util';
 
 describe('formatearPeriodo', () => {
   it('escribe el mes en español con mayúscula inicial y sin "de"', () => {
@@ -27,5 +27,18 @@ describe('formatearTamano', () => {
     expect(formatearTamano(512)).toBe('512 B');
     expect(formatearTamano(2048)).toBe('2 KB');
     expect(formatearTamano(5 * 1024 * 1024)).toBe('5.0 MB');
+  });
+});
+
+describe('fechaIso y restarDias', () => {
+  it('escribe la fecha local como aaaa-mm-dd, con ceros', () => {
+    expect(fechaIso(new Date(2026, 0, 5))).toBe('2026-01-05');
+    expect(fechaIso(new Date(2026, 9, 26))).toBe('2026-10-26');
+  });
+
+  it('restar días cruza los cambios de mes y de año sin tocar la fecha original', () => {
+    const hoy = new Date(2026, 0, 3);
+    expect(fechaIso(restarDias(hoy, 7))).toBe('2025-12-27');
+    expect(fechaIso(hoy)).toBe('2026-01-03');
   });
 });
