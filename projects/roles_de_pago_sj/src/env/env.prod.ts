@@ -9,4 +9,5 @@ export const env: AppEnvironment = {
   apiBaseUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/v1/analitics/',
   userProfileUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/v1/analitics/Usuarios/busca-usuario',
   rolesPagoApiUrl: 'https://DOMINIO-DEL-BACKEND/api/v1/roles-pago/',
+  mesesFuturosPermitidos: 1,
 };

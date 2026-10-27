@@ -7,4 +7,5 @@ export interface AppEnvironment {
   apiBaseUrl: string;
   userProfileUrl: string;
   rolesPagoApiUrl: string;
+  mesesFuturosPermitidos: number;
 }

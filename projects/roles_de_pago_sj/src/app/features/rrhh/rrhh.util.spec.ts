@@ -131,11 +131,18 @@ describe('períodos', () => {
     expect(periodoMasReciente([])).toBeNull();
   });
 
-  it('acepta desde enero de 2020 hasta el próximo mes, y rechaza lo demás', () => {
-    expect(esPeriodoEnRango('2020-01', hoy)).toBe(true);
-    expect(esPeriodoEnRango('2026-11', hoy)).toBe(true);
-    expect(esPeriodoEnRango('2026-12', hoy)).toBe(false);
-    expect(esPeriodoEnRango('2062-10', hoy)).toBe(false);
+  it('en producción acepta desde enero de 2020 hasta el próximo mes, y rechaza lo demás', () => {
+    expect(esPeriodoEnRango('2020-01', hoy, 1)).toBe(true);
+    expect(esPeriodoEnRango('2026-11', hoy, 1)).toBe(true);
+    expect(esPeriodoEnRango('2026-12', hoy, 1)).toBe(false);
+    expect(esPeriodoEnRango('2062-10', hoy, 1)).toBe(false);
+    expect(esPeriodoEnRango('2019-12', hoy, 1)).toBe(false);
+  });
+
+  it('en desarrollo (el entorno de las pruebas) deja abrir hasta 12 meses por delante, para poder ensayar', () => {
+    expect(esPeriodoEnRango('2026-12', hoy)).toBe(true);
+    expect(esPeriodoEnRango('2027-10', hoy)).toBe(true);
+    expect(esPeriodoEnRango('2027-11', hoy)).toBe(false);
     expect(esPeriodoEnRango('2019-12', hoy)).toBe(false);
   });
 
@@ -146,10 +153,17 @@ describe('períodos', () => {
     expect(validar('octubre')).toBeNull();
   });
 
+  it('el validador usa el límite configurado: 2026-12 sirve con 12 meses pero no con 1', () => {
+    expect(periodoEnRango(() => hoy, 12)(new FormControl('2026-12'))).toBeNull();
+    expect(periodoEnRango(() => hoy, 1)(new FormControl('2026-12'))).toEqual({ fueraDeRango: true });
+  });
+
   it('sugiere el mes siguiente al último, o el actual si no hay ninguno, o nada si ya se pasaría del rango', () => {
     expect(sugerirPeriodoNuevo(['2026-08', '2026-09'], hoy)).toBe('2026-10');
     expect(sugerirPeriodoNuevo([], hoy)).toBe('2026-10');
-    expect(sugerirPeriodoNuevo(['2026-11'], hoy)).toBe('');
+    expect(sugerirPeriodoNuevo(['2026-11'], hoy, 1)).toBe('');
+    expect(sugerirPeriodoNuevo(['2026-11'], hoy, 12)).toBe('2026-12');
+    expect(sugerirPeriodoNuevo(['2027-10'], hoy, 12)).toBe('');
   });
 });
 

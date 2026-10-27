@@ -1,5 +1,6 @@
 import type { TableColumn } from '@lumen/ui';
 import type { EstadoPeriodo, EstadoRegistro } from '@models';
+import { env } from '@env';
 
 export interface PeriodoFila {
   periodo: string;
@@ -30,10 +31,16 @@ export const PATRON_PERIODO = /^\d{4}-(0[1-9]|1[0-2])$/;
 
 export const PERIODO_MINIMO = '2020-01';
 
+export function mensajeFueraDeRango(mesesFuturos: number): string {
+  return mesesFuturos <= 1
+    ? 'Use un mes entre enero de 2020 y el próximo mes'
+    : `Use un mes entre enero de 2020 y hasta ${mesesFuturos} meses por delante del actual`;
+}
+
 export const MENSAJES_PERIODO: Record<string, string> = {
   required: 'Ingrese el período',
   pattern: 'Use el formato aaaa-mm, por ejemplo 2026-10',
-  fueraDeRango: 'Use un mes entre enero de 2020 y el próximo mes',
+  fueraDeRango: mensajeFueraDeRango(env.mesesFuturosPermitidos),
 };
 
 export const COLUMNAS_ROLES: TableColumn<RolFila>[] = [

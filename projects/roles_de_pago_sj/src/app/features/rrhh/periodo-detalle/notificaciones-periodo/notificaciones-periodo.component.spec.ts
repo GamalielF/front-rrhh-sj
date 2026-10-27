@@ -147,4 +147,16 @@ describe('NotificacionesPeriodoComponent', () => {
     fixture.detectChanges();
     expect(html.textContent).toContain('Los avisos por correo están deshabilitados');
   });
+
+  it('si los avisos esperan porque el envío no está configurado, la tarjeta lo explica en vez de dejar "pendientes" sin motivo', () => {
+    servicio.informe.mockReturnValue(of(informe({ pendientes: 3, enviadas: 0, envioConfigurado: false, despachoAutomatico: true, modoCorreo: 'API' })));
+    const { html } = crear();
+    expect(html.textContent).toContain('El envío de correo no está configurado en el servidor');
+    expect(html.textContent).toContain('3 pendientes');
+  });
+
+  it('en modo simulado la tarjeta lo aclara', () => {
+    servicio.informe.mockReturnValue(of(informe({ modoCorreo: 'SIMULADO', envioConfigurado: true })));
+    expect(crear().html.textContent).toContain('modo simulado');
+  });
 });

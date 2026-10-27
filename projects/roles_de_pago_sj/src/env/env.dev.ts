@@ -9,4 +9,5 @@ export const env: AppEnvironment = {
   apiBaseUrl: 'https://proxy.coopsanjose.fin.ec:8443/api/v1/analitics/',
   userProfileUrl: 'https://proxy.coopsanjose.fin.ec:8443/api/v1/analitics/Usuarios/busca-usuario',
   rolesPagoApiUrl: 'http://localhost:8080/api/v1/roles-pago/',
+  mesesFuturosPermitidos: 12,
 };

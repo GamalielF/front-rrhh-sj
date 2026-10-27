@@ -2,6 +2,7 @@ import { ValidatorFn } from '@angular/forms';
 import type { DropdownItem } from '@lumen/ui';
 import { formatearFechaHora, formatearPeriodo, formatearTamano } from '@core/utils';
 import type { PeriodoResumenResponse, RolPagoResumenResponse } from '@models';
+import { env } from '@env';
 import { describirNotificacion } from './notificacion-rol.util';
 import { PATRON_PERIODO, PERIODO_MINIMO, PeriodoFila, RolFila } from './rrhh.model';
 
@@ -55,30 +56,35 @@ export function periodoActual(hoy: Date): string {
   return `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
 }
 
-export function mesSiguiente(periodo: string): string {
+export function sumarMeses(periodo: string, meses: number): string {
   const [anio, mes] = periodo.split('-').map(Number);
-  return mes === 12 ? `${anio + 1}-01` : `${anio}-${String(mes + 1).padStart(2, '0')}`;
+  const total = anio * 12 + (mes - 1) + meses;
+  return `${Math.floor(total / 12)}-${String((total % 12) + 1).padStart(2, '0')}`;
+}
+
+export function mesSiguiente(periodo: string): string {
+  return sumarMeses(periodo, 1);
 }
 
 export function periodoMasReciente(periodos: PeriodoResumenResponse[]): string | null {
   return periodos.reduce<string | null>((reciente, { periodo }) => (!reciente || periodo > reciente ? periodo : reciente), null);
 }
 
-export function esPeriodoEnRango(periodo: string, hoy: Date): boolean {
-  return periodo >= PERIODO_MINIMO && periodo <= mesSiguiente(periodoActual(hoy));
+export function esPeriodoEnRango(periodo: string, hoy: Date, mesesFuturos = env.mesesFuturosPermitidos): boolean {
+  return periodo >= PERIODO_MINIMO && periodo <= sumarMeses(periodoActual(hoy), mesesFuturos);
 }
 
-export function periodoEnRango(hoy: () => Date): ValidatorFn {
+export function periodoEnRango(hoy: () => Date, mesesFuturos = env.mesesFuturosPermitidos): ValidatorFn {
   return (control) => {
     const periodo = String(control.value ?? '');
-    return !PATRON_PERIODO.test(periodo) || esPeriodoEnRango(periodo, hoy()) ? null : { fueraDeRango: true };
+    return !PATRON_PERIODO.test(periodo) || esPeriodoEnRango(periodo, hoy(), mesesFuturos) ? null : { fueraDeRango: true };
   };
 }
 
-export function sugerirPeriodoNuevo(periodos: string[], hoy: Date): string {
+export function sugerirPeriodoNuevo(periodos: string[], hoy: Date, mesesFuturos = env.mesesFuturosPermitidos): string {
   const reciente = periodos.reduce<string | null>((mayor, periodo) => (!mayor || periodo > mayor ? periodo : mayor), null);
   const sugerido = reciente ? mesSiguiente(reciente) : periodoActual(hoy);
-  return esPeriodoEnRango(sugerido, hoy) ? sugerido : '';
+  return esPeriodoEnRango(sugerido, hoy, mesesFuturos) ? sugerido : '';
 }
 
 export function opcionesDePeriodos(filas: PeriodoFila[], seleccionado: string): DropdownItem[] {

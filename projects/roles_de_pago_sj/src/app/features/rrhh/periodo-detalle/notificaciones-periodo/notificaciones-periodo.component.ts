@@ -7,7 +7,7 @@ import { mensajeDeError } from '@core/utils';
 import type { InformeNotificacionesResponse, ResultadoEncoladoResponse, ResultadoReintentoResponse } from '@models';
 import { COLUMNAS_PROBLEMAS, INTERVALO_ACTUALIZACION_MS } from './notificaciones-periodo.model';
 import { NotificacionesService } from './notificaciones-periodo.service';
-import { aFilasProblemas, firmaDe, hayEnviosPendientes } from './notificaciones-periodo.util';
+import { advertenciasDeEnvio, aFilasProblemas, firmaDe, hayEnviosPendientes } from './notificaciones-periodo.util';
 
 @Component({
   selector: 'app-notificaciones-periodo',
@@ -34,6 +34,10 @@ export class NotificacionesPeriodoComponent {
   readonly mensaje = signal('');
 
   readonly problemas = computed(() => aFilasProblemas(this.informe()?.problemas ?? []));
+  readonly advertencias = computed(() => {
+    const informe = this.informe();
+    return informe ? advertenciasDeEnvio(informe) : [];
+  });
 
   constructor() {
     effect(() => {

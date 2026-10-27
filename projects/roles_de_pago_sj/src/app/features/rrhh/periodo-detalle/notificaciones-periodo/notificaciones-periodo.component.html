@@ -12,6 +12,10 @@
         <app-aviso variante="info">Los avisos por correo están deshabilitados en este entorno.</app-aviso>
       }
 
+      @for (advertencia of advertencias(); track advertencia.texto) {
+        <app-aviso [variante]="advertencia.variante">{{ advertencia.texto }}</app-aviso>
+      }
+
       <div class="flex flex-wrap items-center gap-2">
         <ui-badge variant="neutral">{{ datos.total }} avisos</ui-badge>
         <ui-badge variant="success">{{ datos.enviadas }} enviados</ui-badge>

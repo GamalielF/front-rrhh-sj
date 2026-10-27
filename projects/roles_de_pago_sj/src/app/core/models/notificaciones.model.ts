@@ -17,6 +17,9 @@ export interface InformeNotificacionesResponse {
   fallidas: number;
   omitidas: number;
   problemas: ProblemaNotificacionResponse[];
+  despachoAutomatico?: boolean;
+  envioConfigurado?: boolean;
+  modoCorreo?: 'API' | 'SIMULADO';
 }
 
 export interface ResultadoEncoladoResponse {
