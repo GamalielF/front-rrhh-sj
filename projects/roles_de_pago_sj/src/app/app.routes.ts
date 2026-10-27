@@ -78,37 +78,6 @@ export const routes: Routes = [
           },
         ],
       },
-      {
-        path: 'test',
-        data: {
-          breadcrumb: { label: 'Página de Prueba', icon: '@tui.info' },
-        },
-        children: [
-          {
-            path: '',
-            loadComponent: () => import('./features/test-page/test-page.component').then(m => m.TestPageComponent),
-          },
-          {
-            path: 'detalle',
-            data: {
-              breadcrumb: { label: 'hola 1', icon: '@tui.layers' },
-            },
-            children: [
-              {
-                path: '',
-                loadComponent: () => import('./features/test-detail/test-detail.component').then(m => m.TestDetailComponent),
-              },
-              {
-                path: 'subnivel',
-                data: {
-                  breadcrumb: { label: 'hola 2', icon: '@tui.layers' },
-                },
-                loadComponent: () => import('./features/test-subdetail/test-subdetail.component').then(m => m.TestSubdetailComponent),
-              },
-            ],
-          },
-        ],
-      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },
