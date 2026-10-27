@@ -45,6 +45,26 @@ describe('aFilasRoles', () => {
   });
 });
 
+describe('aFilasRoles con notificación', () => {
+  it('cada fila trae el estado de su aviso, y sin aviso queda "Sin notificar"', () => {
+    const [sinAviso, enviado, fallido] = aFilasRoles(
+      [
+        rol(1, 'PEREZ JUAN'),
+        { ...rol(2, 'GARCIA ANA'), notificacion: { estado: 'ENVIADA', intentos: 1, enviadaEn: '2026-10-27T10:15:00', proximoIntento: null, ultimoError: null } },
+        { ...rol(3, 'MORA LUIS'), notificacion: { estado: 'FALLIDA', intentos: 5, enviadaEn: null, proximoIntento: null, ultimoError: 'La API de correo no respondió a tiempo' } },
+      ],
+      true,
+    );
+    expect(sinAviso).toMatchObject({ notificacion: 'Sin notificar', notificacionDetalle: 'No se generó el aviso' });
+    expect(enviado).toMatchObject({ notificacion: 'Notificado', notificacionVariante: 'success' });
+    expect(fallido).toMatchObject({ notificacion: 'Error de envío', notificacionVariante: 'danger' });
+  });
+
+  it('antes de publicar el detalle dice que se avisará al publicar', () => {
+    expect(aFilasRoles([rol(1, 'PEREZ JUAN')], false)[0].notificacionDetalle).toBe('Se avisará al publicar');
+  });
+});
+
 describe('filtrarRoles', () => {
   const filas: RolFila[] = aFilasRoles([rol(1, 'PÉREZ LÓPEZ JUAN'), rol(2, 'GARCÍA MORA ANA')]);
 
@@ -61,6 +81,20 @@ describe('filtrarRoles', () => {
     expect(filtrarRoles(filas, '0202125712').map((fila) => fila.id)).toEqual([2]);
     expect(filtrarRoles(filas, '17123').map((fila) => fila.id)).toEqual([1]);
     expect(filtrarRoles(filas, '5712').map((fila) => fila.id)).toEqual([2]);
+  });
+
+  it('también se puede buscar por el estado de la notificación, por ejemplo para ver solo los errores', () => {
+    const filas = aFilasRoles(
+      [
+        { ...rol(1, 'PEREZ JUAN'), notificacion: { estado: 'FALLIDA', intentos: 5, enviadaEn: null, proximoIntento: null, ultimoError: 'x' } },
+        { ...rol(2, 'GARCIA ANA'), notificacion: { estado: 'ENVIADA', intentos: 1, enviadaEn: '2026-10-27T10:15:00', proximoIntento: null, ultimoError: null } },
+        rol(3, 'MORA LUIS'),
+      ],
+      true,
+    );
+    expect(filtrarRoles(filas, 'error').map((fila) => fila.id)).toEqual([1]);
+    expect(filtrarRoles(filas, 'notificado').map((fila) => fila.id)).toEqual([2]);
+    expect(filtrarRoles(filas, 'sin notificar').map((fila) => fila.id)).toEqual([3]);
   });
 
   it('sin texto devuelve todo, y sin coincidencias devuelve vacío', () => {

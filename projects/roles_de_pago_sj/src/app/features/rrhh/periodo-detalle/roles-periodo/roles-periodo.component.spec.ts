@@ -48,6 +48,35 @@ describe('RolesPeriodoComponent', () => {
     expect(html.textContent).not.toContain('PEREZ JUAN');
   });
 
+  it('muestra el estado del aviso de cada rol, con su detalle', () => {
+    const { fixture, html } = crear([
+      { ...rol(1, 'PEREZ JUAN'), notificacion: { estado: 'ENVIADA', intentos: 1, enviadaEn: '2026-10-27T10:15:00', proximoIntento: null, ultimoError: null } },
+      { ...rol(2, 'GARCIA ANA'), notificacion: { estado: 'FALLIDA', intentos: 5, enviadaEn: null, proximoIntento: null, ultimoError: 'La API de correo no respondió a tiempo' } },
+    ]);
+    fixture.componentRef.setInput('publicado', true);
+    fixture.detectChanges();
+    expect(html.textContent).toContain('Notificación');
+    expect(html.textContent).toContain('Notificado');
+    expect(html.textContent).toContain('Enviado el 27/10/2026 10:15');
+    expect(html.textContent).toContain('Error de envío');
+    expect(html.textContent).toContain('La API de correo no respondió a tiempo (5 intentos)');
+  });
+
+  it('antes de publicar todos aparecen "Sin notificar", y el buscador encuentra los que tienen error', () => {
+    const { fixture, componente, html } = crear([rol(1, 'PEREZ JUAN')]);
+    expect(html.textContent).toContain('Sin notificar');
+    expect(html.textContent).toContain('Se avisará al publicar');
+
+    fixture.componentRef.setInput('publicado', true);
+    fixture.componentRef.setInput('roles', [
+      rol(1, 'PEREZ JUAN'),
+      { ...rol(2, 'GARCIA ANA'), notificacion: { estado: 'FALLIDA', intentos: 5, enviadaEn: null, proximoIntento: null, ultimoError: 'x' } },
+    ]);
+    componente.filtro.setValue('error');
+    fixture.detectChanges();
+    expect(componente.filas().map((fila) => fila.id)).toEqual([2]);
+  });
+
   it('sin roles dice que todavía no hay ninguno', () => {
     const { html } = crear([]);
     expect(html.textContent).toContain('Todavía no hay roles cargados');

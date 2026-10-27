@@ -11,6 +11,10 @@ export function aFilasProblemas(problemas: ProblemaNotificacionResponse[]): Prob
   }));
 }
 
+export function firmaDe(informe: InformeNotificacionesResponse): string {
+  return [informe.total, informe.enviadas, informe.pendientes, informe.reintentando, informe.fallidas, informe.omitidas].join('|');
+}
+
 export function hayEnviosPendientes(informe: InformeNotificacionesResponse): boolean {
   return informe.habilitadas && informe.pendientes > 0;
 }

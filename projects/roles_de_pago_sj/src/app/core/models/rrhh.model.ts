@@ -1,4 +1,4 @@
-import type { EstadoCarga, EstadoPeriodo, EstadoRegistro, FechaHora, Periodo } from './comunes.model';
+import type { EstadoCarga, EstadoNotificacion, EstadoPeriodo, EstadoRegistro, FechaHora, Periodo } from './comunes.model';
 
 export interface PeriodoResumenResponse {
   periodo: Periodo;
@@ -6,6 +6,14 @@ export interface PeriodoResumenResponse {
   fechaPublicacion: FechaHora | null;
   publicadoPor: string | null;
   rolesActivos: number;
+}
+
+export interface NotificacionRolResponse {
+  estado: EstadoNotificacion;
+  intentos: number;
+  enviadaEn: FechaHora | null;
+  proximoIntento: FechaHora | null;
+  ultimoError: string | null;
 }
 
 export interface RolPagoResumenResponse {
@@ -16,6 +24,7 @@ export interface RolPagoResumenResponse {
   tamanoBytes: number;
   actualizadoEn: FechaHora;
   actualizadoPor: string | null;
+  notificacion?: NotificacionRolResponse | null;
 }
 
 export interface ListadoPeriodoResponse {

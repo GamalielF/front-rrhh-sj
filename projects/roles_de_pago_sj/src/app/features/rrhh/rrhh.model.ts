@@ -11,12 +11,17 @@ export interface PeriodoFila {
   publicadoPor: string;
 }
 
+export type VarianteNotificacion = 'success' | 'info' | 'warning' | 'danger' | 'neutral';
+
 export interface RolFila {
   id: number;
   cedula: string;
   nombre: string;
   estado: EstadoRegistro;
   estadoEtiqueta: string;
+  notificacion: string;
+  notificacionVariante: VarianteNotificacion;
+  notificacionDetalle: string;
   tamano: string;
   actualizadoEn: string;
 }
@@ -40,6 +45,8 @@ export const COLUMNAS_ROLES: TableColumn<RolFila>[] = [
     type: 'badge',
     badgeVariant: (fila) => (fila.estado === 'ACTIVO' ? 'success' : 'neutral'),
   },
+  { key: 'notificacion', title: 'Notificación', type: 'badge', badgeVariant: (fila) => fila.notificacionVariante },
+  { key: 'notificacionDetalle', title: 'Detalle del aviso' },
   { key: 'tamano', title: 'Tamaño' },
   { key: 'actualizadoEn', title: 'Actualizado' },
 ];

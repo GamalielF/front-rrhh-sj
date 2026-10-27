@@ -2,6 +2,7 @@ import { ValidatorFn } from '@angular/forms';
 import type { DropdownItem } from '@lumen/ui';
 import { formatearFechaHora, formatearPeriodo, formatearTamano } from '@core/utils';
 import type { PeriodoResumenResponse, RolPagoResumenResponse } from '@models';
+import { describirNotificacion } from './notificacion-rol.util';
 import { PATRON_PERIODO, PERIODO_MINIMO, PeriodoFila, RolFila } from './rrhh.model';
 
 export function aFilasPeriodos(periodos: PeriodoResumenResponse[]): PeriodoFila[] {
@@ -16,21 +17,27 @@ export function aFilasPeriodos(periodos: PeriodoResumenResponse[]): PeriodoFila[
   }));
 }
 
-export function aFilasRoles(roles: RolPagoResumenResponse[]): RolFila[] {
-  return roles.map((rol) => ({
-    id: rol.id,
-    cedula: rol.cedula,
-    nombre: rol.nombre ?? '—',
-    estado: rol.estado,
-    estadoEtiqueta: rol.estado === 'ACTIVO' ? 'Activo' : 'Inactivo',
-    tamano: formatearTamano(rol.tamanoBytes),
-    actualizadoEn: formatearFechaHora(rol.actualizadoEn),
-  }));
+export function aFilasRoles(roles: RolPagoResumenResponse[], publicado = false): RolFila[] {
+  return roles.map((rol) => {
+    const aviso = describirNotificacion(rol.notificacion, publicado);
+    return {
+      id: rol.id,
+      cedula: rol.cedula,
+      nombre: rol.nombre ?? '—',
+      estado: rol.estado,
+      estadoEtiqueta: rol.estado === 'ACTIVO' ? 'Activo' : 'Inactivo',
+      notificacion: aviso.etiqueta,
+      notificacionVariante: aviso.variante,
+      notificacionDetalle: aviso.detalle,
+      tamano: formatearTamano(rol.tamanoBytes),
+      actualizadoEn: formatearFechaHora(rol.actualizadoEn),
+    };
+  });
 }
 
 export function filtrarRoles(filas: RolFila[], texto: string): RolFila[] {
   const buscado = normalizar(texto);
-  return buscado ? filas.filter((fila) => normalizar(`${fila.cedula} ${fila.nombre}`).includes(buscado)) : filas;
+  return buscado ? filas.filter((fila) => normalizar(`${fila.cedula} ${fila.nombre} ${fila.notificacion}`).includes(buscado)) : filas;
 }
 
 export function resumirNombres(nombres: string[], maximo: number): string {

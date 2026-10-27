@@ -93,6 +93,33 @@ describe('NotificacionesPeriodoComponent', () => {
     expect(servicio.informe).toHaveBeenCalledTimes(1);
   });
 
+  it('no avisa en la primera carga, pero sí cuando después cambian los números (para que la tabla de roles se actualice)', () => {
+    servicio.informe
+      .mockReturnValueOnce(of(informe({ pendientes: 3, enviadas: 0 })))
+      .mockReturnValueOnce(of(informe({ pendientes: 1, enviadas: 2 })))
+      .mockReturnValue(of(informe({ pendientes: 1, enviadas: 2 })));
+    const { componente } = crear();
+    const cambio = vi.fn();
+    componente.cambio.subscribe(cambio);
+    expect(cambio).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(INTERVALO_ACTUALIZACION_MS);
+    expect(cambio).toHaveBeenCalledTimes(1);
+
+    vi.advanceTimersByTime(INTERVALO_ACTUALIZACION_MS);
+    expect(cambio).toHaveBeenCalledTimes(1);
+  });
+
+  it('si al actualizar los números siguen igual, no avisa', () => {
+    servicio.informe.mockReturnValue(of(informe()));
+    const { componente } = crear();
+    const cambio = vi.fn();
+    componente.cambio.subscribe(cambio);
+    componente.actualizar();
+    componente.actualizar();
+    expect(cambio).not.toHaveBeenCalled();
+  });
+
   it('reintentar devuelve los fallidos a la cola, lo cuenta y vuelve a consultar', () => {
     servicio.informe.mockReturnValue(of(informe({ fallidas: 2 })));
     servicio.reintentar.mockReturnValue(of({ reintentadas: 2 }));

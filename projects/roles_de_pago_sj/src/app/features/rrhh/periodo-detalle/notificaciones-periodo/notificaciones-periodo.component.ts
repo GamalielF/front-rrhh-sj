@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, Subscription, finalize, timer } from 'rxjs';
 import { BadgeComponent, ButtonComponent, CardComponent, TableComponent } from '@lumen/ui';
@@ -7,7 +7,7 @@ import { mensajeDeError } from '@core/utils';
 import type { InformeNotificacionesResponse, ResultadoEncoladoResponse, ResultadoReintentoResponse } from '@models';
 import { COLUMNAS_PROBLEMAS, INTERVALO_ACTUALIZACION_MS } from './notificaciones-periodo.model';
 import { NotificacionesService } from './notificaciones-periodo.service';
-import { aFilasProblemas, hayEnviosPendientes } from './notificaciones-periodo.util';
+import { aFilasProblemas, firmaDe, hayEnviosPendientes } from './notificaciones-periodo.util';
 
 @Component({
   selector: 'app-notificaciones-periodo',
@@ -21,8 +21,10 @@ export class NotificacionesPeriodoComponent {
   private servicio = inject(NotificacionesService);
   private destroyRef = inject(DestroyRef);
   private temporizador: Subscription | null = null;
+  private firma: string | null = null;
 
   readonly periodo = input.required<string>();
+  readonly cambio = output<void>();
 
   readonly columnas = COLUMNAS_PROBLEMAS;
   readonly informe = signal<InformeNotificacionesResponse | null>(null);
@@ -36,7 +38,10 @@ export class NotificacionesPeriodoComponent {
   constructor() {
     effect(() => {
       const periodo = this.periodo();
-      untracked(() => this.cargar(periodo));
+      untracked(() => {
+        this.firma = null;
+        this.cargar(periodo);
+      });
     });
   }
 
@@ -88,10 +93,19 @@ export class NotificacionesPeriodoComponent {
         next: (informe) => {
           this.error.set('');
           this.informe.set(informe);
+          this.avisarSiCambio(informe);
           this.programarActualizacion(informe);
         },
         error: (error: unknown) => this.error.set(mensajeDeError(error)),
       });
+  }
+
+  private avisarSiCambio(informe: InformeNotificacionesResponse): void {
+    const firma = firmaDe(informe);
+    if (this.firma !== null && this.firma !== firma) {
+      this.cambio.emit();
+    }
+    this.firma = firma;
   }
 
   private programarActualizacion(informe: InformeNotificacionesResponse): void {

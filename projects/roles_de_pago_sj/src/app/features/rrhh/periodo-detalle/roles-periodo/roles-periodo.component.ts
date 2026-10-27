@@ -29,7 +29,7 @@ export class RolesPeriodoComponent {
   readonly filtro = new FormControl('', { nonNullable: true });
   private texto = toSignal(this.filtro.valueChanges, { initialValue: '' });
 
-  readonly filas = computed(() => filtrarRoles(aFilasRoles(this.roles()), this.texto()));
+  readonly filas = computed(() => filtrarRoles(aFilasRoles(this.roles(), this.publicado()), this.texto()));
   readonly subtitulo = computed(() => `${this.filas().length} de ${this.roles().length} roles`);
   readonly acciones = computed(() =>
     accionesDeRol(

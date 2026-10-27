@@ -12,6 +12,9 @@ const ROL: RolFila = {
   nombre: 'PEREZ JUAN',
   estado: 'ACTIVO',
   estadoEtiqueta: 'Activo',
+  notificacion: 'Sin notificar',
+  notificacionVariante: 'neutral',
+  notificacionDetalle: '',
   tamano: '2 KB',
   actualizadoEn: '22/10/2026 16:53',
 };

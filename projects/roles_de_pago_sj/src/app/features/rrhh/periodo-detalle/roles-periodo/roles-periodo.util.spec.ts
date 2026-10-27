@@ -7,6 +7,9 @@ const fila = (estado: RolFila['estado']): RolFila => ({
   nombre: 'PEREZ JUAN',
   estado,
   estadoEtiqueta: estado === 'ACTIVO' ? 'Activo' : 'Inactivo',
+  notificacion: 'Sin notificar',
+  notificacionVariante: 'neutral',
+  notificacionDetalle: '',
   tamano: '2 KB',
   actualizadoEn: '22/10/2026 16:53',
 });

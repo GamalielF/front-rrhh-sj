@@ -88,6 +88,13 @@ export class PeriodoDetalleComponent {
     this.cambiarEstado(this.servicio.activarRol(this.periodo(), rol.id));
   }
 
+  actualizarRoles(): void {
+    this.servicio
+      .listado(this.periodo())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({ next: (listado) => this.listado.set(listado), error: () => undefined });
+  }
+
   recargar(): void {
     this.cargar(this.periodo());
   }

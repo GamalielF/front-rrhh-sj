@@ -11,7 +11,7 @@
 
     <app-resumen-periodo [periodo]="periodo()" [resumen]="resumen()" (publicado)="recargar()" />
     @if (estaPublicado()) {
-      <app-notificaciones-periodo [periodo]="periodo()" />
+      <app-notificaciones-periodo [periodo]="periodo()" (cambio)="actualizarRoles()" />
       <app-cobertura-periodo [periodo]="periodo()" />
     }
 

@@ -129,6 +129,21 @@ describe('PeriodoDetalleComponent', () => {
     expect(servicio.listado).not.toHaveBeenCalled();
   });
 
+  it('actualizarRoles vuelve a pedir solo el listado, sin parpadeo ni errores aunque falle', () => {
+    const { componente } = crear();
+    servicio.listado.mockClear();
+    servicio.resumen.mockClear();
+
+    componente.actualizarRoles();
+    expect(servicio.listado).toHaveBeenCalledTimes(1);
+    expect(servicio.resumen).not.toHaveBeenCalled();
+    expect(componente.cargando()).toBe(false);
+
+    servicio.listado.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 0 })));
+    componente.actualizarRoles();
+    expect(componente.error()).toBe('');
+  });
+
   it('recargar vuelve a pedir los datos (lo que ocurre al terminar una carga o publicar)', () => {
     const { componente } = crear();
     componente.recargar();
