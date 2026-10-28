@@ -7,6 +7,7 @@ import type {
   ApiResponse,
   InformeNotificacionesResponse,
   ResultadoEncoladoResponse,
+  ResultadoReenvioResponse,
   ResultadoReintentoResponse,
 } from '@models';
 
@@ -29,6 +30,12 @@ export class NotificacionesService {
   reintentar(periodo: string): Observable<ResultadoReintentoResponse> {
     return this.api
       .post<ApiResponse<ResultadoReintentoResponse>>(`${this.ruta(periodo)}/reintentar`, {})
+      .pipe(map(({ content }) => content));
+  }
+
+  reenviar(periodo: string, rolId: number): Observable<ResultadoReenvioResponse> {
+    return this.api
+      .post<ApiResponse<ResultadoReenvioResponse>>(`${this.ruta(periodo)}/${rolId}/reenviar`, {})
       .pipe(map(({ content }) => content));
   }
 

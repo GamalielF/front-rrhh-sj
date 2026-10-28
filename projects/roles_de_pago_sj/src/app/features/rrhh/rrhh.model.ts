@@ -23,6 +23,7 @@ export interface RolFila {
   notificacion: string;
   notificacionVariante: VarianteNotificacion;
   notificacionDetalle: string;
+  reenviable: boolean;
   tamano: string;
   actualizadoEn: string;
 }

@@ -92,6 +92,7 @@ export const ETIQUETAS_ACCION: Record<string, string> = {
   REPORTE_EXPORTADO: 'Reporte exportado',
   NOTIFICACIONES_GENERADAS: 'Avisos generados',
   NOTIFICACIONES_REINTENTADAS: 'Avisos reintentados',
+  NOTIFICACION_REENVIADA: 'Aviso reenviado',
   USUARIO_ROL_OTORGADO: 'Rol otorgado a un usuario',
   USUARIO_ROL_REVOCADO: 'Rol quitado a un usuario',
 };

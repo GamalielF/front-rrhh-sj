@@ -30,6 +30,7 @@ export function aFilasRoles(roles: RolPagoResumenResponse[], publicado = false):
       notificacion: aviso.etiqueta,
       notificacionVariante: aviso.variante,
       notificacionDetalle: aviso.detalle,
+      reenviable: aviso.reenviable,
       tamano: formatearTamano(rol.tamanoBytes),
       actualizadoEn: formatearFechaHora(rol.actualizadoEn),
     };
@@ -70,8 +71,12 @@ export function periodoMasReciente(periodos: PeriodoResumenResponse[]): string |
   return periodos.reduce<string | null>((reciente, { periodo }) => (!reciente || periodo > reciente ? periodo : reciente), null);
 }
 
+export function ultimoPeriodoPermitido(hoy: Date, mesesFuturos = env.mesesFuturosPermitidos): string {
+  return sumarMeses(periodoActual(hoy), mesesFuturos);
+}
+
 export function esPeriodoEnRango(periodo: string, hoy: Date, mesesFuturos = env.mesesFuturosPermitidos): boolean {
-  return periodo >= PERIODO_MINIMO && periodo <= sumarMeses(periodoActual(hoy), mesesFuturos);
+  return periodo >= PERIODO_MINIMO && periodo <= ultimoPeriodoPermitido(hoy, mesesFuturos);
 }
 
 export function periodoEnRango(hoy: () => Date, mesesFuturos = env.mesesFuturosPermitidos): ValidatorFn {

@@ -1,0 +1,11 @@
+<app-confirmacion
+  [abierta]="!!rol()"
+  titulo="Reenviar notificación"
+  [subtitulo]="rol()?.nombre ?? ''"
+  [mensaje]="mensaje()"
+  etiquetaConfirmar="Reenviar"
+  [procesando]="procesando()"
+  [error]="error()"
+  (confirmar)="confirmar()"
+  (cancelar)="cancelar()"
+/>

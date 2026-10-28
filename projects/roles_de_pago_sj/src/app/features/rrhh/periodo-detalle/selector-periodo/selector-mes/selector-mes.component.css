@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+.selector-mes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.anio {
+  font-size: 1rem;
+}
+
+.cuadricula {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.cuadricula ui-button {
+  display: block;
+}
+
+:host ::ng-deep .cuadricula ui-button button {
+  width: 100%;
+}
+
+.pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.atajos {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.leyenda {
+  font-size: 0.75rem;
+  color: #64748b;
+}

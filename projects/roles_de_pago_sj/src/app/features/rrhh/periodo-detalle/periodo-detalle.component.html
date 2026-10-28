@@ -16,6 +16,14 @@
     }
 
     <app-carga-masiva [periodo]="periodo()" (cargaFinalizada)="recargar()" />
+    @if (resultadoReenvio(); as reenvio) {
+      <app-aviso [variante]="reenvio.variante">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <span>{{ reenvio.texto }}</span>
+          <ui-button size="sm" variant="ghost" (onClick)="resultadoReenvio.set(null)">Cerrar</ui-button>
+        </div>
+      </app-aviso>
+    }
     <app-roles-periodo
       [roles]="listado()?.roles ?? []"
       [cargando]="cargando()"
@@ -24,7 +32,14 @@
       (ver)="verRol($event)"
       (inactivar)="inactivar($event)"
       (activar)="activar($event)"
+      (reenviar)="pedirReenvio($event)"
     />
     <app-ver-rol [periodo]="periodo()" [rol]="rolSeleccionado()" (cerrado)="rolSeleccionado.set(null)" />
+    <app-reenviar-notificacion
+      [periodo]="periodo()"
+      [rol]="rolAReenviar()"
+      (cerrado)="rolAReenviar.set(null)"
+      (reenviado)="reenvioTerminado($event)"
+    />
   </div>
 </ui-page-container>

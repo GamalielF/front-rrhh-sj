@@ -86,21 +86,26 @@ describe('RolesPeriodoComponent', () => {
     const { fixture, componente } = crear([rol(1, 'PEREZ JUAN')]);
     fixture.componentRef.setInput('puedeVerAjenos', true);
     const ver = vi.fn();
+    const reenviar = vi.fn();
     const inactivar = vi.fn();
     componente.ver.subscribe(ver);
+    componente.reenviar.subscribe(reenviar);
     componente.inactivar.subscribe(inactivar);
 
-    const [accionVer, accionInactivar] = componente.acciones();
+    const [accionVer, accionReenviar, accionInactivar] = componente.acciones();
     accionVer.onClick?.(componente.filas()[0]);
+    accionReenviar.onClick?.(componente.filas()[0]);
     accionInactivar.onClick?.(componente.filas()[0]);
 
     expect(ver).toHaveBeenCalledWith(expect.objectContaining({ id: 1, cedula: '1712345675' }));
+    expect(reenviar).toHaveBeenCalledWith(expect.objectContaining({ id: 1 }));
     expect(inactivar).toHaveBeenCalledWith(expect.objectContaining({ id: 1 }));
   });
 
-  it('con el período publicado y sin permiso la tabla no ofrece acciones', () => {
+  it('con el período publicado y sin permiso de ver roles ajenos, la tabla solo ofrece reenviar la notificación', () => {
     const { fixture, componente } = crear([rol(1, 'PEREZ JUAN')]);
     fixture.componentRef.setInput('publicado', true);
-    expect(componente.acciones()).toEqual([]);
+    const visibles = componente.acciones().filter((accion) => !accion.hidden?.(componente.filas()[0]));
+    expect(visibles.map((accion) => accion.label)).toEqual(['Reenviar notificación']);
   });
 });

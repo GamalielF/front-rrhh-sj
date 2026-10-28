@@ -1,0 +1,33 @@
+<div class="selector-mes" role="group" aria-label="Elegir mes y año">
+  <div class="cabecera">
+    <ui-button variant="ghost" size="icon" icon="@tui.chevron-left" [disabled]="!puedeRetroceder()" (onClick)="cambiarAnio(-1)">
+      <span class="sr-only">Año anterior</span>
+    </ui-button>
+    <strong class="anio" aria-live="polite">{{ anio() }}</strong>
+    <ui-button variant="ghost" size="icon" icon="@tui.chevron-right" [disabled]="!puedeAvanzar()" (onClick)="cambiarAnio(1)">
+      <span class="sr-only">Año siguiente</span>
+    </ui-button>
+  </div>
+
+  <div class="cuadricula">
+    @for (celda of celdas(); track celda.periodo) {
+      <ui-button
+        size="sm"
+        [variant]="celda.seleccionada ? 'brand' : celda.existe ? 'outline' : 'ghost'"
+        [disabled]="celda.deshabilitada"
+        (onClick)="elegir(celda.periodo)"
+      >
+        {{ celda.nombre }}
+      </ui-button>
+    }
+  </div>
+
+  <div class="pie">
+    <div class="atajos">
+      @for (atajo of atajos(); track atajo.periodo) {
+        <ui-button size="xs" variant="light" (onClick)="elegir(atajo.periodo)">{{ atajo.etiqueta }}</ui-button>
+      }
+    </div>
+    <span class="leyenda">Con borde: el período ya existe</span>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 import type { EstadoNotificacion, Periodo } from './comunes.model';
+import type { NotificacionRolResponse } from './rrhh.model';
 
 export interface ProblemaNotificacionResponse {
   nombre: string;
@@ -31,4 +32,10 @@ export interface ResultadoEncoladoResponse {
 
 export interface ResultadoReintentoResponse {
   reintentadas: number;
+}
+
+export interface ResultadoReenvioResponse {
+  aceptado: boolean;
+  mensaje: string;
+  notificacion: NotificacionRolResponse | null;
 }

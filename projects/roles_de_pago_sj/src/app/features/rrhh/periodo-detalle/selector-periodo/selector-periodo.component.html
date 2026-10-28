@@ -13,18 +13,30 @@
   <ui-button variant="brand" icon="@tui.plus" (onClick)="abrirCreacion()">Nuevo período</ui-button>
 </div>
 
-<ui-modal [isOpen]="creando()" title="Nuevo período" subtitle="Se creará al cargar su primer rol" size="sm" (close)="cerrarCreacion()">
-  <ui-input
-    type="text"
-    label="Período"
-    placeholder="aaaa-mm"
-    prefixIcon="@tui.calendar"
-    hint="Por ejemplo 2026-10"
-    [formControl]="periodoNuevo"
-    [customErrorMessages]="mensajesPeriodo"
-  />
+<ui-modal [isOpen]="creando()" title="Nuevo período" subtitle="Elija el mes y el año" size="sm" (close)="cerrarCreacion()">
+  <div class="flex flex-col gap-3">
+    <app-selector-mes
+      [valor]="periodoNuevo.value"
+      [minimo]="minimo"
+      [maximo]="maximo"
+      [existentes]="existentes()"
+      (elegido)="elegirMes($event)"
+    />
+
+    @if (etiquetaNueva(); as etiquetaElegida) {
+      <app-aviso [variante]="yaExiste() ? 'info' : 'success'">
+        <strong>{{ etiquetaElegida }}</strong>:
+        {{ yaExiste() ? 'ya existe, se abrirá con sus roles.' : 'período nuevo, se creará al cargar su primer rol.' }}
+      </app-aviso>
+    } @else {
+      <app-aviso variante="warning">Elija un mes para continuar.</app-aviso>
+    }
+    <p class="m-0 text-xs text-gray-500">Se puede elegir desde enero de 2020 hasta {{ etiquetaMaximo }}.</p>
+  </div>
   <div slot="footer" class="flex justify-end gap-2">
     <ui-button variant="ghost" (onClick)="cerrarCreacion()">Cancelar</ui-button>
-    <ui-button variant="brand" icon="@tui.folder-open" (onClick)="crear()">Abrir período</ui-button>
+    <ui-button variant="brand" icon="@tui.folder-open" [disabled]="!etiquetaNueva()" (onClick)="crear()">
+      {{ yaExiste() ? 'Abrir período' : 'Crear período' }}
+    </ui-button>
   </div>
 </ui-modal>

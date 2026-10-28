@@ -15,6 +15,7 @@ const ROL: RolFila = {
   notificacion: 'Sin notificar',
   notificacionVariante: 'neutral',
   notificacionDetalle: '',
+  reenviable: true,
   tamano: '2 KB',
   actualizadoEn: '22/10/2026 16:53',
 };

@@ -21,4 +21,11 @@ describe('NotificacionesService', () => {
     expect(api.post.mock.calls[0][0]).toMatch(/rrhh\/periodos\/2026-09\/notificaciones\/generar$/);
     expect(api.post.mock.calls[1][0]).toMatch(/rrhh\/periodos\/2026-09\/notificaciones\/reintentar$/);
   });
+
+  it('reenviar manda un POST a la ruta del rol dentro de los avisos del período, y devuelve el resultado', async () => {
+    api.post.mockReturnValue(of({ content: { aceptado: true } }));
+    const servicio = TestBed.inject(NotificacionesService);
+    expect(await firstValueFrom(servicio.reenviar('2026-09', 42))).toEqual({ aceptado: true });
+    expect(api.post.mock.calls.at(-1)?.[0]).toMatch(/rrhh\/periodos\/2026-09\/notificaciones\/42\/reenviar$/);
+  });
 });

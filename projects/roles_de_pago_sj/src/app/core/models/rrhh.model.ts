@@ -14,6 +14,8 @@ export interface NotificacionRolResponse {
   enviadaEn: FechaHora | null;
   proximoIntento: FechaHora | null;
   ultimoError: string | null;
+  reenviadaEn?: FechaHora | null;
+  reenvios?: number;
 }
 
 export interface RolPagoResumenResponse {

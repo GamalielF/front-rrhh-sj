@@ -9,4 +9,5 @@ export interface ManejadoresAcciones {
   ver: (fila: RolFila) => void;
   inactivar: (fila: RolFila) => void;
   activar: (fila: RolFila) => void;
+  reenviar: (fila: RolFila) => void;
 }

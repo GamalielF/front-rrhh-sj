@@ -24,6 +24,7 @@ export class RolesPeriodoComponent {
   readonly ver = output<RolFila>();
   readonly inactivar = output<RolFila>();
   readonly activar = output<RolFila>();
+  readonly reenviar = output<RolFila>();
 
   readonly columnas = COLUMNAS_ROLES;
   readonly filtro = new FormControl('', { nonNullable: true });
@@ -38,6 +39,7 @@ export class RolesPeriodoComponent {
         ver: (fila) => this.ver.emit(fila),
         inactivar: (fila) => this.inactivar.emit(fila),
         activar: (fila) => this.activar.emit(fila),
+        reenviar: (fila) => this.reenviar.emit(fila),
       },
     ),
   );

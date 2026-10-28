@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, finalize, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { PageContainerComponent } from '@lumen/ui';
+import { ButtonComponent, PageContainerComponent } from '@lumen/ui';
 import { AvisoComponent } from '@components';
 import { PerfilAplicacionService, puedeVerRolesAjenos } from '@services';
 import { formatearPeriodo, ignorarNoEncontrado, mensajeDeError } from '@core/utils';
@@ -14,6 +14,7 @@ import { aFilasPeriodos } from '../rrhh.util';
 import { CargaMasivaComponent } from './carga-masiva';
 import { CoberturaPeriodoComponent } from './cobertura-periodo';
 import { NotificacionesPeriodoComponent } from './notificaciones-periodo';
+import { ReenvioTerminado, ReenviarNotificacionComponent, ResumenReenvio, resumirReenvio } from './reenviar-notificacion';
 import { ResumenPeriodoComponent } from './resumen-periodo';
 import { RolesPeriodoComponent } from './roles-periodo';
 import { SelectorPeriodoComponent } from './selector-periodo';
@@ -24,6 +25,7 @@ import { VerRolComponent } from './ver-rol';
   standalone: true,
   imports: [
     PageContainerComponent,
+    ButtonComponent,
     AvisoComponent,
     SelectorPeriodoComponent,
     ResumenPeriodoComponent,
@@ -32,6 +34,7 @@ import { VerRolComponent } from './ver-rol';
     NotificacionesPeriodoComponent,
     CoberturaPeriodoComponent,
     VerRolComponent,
+    ReenviarNotificacionComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './periodo-detalle.component.html',
@@ -55,6 +58,9 @@ export class PeriodoDetalleComponent {
   readonly resumen = signal<ResumenPeriodoResponse | null>(null);
   readonly cargando = signal(true);
   readonly rolSeleccionado = signal<RolFila | null>(null);
+  readonly rolAReenviar = signal<RolFila | null>(null);
+  readonly resultadoReenvio = signal<ResumenReenvio | null>(null);
+  private avisos = viewChild(NotificacionesPeriodoComponent);
   readonly error = signal('');
   readonly estaPublicado = computed(
     () => (this.resumen() ?? this.listado())?.estadoPeriodo === 'PUBLICADO',
@@ -86,6 +92,17 @@ export class PeriodoDetalleComponent {
 
   activar(rol: RolFila): void {
     this.cambiarEstado(this.servicio.activarRol(this.periodo(), rol.id));
+  }
+
+  pedirReenvio(rol: RolFila): void {
+    this.resultadoReenvio.set(null);
+    this.rolAReenviar.set(rol);
+  }
+
+  reenvioTerminado(reenvio: ReenvioTerminado): void {
+    this.resultadoReenvio.set(resumirReenvio(reenvio));
+    this.actualizarRoles();
+    this.avisos()?.actualizar();
   }
 
   actualizarRoles(): void {
