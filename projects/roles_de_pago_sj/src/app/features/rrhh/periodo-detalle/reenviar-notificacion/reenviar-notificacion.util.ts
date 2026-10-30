@@ -3,8 +3,7 @@ import type { ReenvioTerminado, ResumenReenvio } from './reenviar-notificacion.m
 
 export function mensajeDeConfirmacion(fila: RolFila): string {
   return (
-    `Se enviará de nuevo el aviso al correo institucional de esta persona (su código de usuario + @coopsanjose.fin.ec). ` +
-    `El contenido del correo lo define la plantilla de la API, y la acción queda registrada en la auditoría. ` +
+    `Se enviará de nuevo el aviso al correo institucional de esta persona. ` +
     `Estado actual del aviso: ${fila.notificacion}.`
   );
 }

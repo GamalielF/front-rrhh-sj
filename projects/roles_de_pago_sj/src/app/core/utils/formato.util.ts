@@ -33,3 +33,11 @@ export function restarDias(fecha: Date, dias: number): Date {
   resultado.setDate(resultado.getDate() - dias);
   return resultado;
 }
+
+export function acortarTexto(texto: string, maximo: number): string {
+  return texto.length <= maximo ? texto : `${texto.slice(0, maximo - 1).trimEnd()}…`;
+}
+
+export function formatearHora(fecha: Date): string {
+  return [fecha.getHours(), fecha.getMinutes(), fecha.getSeconds()].map((valor) => String(valor).padStart(2, '0')).join(':');
+}

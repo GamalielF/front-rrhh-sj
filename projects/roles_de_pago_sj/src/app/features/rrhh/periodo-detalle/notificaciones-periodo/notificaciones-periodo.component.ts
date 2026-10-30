@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, Subscription, finalize, timer } from 'rxjs';
 import { BadgeComponent, ButtonComponent, CardComponent, TableComponent } from '@lumen/ui';
 import { AvisoComponent } from '@components';
-import { mensajeDeError } from '@core/utils';
+import { formatearHora, mensajeDeError } from '@core/utils';
 import type { InformeNotificacionesResponse, ResultadoEncoladoResponse, ResultadoReintentoResponse } from '@models';
 import { COLUMNAS_PROBLEMAS, INTERVALO_ACTUALIZACION_MS } from './notificaciones-periodo.model';
 import { NotificacionesService } from './notificaciones-periodo.service';
@@ -28,6 +28,7 @@ export class NotificacionesPeriodoComponent {
 
   readonly columnas = COLUMNAS_PROBLEMAS;
   readonly informe = signal<InformeNotificacionesResponse | null>(null);
+  readonly actualizadoA = signal('');
   readonly cargando = signal(false);
   readonly trabajando = signal(false);
   readonly error = signal('');
@@ -97,6 +98,7 @@ export class NotificacionesPeriodoComponent {
         next: (informe) => {
           this.error.set('');
           this.informe.set(informe);
+          this.actualizadoA.set(formatearHora(new Date()));
           this.avisarSiCambio(informe);
           this.programarActualizacion(informe);
         },

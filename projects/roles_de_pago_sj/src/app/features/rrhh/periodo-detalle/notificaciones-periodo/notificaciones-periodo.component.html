@@ -1,4 +1,4 @@
-<ui-card title="Avisos por correo" subtitle="Se envían solos al publicar; aquí se ve cómo van">
+<ui-card [title]="'Avisos por correo'" subtitle="Se envían solos al publicar; aquí se ve cómo van">
   <div class="flex flex-col gap-4">
     @if (error()) {
       <app-aviso variante="danger">{{ error() }}</app-aviso>
@@ -32,6 +32,9 @@
         <ui-button variant="outline" icon="@tui.refresh-cw" [loading]="cargando()" (onClick)="actualizar()">
           Actualizar
         </ui-button>
+        @if (actualizadoA()) {
+          <span class="self-center text-xs text-gray-500">Actualizado a las {{ actualizadoA() }}</span>
+        }
         @if (datos.habilitadas) {
           <ui-button variant="outline" icon="@tui.send" [loading]="trabajando()" (onClick)="generar()">
             Generar los que falten

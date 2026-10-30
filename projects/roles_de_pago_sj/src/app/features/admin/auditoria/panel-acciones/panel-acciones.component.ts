@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
 import { CardComponent, PaginationComponent, TableComponent } from '@lumen/ui';
-import { AvisoComponent } from '@components';
+import { ErrorCargaComponent } from '@components';
 import { mensajeDeError } from '@core/utils';
 import { AccionFila, COLUMNAS_ACCIONES, FiltrosAuditoria, TAMANO_PAGINA } from '../auditoria.model';
 import { AuditoriaService } from '../auditoria.service';
@@ -11,7 +11,7 @@ import { aFilasAcciones } from '../auditoria.util';
 @Component({
   selector: 'app-panel-acciones',
   standalone: true,
-  imports: [AvisoComponent, CardComponent, PaginationComponent, TableComponent],
+  imports: [CardComponent, PaginationComponent, TableComponent, ErrorCargaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './panel-acciones.component.html',
   styleUrls: ['./panel-acciones.component.css'],
@@ -75,7 +75,7 @@ export class PanelAccionesComponent {
     this.recargar();
   }
 
-  private recargar(): void {
+  recargar(): void {
     this.cargando.set(true);
     this.recarga$.next();
   }

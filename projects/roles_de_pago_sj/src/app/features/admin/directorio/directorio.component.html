@@ -1,10 +1,14 @@
 <ui-page-container title="Directorio" description="Las personas que vienen del AD: de ahí salen los empleados y sus cédulas">
   <div class="flex flex-col gap-4">
     @if (error()) {
-      <app-aviso variante="danger">{{ error() }}</app-aviso>
+      @if (estado()) {
+        <app-aviso variante="danger">{{ error() }}</app-aviso>
+      } @else {
+        <app-error-carga [mensaje]="error()" (reintentar)="reintentarEstado()" />
+      }
     }
 
-    <ui-card title="Estado del directorio" subtitle="Se sincroniza con el AD a pedido; la última vez fue la que se muestra aquí">
+    <ui-card [title]="'Estado del directorio'" subtitle="Se sincroniza con el AD a pedido; la última vez fue la que se muestra aquí">
       <div class="flex flex-col gap-4">
         @if (estado(); as datosEstado) {
           <ui-grid [cols]="1" [colsMd]="2" [colsLg]="4" gap="md">

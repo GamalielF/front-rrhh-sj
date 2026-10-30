@@ -1,4 +1,4 @@
-<ui-card title="Filtros" subtitle="Sin fechas se muestran los últimos 30 días; el rango máximo es de 366 días">
+<ui-card [title]="'Filtros'" subtitle="Sin fechas se muestran los últimos 30 días; el rango máximo es de 366 días">
   <div class="flex flex-col gap-4">
     <ui-grid [cols]="1" [colsMd]="2" [colsLg]="4" gap="md">
       <ui-input type="date" label="Desde" [formControl]="formulario.controls.desde" />

@@ -3,14 +3,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ButtonComponent, CardComponent } from '@lumen/ui';
-import { AvisoComponent } from '@components';
+import { ErrorCargaComponent } from '@components';
 import { formatearPeriodo, mensajeDeError } from '@core/utils';
 import { MiRolPagoService } from '../../mi-rol-pago';
 
 @Component({
   selector: 'app-rol-reciente',
   standalone: true,
-  imports: [AvisoComponent, ButtonComponent, CardComponent],
+  imports: [ButtonComponent, CardComponent, ErrorCargaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './rol-reciente.component.html',
   styleUrls: ['./rol-reciente.component.css'],
@@ -31,6 +31,12 @@ export class RolRecienteComponent {
   });
 
   constructor() {
+    this.cargar();
+  }
+
+  cargar(): void {
+    this.error.set('');
+    this.cargando.set(true);
     this.servicio
       .periodos()
       .pipe(

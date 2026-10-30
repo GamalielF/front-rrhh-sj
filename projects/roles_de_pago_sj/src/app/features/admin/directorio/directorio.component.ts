@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signa
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import { BadgeComponent, ButtonComponent, CardComponent, GridComponent, KpiCardComponent, PageContainerComponent } from '@lumen/ui';
-import { AvisoComponent } from '@components';
+import { AvisoComponent, ErrorCargaComponent } from '@components';
 import { formatearFechaHora, mensajeDeError } from '@core/utils';
 import type { EstadoDirectorioResponse, ResultadoSincronizacionResponse } from '@models';
 import { BuscadorCedulaComponent } from './buscador-cedula';
@@ -22,6 +22,7 @@ import { datosDeSincronizacion } from './directorio.util';
     KpiCardComponent,
     PageContainerComponent,
     BuscadorCedulaComponent,
+    ErrorCargaComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './directorio.component.html',
@@ -71,6 +72,11 @@ export class DirectorioComponent {
           this.cargarEstado();
         },
       });
+  }
+
+  reintentarEstado(): void {
+    this.error.set('');
+    this.cargarEstado();
   }
 
   private cargarEstado(): void {

@@ -1,4 +1,4 @@
-<ui-card title="Lectura de roles" subtitle="Quiénes ya abrieron su rol de pago">
+<ui-card [title]="'Lectura de roles'" subtitle="Quiénes ya abrieron su rol de pago">
   <div class="flex flex-col gap-4">
     @if (error()) {
       <app-aviso variante="danger">{{ error() }}</app-aviso>

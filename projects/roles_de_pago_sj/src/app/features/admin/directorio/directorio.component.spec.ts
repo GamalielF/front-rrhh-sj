@@ -1,3 +1,4 @@
+import { botonReintentar } from '../../../shared/components/error-carga/error-carga.testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -84,5 +85,29 @@ describe('DirectorioComponent', () => {
     fixture.detectChanges();
     expect(html.textContent).toContain('El servicio del directorio no está disponible');
     expect(componente.sincronizando()).toBe(false);
+  });
+
+  it('si falla la carga del estado ofrece volver a cargar, y al pulsarlo lo vuelve a pedir', () => {
+    servicio.estado.mockReturnValueOnce(
+      throwError(() => new HttpErrorResponse({ status: 502, error: { message: 'El servicio del directorio no está disponible' } })),
+    );
+    const { fixture, html } = crear();
+    expect(html.textContent).toContain('El servicio del directorio no está disponible');
+    botonReintentar(html)?.click();
+    fixture.detectChanges();
+    expect(servicio.estado).toHaveBeenCalledTimes(2);
+    expect(html.textContent).toContain('312');
+    expect(html.textContent).not.toContain('El servicio del directorio no está disponible');
+  });
+
+  it('si falla una sincronización no ofrece volver a cargar: el estado ya se cargó y el botón de sincronizar sigue ahí', () => {
+    servicio.sincronizar.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 502, error: { message: 'El servicio del directorio no está disponible' } })),
+    );
+    const { fixture, componente, html } = crear();
+    componente.sincronizar();
+    fixture.detectChanges();
+    expect(html.textContent).toContain('El servicio del directorio no está disponible');
+    expect(botonReintentar(html)).toBeUndefined();
   });
 });

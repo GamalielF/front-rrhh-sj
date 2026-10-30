@@ -15,6 +15,8 @@ const ROL: RolFila = {
   notificacion: 'Sin notificar',
   notificacionVariante: 'neutral',
   notificacionDetalle: '',
+  notificacionDetalleCorto: '',
+  grupoNotificacion: 'SIN_AVISO',
   reenviable: true,
   tamano: '2 KB',
   actualizadoEn: '22/10/2026 16:53',
@@ -81,6 +83,7 @@ describe('VerRolComponent', () => {
     expect(servicio.verRol).toHaveBeenCalledWith('2026-09', 5, 'Revisión solicitada por el empleado');
     expect(componente.pdf()).toEqual(PDF);
     expect(html.querySelector('app-visor-pdf iframe')).not.toBeNull();
+    expect(html.textContent).not.toContain('Descargar PDF');
     expect(html.textContent).not.toContain('Motivo de la consulta');
   });
 

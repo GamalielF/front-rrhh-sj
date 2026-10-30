@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, catchError, finalize, map, of, switchMap } from 'rxjs';
 import { ButtonComponent, CardComponent, PaginationComponent, TableComponent } from '@lumen/ui';
-import { AvisoComponent } from '@components';
+import { AvisoComponent, ErrorCargaComponent } from '@components';
 import { base64ToBlob, descargarBlob, mensajeDeError } from '@core/utils';
 import { AccesoFila, COLUMNAS_ACCESOS, FiltrosAuditoria, TAMANO_PAGINA } from '../auditoria.model';
 import { AuditoriaService } from '../auditoria.service';
@@ -11,7 +11,7 @@ import { aFilasAccesos } from '../auditoria.util';
 @Component({
   selector: 'app-panel-accesos',
   standalone: true,
-  imports: [AvisoComponent, ButtonComponent, CardComponent, PaginationComponent, TableComponent],
+  imports: [AvisoComponent, ButtonComponent, CardComponent, PaginationComponent, TableComponent, ErrorCargaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './panel-accesos.component.html',
   styleUrls: ['./panel-accesos.component.css'],
@@ -104,7 +104,7 @@ export class PanelAccesosComponent {
       });
   }
 
-  private recargar(): void {
+  recargar(): void {
     this.cargando.set(true);
     this.recarga$.next();
   }

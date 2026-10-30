@@ -40,6 +40,8 @@ const rol: RolFila = {
   notificacion: 'Notificado',
   notificacionVariante: 'success',
   notificacionDetalle: 'Enviado',
+  notificacionDetalleCorto: 'Enviado',
+  grupoNotificacion: 'NOTIFICADO',
   reenviable: true,
   tamano: '2 KB',
   actualizadoEn: '22/10/2026 16:53',

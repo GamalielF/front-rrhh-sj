@@ -1,5 +1,5 @@
 import type { NotificacionRolResponse } from '@models';
-import { describirNotificacion } from './notificacion-rol.util';
+import { describirNotificacion, grupoDeNotificacion } from './notificacion-rol.util';
 
 const aviso = (cambios: Partial<NotificacionRolResponse> = {}): NotificacionRolResponse => ({
   estado: 'PENDIENTE',
@@ -107,5 +107,21 @@ describe('describirNotificacion', () => {
     expect(describirNotificacion(aviso({ estado: 'FALLIDA' }), true).reenviable).toBe(true);
     expect(describirNotificacion(aviso({ estado: 'OMITIDA' }), true).reenviable).toBe(true);
     expect(describirNotificacion(null, true).reenviable).toBe(true);
+  });
+});
+
+describe('grupoDeNotificacion', () => {
+  it('clasifica cada estado del aviso en uno de cuatro grupos', () => {
+    const con = (estado: NotificacionRolResponse['estado']) => grupoDeNotificacion({ estado, intentos: 0, enviadaEn: null, proximoIntento: null, ultimoError: null });
+    expect(con('ENVIADA')).toBe('NOTIFICADO');
+    expect(con('PENDIENTE')).toBe('EN_COLA');
+    expect(con('FALLIDA')).toBe('PROBLEMA');
+    expect(con('OMITIDA')).toBe('PROBLEMA');
+  });
+
+  it('un rol sin aviso, o con un estado desconocido, queda sin notificar', () => {
+    expect(grupoDeNotificacion(null)).toBe('SIN_AVISO');
+    expect(grupoDeNotificacion(undefined)).toBe('SIN_AVISO');
+    expect(grupoDeNotificacion({ estado: 'NUEVO' as never, intentos: 0, enviadaEn: null, proximoIntento: null, ultimoError: null })).toBe('SIN_AVISO');
   });
 });

@@ -1,3 +1,4 @@
+import { botonReintentar } from '../../../shared/components/error-carga/error-carga.testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
@@ -54,5 +55,14 @@ describe('PeriodosComponent', () => {
     const { html } = crear();
     expect(html.textContent).toContain('No hay conexión con el servidor');
     expect(navegar).not.toHaveBeenCalled();
+  });
+
+  it('si falla la carga ofrece volver a cargar, y al pulsarlo abre el período más reciente', () => {
+    servicio.periodos.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 0 }))).mockReturnValue(of([periodo('2026-09')]));
+    const { html } = crear();
+    expect(html.textContent).toContain('No hay conexión con el servidor');
+    botonReintentar(html)?.click();
+    expect(servicio.periodos).toHaveBeenCalledTimes(2);
+    expect(navegar).toHaveBeenCalledWith(['/rrhh/periodos', '2026-09'], { replaceUrl: true });
   });
 });

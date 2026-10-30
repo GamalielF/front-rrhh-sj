@@ -1,3 +1,4 @@
+import { botonReintentar } from '../../shared/components/error-carga/error-carga.testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
@@ -133,5 +134,33 @@ describe('MiRolPagoComponent', () => {
     Object.defineProperty(ruta.snapshot, 'queryParamMap', { value: convertToParamMap({ periodo: '2020-01' }), configurable: true });
     const { componente } = await crear();
     expect(componente.periodoSeleccionado()).toBe('2026-09');
+  });
+
+  it('si falla la carga de los meses ofrece volver a cargar, y al pulsarlo los muestra', async () => {
+    servicio.periodos.mockClear();
+    servicio.periodos.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 0, error: new ProgressEvent('error') })));
+    const { fixture, html } = await crear();
+    expect(botonReintentar(html)).toBeDefined();
+    botonReintentar(html)?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(servicio.periodos).toHaveBeenCalledTimes(2);
+    expect(html.textContent).toContain('Septiembre 2026');
+    expect(botonReintentar(html)).toBeUndefined();
+  });
+
+  it('la cédula se pide con teclado numérico, para que en el celular no salgan las letras', async () => {
+    const { html } = await crear();
+    expect(html.querySelector('input[type="tel"]')).not.toBeNull();
+  });
+
+  it('el empleado que consulta su propio rol puede descargarlo y abrirlo aparte', async () => {
+    servicio.consultar.mockReturnValue(of(PDF));
+    const { fixture, componente, html } = await crear();
+    componente.formulario.controls.cedula.setValue('1712345675');
+    componente.consultar();
+    fixture.detectChanges();
+    expect(html.textContent).toContain('Descargar PDF');
+    expect(html.textContent).toContain('Abrir en otra pestaña');
   });
 });

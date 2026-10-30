@@ -3,8 +3,8 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, finalize, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ButtonComponent, PageContainerComponent } from '@lumen/ui';
-import { AvisoComponent } from '@components';
+import { BreadcrumbService, ButtonComponent, PageContainerComponent } from '@lumen/ui';
+import { AvisoComponent, ErrorCargaComponent } from '@components';
 import { PerfilAplicacionService, puedeVerRolesAjenos } from '@services';
 import { formatearPeriodo, ignorarNoEncontrado, mensajeDeError } from '@core/utils';
 import type { ListadoPeriodoResponse, ResumenPeriodoResponse } from '@models';
@@ -35,6 +35,7 @@ import { VerRolComponent } from './ver-rol';
     CoberturaPeriodoComponent,
     VerRolComponent,
     ReenviarNotificacionComponent,
+    ErrorCargaComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './periodo-detalle.component.html',
@@ -46,6 +47,7 @@ export class PeriodoDetalleComponent {
   private servicio = inject(RrhhService);
   private destroyRef = inject(DestroyRef);
   private perfilAplicacion = inject(PerfilAplicacionService);
+  private migas = inject(BreadcrumbService);
 
   readonly periodo = toSignal(this.ruta.paramMap.pipe(map((parametros) => parametros.get('periodo') ?? '')), {
     initialValue: '',
@@ -74,7 +76,10 @@ export class PeriodoDetalleComponent {
         this.router.navigate(['/rrhh/periodos']);
         return;
       }
-      untracked(() => this.cargar(periodo));
+      untracked(() => {
+        this.migas.setLabel(periodo, formatearPeriodo(periodo));
+        this.cargar(periodo);
+      });
     });
   }
 

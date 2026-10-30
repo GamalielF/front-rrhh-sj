@@ -1,10 +1,10 @@
 import { ValidatorFn } from '@angular/forms';
 import type { DropdownItem } from '@lumen/ui';
-import { formatearFechaHora, formatearPeriodo, formatearTamano } from '@core/utils';
+import { acortarTexto, formatearFechaHora, formatearPeriodo, formatearTamano } from '@core/utils';
 import type { PeriodoResumenResponse, RolPagoResumenResponse } from '@models';
 import { env } from '@env';
-import { describirNotificacion } from './notificacion-rol.util';
-import { PATRON_PERIODO, PERIODO_MINIMO, PeriodoFila, RolFila } from './rrhh.model';
+import { describirNotificacion, grupoDeNotificacion } from './notificacion-rol.util';
+import { LARGO_DETALLE_EN_TABLA, PATRON_PERIODO, PERIODO_MINIMO, PeriodoFila, RolFila } from './rrhh.model';
 
 export function aFilasPeriodos(periodos: PeriodoResumenResponse[]): PeriodoFila[] {
   return periodos.map((periodo) => ({
@@ -30,6 +30,8 @@ export function aFilasRoles(roles: RolPagoResumenResponse[], publicado = false):
       notificacion: aviso.etiqueta,
       notificacionVariante: aviso.variante,
       notificacionDetalle: aviso.detalle,
+      notificacionDetalleCorto: acortarTexto(aviso.detalle, LARGO_DETALLE_EN_TABLA),
+      grupoNotificacion: grupoDeNotificacion(rol.notificacion),
       reenviable: aviso.reenviable,
       tamano: formatearTamano(rol.tamanoBytes),
       actualizadoEn: formatearFechaHora(rol.actualizadoEn),

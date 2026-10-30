@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { BadgeComponent, ButtonComponent, CardComponent, GridComponent, KpiCardComponent } from '@lumen/ui';
-import { AvisoComponent } from '@components';
+import { AvisoComponent, ErrorCargaComponent } from '@components';
 import { formatearPeriodo, mensajeDeError } from '@core/utils';
 import { periodoActual } from '../../rrhh';
 import { Indicador } from '../home.model';
@@ -13,7 +13,7 @@ import { indicadoresDe } from './estado-periodo.util';
 @Component({
   selector: 'app-estado-periodo',
   standalone: true,
-  imports: [AvisoComponent, BadgeComponent, ButtonComponent, CardComponent, GridComponent, KpiCardComponent],
+  imports: [AvisoComponent, BadgeComponent, ButtonComponent, CardComponent, GridComponent, KpiCardComponent, ErrorCargaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './estado-periodo.component.html',
   styleUrls: ['./estado-periodo.component.css'],
@@ -41,6 +41,12 @@ export class EstadoPeriodoComponent {
   });
 
   constructor() {
+    this.cargar();
+  }
+
+  cargar(): void {
+    this.error.set('');
+    this.cargando.set(true);
     this.servicio
       .cargar(new Date())
       .pipe(

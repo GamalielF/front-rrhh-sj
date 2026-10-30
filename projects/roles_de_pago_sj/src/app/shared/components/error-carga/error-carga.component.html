@@ -1,0 +1,6 @@
+<app-aviso variante="danger">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+    <span>{{ mensaje() }}</span>
+    <ui-button size="sm" variant="outline" icon="@tui.refresh-cw" (onClick)="reintentar.emit()">{{ etiqueta() }}</ui-button>
+  </div>
+</app-aviso>

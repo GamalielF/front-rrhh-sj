@@ -1,7 +1,7 @@
-<ui-card title="Accesos a roles de pago" subtitle="Cada consulta de un rol, permitida o denegada">
+<ui-card [title]="'Accesos a roles de pago'" subtitle="Cada consulta de un rol, permitida o denegada">
   <div class="flex flex-col gap-4">
     @if (error()) {
-      <app-aviso variante="danger">{{ error() }}</app-aviso>
+      <app-error-carga [mensaje]="error()" (reintentar)="recargar()" />
     }
     @if (aviso()) {
       <app-aviso [variante]="truncado() ? 'warning' : 'success'">{{ aviso() }}</app-aviso>

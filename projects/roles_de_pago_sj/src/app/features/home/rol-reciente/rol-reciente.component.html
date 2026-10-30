@@ -1,7 +1,7 @@
-<ui-card title="Mi rol de pago" subtitle="Para verlo se le pedirá su número de cédula">
+<ui-card [title]="'Mi rol de pago'" subtitle="Para verlo se le pedirá su número de cédula">
   <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
     @if (error()) {
-      <app-aviso variante="danger">{{ error() }}</app-aviso>
+      <app-error-carga [mensaje]="error()" (reintentar)="cargar()" />
     } @else if (ultimo()) {
       <div class="flex flex-col gap-1">
         <span class="text-xs text-gray-500">Último rol disponible</span>

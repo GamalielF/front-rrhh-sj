@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ButtonComponent, CardComponent } from '@lumen/ui';
-import { AvisoComponent } from '@components';
+import { AvisoComponent, ErrorCargaComponent } from '@components';
 import { mensajeDeError } from '@core/utils';
 import { AlertaAdmin } from '../home.model';
 import { AlertasAdminService } from './alertas-admin.service';
@@ -11,7 +11,7 @@ import { AlertasAdminService } from './alertas-admin.service';
 @Component({
   selector: 'app-alertas-admin',
   standalone: true,
-  imports: [AvisoComponent, ButtonComponent, CardComponent],
+  imports: [AvisoComponent, ButtonComponent, CardComponent, ErrorCargaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './alertas-admin.component.html',
   styleUrls: ['./alertas-admin.component.css'],
@@ -27,6 +27,12 @@ export class AlertasAdminComponent {
   readonly error = signal('');
 
   constructor() {
+    this.cargar();
+  }
+
+  cargar(): void {
+    this.error.set('');
+    this.cargando.set(true);
     this.servicio
       .cargar(new Date())
       .pipe(

@@ -1,4 +1,4 @@
-<ui-card title="Cuadre y publicación" [subtitle]="'Compara las personas activas del directorio con los roles cargados de ' + mes()">
+<ui-card [title]="'Cuadre y publicación'" [subtitle]="'Compara las personas activas del directorio con los roles cargados de ' + mes()">
   <div class="flex flex-col gap-4">
     @if (resumen(); as datos) {
       <ui-grid [cols]="1" [colsMd]="2" [colsLg]="4" gap="md">

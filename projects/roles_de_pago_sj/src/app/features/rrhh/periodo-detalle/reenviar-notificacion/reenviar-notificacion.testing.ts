@@ -10,6 +10,8 @@ export const filaPerez: RolFila = {
   notificacion: 'Notificado',
   notificacionVariante: 'success',
   notificacionDetalle: 'Enviado el 27/10/2026 10:15',
+  notificacionDetalleCorto: 'Enviado el 27/10/2026 10:15',
+  grupoNotificacion: 'NOTIFICADO',
   reenviable: true,
   tamano: '2 KB',
   actualizadoEn: '27/10/2026 10:15',

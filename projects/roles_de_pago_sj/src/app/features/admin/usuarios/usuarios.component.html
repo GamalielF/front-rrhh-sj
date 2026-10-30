@@ -10,7 +10,7 @@
       <app-aviso variante="success">{{ mensaje() }}</app-aviso>
     }
 
-    <ui-card title="Con acceso especial" subtitle="Administradores y personal de RRHH, incluidos los dados de baja">
+    <ui-card [title]="'Con acceso especial'" subtitle="Administradores y personal de RRHH, incluidos los dados de baja">
       <ui-table
         [columns]="columnas"
         [data]="privilegiados()"
@@ -21,7 +21,7 @@
       />
     </ui-card>
 
-    <ui-card title="Directorio" subtitle="Busque a una persona para asignarle un rol">
+    <ui-card [title]="'Directorio'" subtitle="Busque a una persona para asignarle un rol">
       <div class="flex flex-col gap-4">
         <ui-input
           type="search"

@@ -1,3 +1,13 @@
 :host {
   display: block;
 }
+
+/* ui-card recorta lo que sobresale (overflow-hidden) y con eso corta el menú de orden cuando la tabla tiene pocas filas */
+:host ::ng-deep ui-card > div {
+  overflow: visible;
+}
+
+:host ::ng-deep ui-card > div > div:first-child {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}

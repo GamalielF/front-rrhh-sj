@@ -1,11 +1,18 @@
-import { Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, Routes } from '@angular/router';
 import { authGuard } from '@lumen/auth';
+import { formatearPeriodo } from '@core/utils';
 import { DashboardShellComponent } from './core/layout/dashboard';
 import { rolesAplicacionGuard } from './core/guards';
+
+const SUFIJO_TITULO = 'Roles de pago';
+
+export const tituloDelPeriodo = (ruta: ActivatedRouteSnapshot): string =>
+  `Período ${formatearPeriodo(ruta.paramMap.get('periodo') ?? '')} · ${SUFIJO_TITULO}`;
 
 export const routes: Routes = [
   {
     path: 'login',
+    title: `Iniciar sesión · ${SUFIJO_TITULO}`,
     loadComponent: () => import('./features/login/login.component').then(m => m.LoginComponent),
   },
   {
@@ -15,6 +22,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'home',
+        title: `Inicio · ${SUFIJO_TITULO}`,
         data: {
           breadcrumb: { label: 'Inicio', icon: '@tui.house' },
         },
@@ -22,6 +30,7 @@ export const routes: Routes = [
       },
       {
         path: 'mi-rol',
+        title: `Mi rol de pago · ${SUFIJO_TITULO}`,
         data: {
           breadcrumb: { label: 'Mi rol de pago', icon: '@tui.file-text' },
         },
@@ -36,12 +45,14 @@ export const routes: Routes = [
         children: [
           {
             path: '',
+            title: `Períodos · ${SUFIJO_TITULO}`,
             loadComponent: () => import('./features/rrhh/periodos').then(m => m.PeriodosComponent),
           },
           {
             path: ':periodo',
+            title: tituloDelPeriodo,
             data: {
-              breadcrumb: { label: 'Detalle', icon: '@tui.folder-open' },
+              breadcrumb: { label: ':periodo', icon: '@tui.folder-open' },
             },
             loadComponent: () => import('./features/rrhh/periodo-detalle').then(m => m.PeriodoDetalleComponent),
           },
@@ -57,6 +68,7 @@ export const routes: Routes = [
           { path: '', redirectTo: 'usuarios', pathMatch: 'full' },
           {
             path: 'usuarios',
+            title: `Usuarios y roles · ${SUFIJO_TITULO}`,
             data: {
               breadcrumb: { label: 'Usuarios y roles', icon: '@tui.user-cog' },
             },
@@ -64,6 +76,7 @@ export const routes: Routes = [
           },
           {
             path: 'directorio',
+            title: `Directorio · ${SUFIJO_TITULO}`,
             data: {
               breadcrumb: { label: 'Directorio', icon: '@tui.database' },
             },
@@ -71,6 +84,7 @@ export const routes: Routes = [
           },
           {
             path: 'auditoria',
+            title: `Auditoría · ${SUFIJO_TITULO}`,
             data: {
               breadcrumb: { label: 'Auditoría', icon: '@tui.clipboard-list' },
             },

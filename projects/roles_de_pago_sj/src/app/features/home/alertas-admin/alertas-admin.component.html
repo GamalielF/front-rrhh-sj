@@ -1,7 +1,7 @@
-<ui-card title="Alertas" subtitle="Lo que conviene revisar del directorio y de la seguridad">
+<ui-card [title]="'Alertas'" subtitle="Lo que conviene revisar del directorio y de la seguridad">
   <div class="flex flex-col gap-3">
     @if (error()) {
-      <app-aviso variante="danger">{{ error() }}</app-aviso>
+      <app-error-carga [mensaje]="error()" (reintentar)="cargar()" />
     }
 
     @for (alerta of alertas(); track alerta.mensaje) {

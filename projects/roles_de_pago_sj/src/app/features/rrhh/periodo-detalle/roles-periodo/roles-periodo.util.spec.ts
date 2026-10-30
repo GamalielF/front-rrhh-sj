@@ -10,6 +10,8 @@ const fila = (estado: RolFila['estado'], reenviable = true): RolFila => ({
   notificacion: 'Sin notificar',
   notificacionVariante: 'neutral',
   notificacionDetalle: '',
+  notificacionDetalleCorto: '',
+  grupoNotificacion: 'SIN_AVISO',
   reenviable,
   tamano: '2 KB',
   actualizadoEn: '22/10/2026 16:53',

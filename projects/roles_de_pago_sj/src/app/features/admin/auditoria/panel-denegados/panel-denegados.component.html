@@ -1,7 +1,7 @@
-<ui-card title="Intentos denegados" subtitle="Quién tecleó cédulas que no eran suyas: muchas cédulas distintas es una señal de alerta">
+<ui-card [title]="'Intentos denegados'" subtitle="Quién tecleó cédulas que no eran suyas: muchas cédulas distintas es una señal de alerta">
   <div class="flex flex-col gap-4">
     @if (error()) {
-      <app-aviso variante="danger">{{ error() }}</app-aviso>
+      <app-error-carga [mensaje]="error()" (reintentar)="recargar()" />
     }
     <ui-table
       [columns]="columnas"

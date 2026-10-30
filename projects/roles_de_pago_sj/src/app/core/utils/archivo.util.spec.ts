@@ -9,7 +9,8 @@ describe('base64ToBlob', () => {
 });
 
 describe('descargarBlob', () => {
-  it('descarga con el nombre indicado y libera la dirección temporal', () => {
+  it('descarga con el nombre indicado y libera la dirección temporal una vez iniciada la descarga', () => {
+    vi.useFakeTimers();
     URL.createObjectURL = vi.fn(() => 'blob:csv');
     URL.revokeObjectURL = vi.fn();
     const clic = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
@@ -28,7 +29,10 @@ describe('descargarBlob', () => {
     expect(enlace?.download).toBe('accesos-2026-10.csv');
     expect(enlace?.href).toContain('blob:csv');
     expect(clic).toHaveBeenCalledTimes(1);
+    expect(URL.revokeObjectURL).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(10_000);
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:csv');
+    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 });

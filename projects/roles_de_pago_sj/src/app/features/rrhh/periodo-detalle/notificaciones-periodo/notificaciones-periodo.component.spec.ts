@@ -159,4 +159,15 @@ describe('NotificacionesPeriodoComponent', () => {
     servicio.informe.mockReturnValue(of(informe({ modoCorreo: 'SIMULADO', envioConfigurado: true })));
     expect(crear().html.textContent).toContain('modo simulado');
   });
+
+  it('dice a qué hora se actualizó por última vez, y la cambia al actualizar', () => {
+    vi.setSystemTime(new Date(2026, 9, 29, 10, 15, 30));
+    const { fixture, componente, html } = crear();
+    expect(html.textContent).toContain('Actualizado a las 10:15:30');
+
+    vi.setSystemTime(new Date(2026, 9, 29, 10, 16, 5));
+    componente.actualizar();
+    fixture.detectChanges();
+    expect(html.textContent).toContain('Actualizado a las 10:16:05');
+  });
 });

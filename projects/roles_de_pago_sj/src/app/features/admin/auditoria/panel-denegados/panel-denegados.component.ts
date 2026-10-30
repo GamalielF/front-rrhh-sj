@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
 import { CardComponent, TableComponent } from '@lumen/ui';
-import { AvisoComponent } from '@components';
+import { ErrorCargaComponent } from '@components';
 import { mensajeDeError } from '@core/utils';
 import { COLUMNAS_DENEGADOS, DenegadoFila, FiltrosAuditoria } from '../auditoria.model';
 import { AuditoriaService } from '../auditoria.service';
@@ -11,7 +11,7 @@ import { aFilasDenegados } from '../auditoria.util';
 @Component({
   selector: 'app-panel-denegados',
   standalone: true,
-  imports: [AvisoComponent, CardComponent, TableComponent],
+  imports: [CardComponent, TableComponent, ErrorCargaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './panel-denegados.component.html',
   styleUrls: ['./panel-denegados.component.css'],
@@ -52,10 +52,12 @@ export class PanelDenegadosComponent {
 
     effect(() => {
       this.filtros();
-      untracked(() => {
-        this.cargando.set(true);
-        this.recarga$.next();
-      });
+      untracked(() => this.recargar());
     });
+  }
+
+  recargar(): void {
+    this.cargando.set(true);
+    this.recarga$.next();
   }
 }

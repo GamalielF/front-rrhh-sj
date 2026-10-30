@@ -1,3 +1,4 @@
+import { botonReintentar } from '../../../../shared/components/error-carga/error-carga.testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -44,5 +45,16 @@ describe('PanelAccionesComponent', () => {
     servicio.acciones.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 403, error: { message: 'No tiene permiso' } })));
     const { html } = crear();
     expect(html.textContent).toContain('No tiene permiso');
+  });
+
+  it('si falla la consulta ofrece volver a cargar, y al pulsarlo la repite con los mismos filtros', () => {
+    servicio.acciones.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 0 })));
+    const { fixture, html } = crear();
+    expect(html.textContent).toContain('No hay conexión con el servidor');
+    botonReintentar(html)?.click();
+    fixture.detectChanges();
+    expect(servicio.acciones).toHaveBeenCalledTimes(2);
+    expect(html.textContent).not.toContain('No hay conexión con el servidor');
+    expect(botonReintentar(html)).toBeUndefined();
   });
 });

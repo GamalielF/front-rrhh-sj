@@ -1,3 +1,4 @@
+import { botonReintentar } from '../../../shared/components/error-carga/error-carga.testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
@@ -95,5 +96,16 @@ describe('EstadoPeriodoComponent', () => {
   it('si no se pudo consultar muestra el motivo', () => {
     servicio.cargar.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 0 })));
     expect(crear().html.textContent).toContain('No hay conexión con el servidor');
+  });
+
+  it('si falla la carga ofrece volver a cargar, y al pulsarlo vuelve a pedir el estado', () => {
+    servicio.cargar.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 0 }))).mockReturnValue(of(estado()));
+    const { fixture, html } = crear();
+    expect(html.textContent).toContain('No hay conexión con el servidor');
+    botonReintentar(html)?.click();
+    fixture.detectChanges();
+    expect(servicio.cargar).toHaveBeenCalledTimes(2);
+    expect(html.textContent).toContain('Octubre 2026');
+    expect(botonReintentar(html)).toBeUndefined();
   });
 });

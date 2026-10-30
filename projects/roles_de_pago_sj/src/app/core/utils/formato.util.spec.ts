@@ -1,4 +1,4 @@
-import { fechaIso, formatearFechaHora, formatearPeriodo, formatearTamano, restarDias } from './formato.util';
+import { acortarTexto, fechaIso, formatearFechaHora, formatearHora, formatearPeriodo, formatearTamano, restarDias } from './formato.util';
 
 describe('formatearPeriodo', () => {
   it('escribe el mes en español con mayúscula inicial y sin "de"', () => {
@@ -40,5 +40,25 @@ describe('fechaIso y restarDias', () => {
     const hoy = new Date(2026, 0, 3);
     expect(fechaIso(restarDias(hoy, 7))).toBe('2025-12-27');
     expect(fechaIso(hoy)).toBe('2026-01-03');
+  });
+});
+
+describe('acortarTexto', () => {
+  it('deja intacto lo que cabe', () => {
+    expect(acortarTexto('hola', 10)).toBe('hola');
+    expect(acortarTexto('1234567890', 10)).toBe('1234567890');
+  });
+
+  it('corta lo que no cabe con puntos suspensivos, sin pasarse del máximo ni dejar un espacio antes', () => {
+    expect(acortarTexto('abcdefghijk', 10)).toBe('abcdefghi…');
+    expect(acortarTexto('hola mundo cruel', 10)).toBe('hola mund…');
+    expect(acortarTexto('hola   mundo', 6)).toBe('hola…');
+  });
+});
+
+describe('formatearHora', () => {
+  it('escribe horas, minutos y segundos con dos dígitos', () => {
+    expect(formatearHora(new Date(2026, 9, 29, 9, 5, 7))).toBe('09:05:07');
+    expect(formatearHora(new Date(2026, 9, 29, 23, 59, 0))).toBe('23:59:00');
   });
 });

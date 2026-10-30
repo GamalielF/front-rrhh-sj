@@ -1,7 +1,7 @@
-<ui-card title="Período más reciente" subtitle="Cómo va la carga y la publicación de los roles">
+<ui-card [title]="'Período más reciente'" subtitle="Cómo va la carga y la publicación de los roles">
   <div class="flex flex-col gap-4">
     @if (error()) {
-      <app-aviso variante="danger">{{ error() }}</app-aviso>
+      <app-error-carga [mensaje]="error()" (reintentar)="cargar()" />
     }
 
     @if (estado(); as datos) {

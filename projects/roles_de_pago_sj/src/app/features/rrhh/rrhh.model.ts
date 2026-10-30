@@ -14,6 +14,8 @@ export interface PeriodoFila {
 
 export type VarianteNotificacion = 'success' | 'info' | 'warning' | 'danger' | 'neutral';
 
+export type GrupoNotificacion = 'PROBLEMA' | 'EN_COLA' | 'NOTIFICADO' | 'SIN_AVISO';
+
 export interface RolFila {
   id: number;
   cedula: string;
@@ -23,6 +25,8 @@ export interface RolFila {
   notificacion: string;
   notificacionVariante: VarianteNotificacion;
   notificacionDetalle: string;
+  notificacionDetalleCorto: string;
+  grupoNotificacion: GrupoNotificacion;
   reenviable: boolean;
   tamano: string;
   actualizadoEn: string;
@@ -31,6 +35,7 @@ export interface RolFila {
 export const PATRON_PERIODO = /^\d{4}-(0[1-9]|1[0-2])$/;
 
 export const PERIODO_MINIMO = '2020-01';
+export const LARGO_DETALLE_EN_TABLA = 70;
 
 export function mensajeFueraDeRango(mesesFuturos: number): string {
   return mesesFuturos <= 1
@@ -54,7 +59,6 @@ export const COLUMNAS_ROLES: TableColumn<RolFila>[] = [
     badgeVariant: (fila) => (fila.estado === 'ACTIVO' ? 'success' : 'neutral'),
   },
   { key: 'notificacion', title: 'Notificación', type: 'badge', badgeVariant: (fila) => fila.notificacionVariante },
-  { key: 'notificacionDetalle', title: 'Detalle del aviso' },
-  { key: 'tamano', title: 'Tamaño' },
+  { key: 'notificacionDetalleCorto', title: 'Detalle del aviso' },
   { key: 'actualizadoEn', title: 'Actualizado' },
 ];

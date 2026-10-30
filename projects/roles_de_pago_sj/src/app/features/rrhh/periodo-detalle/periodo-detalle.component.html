@@ -1,7 +1,7 @@
 <ui-page-container [title]="'Período ' + mes()" description="Cargue los roles, revise el cuadre y publique">
   <div class="flex flex-col gap-4">
     @if (error()) {
-      <app-aviso variante="danger">{{ error() }}</app-aviso>
+      <app-error-carga [mensaje]="error()" (reintentar)="recargar()" />
     }
     @if (esNuevo()) {
       <app-aviso variante="info">Este período todavía no existe: se creará al cargar su primer rol.</app-aviso>
@@ -25,6 +25,7 @@
       </app-aviso>
     }
     <app-roles-periodo
+      [periodo]="periodo()"
       [roles]="listado()?.roles ?? []"
       [cargando]="cargando()"
       [publicado]="estaPublicado()"

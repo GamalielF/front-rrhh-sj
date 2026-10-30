@@ -1,3 +1,4 @@
+import { botonReintentar } from '../../../../shared/components/error-carga/error-carga.testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -49,5 +50,16 @@ describe('PanelDenegadosComponent', () => {
     servicio.denegados.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 0 })));
     const { html } = crear();
     expect(html.textContent).toContain('No hay conexión con el servidor');
+  });
+
+  it('si falla la consulta ofrece volver a cargar, y al pulsarlo la repite con los mismos filtros', () => {
+    servicio.denegados.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 0 })));
+    const { fixture, html } = crear();
+    expect(html.textContent).toContain('No hay conexión con el servidor');
+    botonReintentar(html)?.click();
+    fixture.detectChanges();
+    expect(servicio.denegados).toHaveBeenCalledTimes(2);
+    expect(html.textContent).not.toContain('No hay conexión con el servidor');
+    expect(botonReintentar(html)).toBeUndefined();
   });
 });

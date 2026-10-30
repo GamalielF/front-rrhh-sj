@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { AuthService } from '@lumen/auth';
 import { ButtonComponent, CardComponent, FormComponent, InputComponent, PageContainerComponent } from '@lumen/ui';
 import type { RolPagoPdfResponse } from '@models';
-import { VisorPdfComponent } from '@components';
+import { ErrorCargaComponent, VisorPdfComponent } from '@components';
 import { estadoHttp, formatearPeriodo, mensajeDeError } from '@core/utils';
 import { CEDULA_DE_10_DIGITOS, MENSAJES_CEDULA, MENSAJES_CONSULTA, TIEMPO_BLOQUEO_MS } from './mi-rol-pago.model';
 import { MiRolPagoService } from './mi-rol-pago.service';
@@ -24,6 +24,7 @@ import { cedulaCoincideConSesion, cedulaDeSesion, elegirPeriodoInicial, mascarar
     InputComponent,
     ButtonComponent,
     VisorPdfComponent,
+    ErrorCargaComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './mi-rol-pago.component.html',
@@ -97,7 +98,9 @@ export class MiRolPagoComponent {
       });
   }
 
-  private cargarPeriodos(): void {
+  cargarPeriodos(): void {
+    this.errorPeriodos.set('');
+    this.cargandoPeriodos.set(true);
     this.servicio
       .periodos()
       .pipe(

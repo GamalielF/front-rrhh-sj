@@ -1,18 +1,57 @@
-<ui-card title="Roles cargados" [subtitle]="subtitulo()">
+<ui-card [title]="'Roles cargados'" [subtitle]="subtitulo()">
   <div class="flex flex-col gap-4">
-    <ui-input
-      type="search"
-      placeholder="Buscar por nombre, cédula o notificación"
-      prefixIcon="@tui.search"
-      [formControl]="filtro"
-    />
+    <div class="flex flex-col lg:flex-row lg:items-center gap-3">
+      <ui-input
+        class="flex-1"
+        type="search"
+        placeholder="Buscar por nombre, cédula o notificación"
+        prefixIcon="@tui.search"
+        [formControl]="filtro"
+      />
+      <div class="flex flex-wrap items-center gap-2">
+        <ui-dropdown
+          triggerIcon="@tui.arrow-down-up"
+          triggerVariant="outline"
+          triggerSize="md"
+          placement="bottom-end"
+          menuTitle="Ordenar por"
+          ariaLabel="Ordenar la tabla"
+          [triggerLabel]="'Orden: ' + etiquetaOrden()"
+          [items]="opcionesOrden()"
+          (itemClick)="ordenarPor($event)"
+        />
+        <ui-button variant="outline" icon="@tui.download" [disabled]="filas().length === 0" (onClick)="exportar()">Exportar CSV</ui-button>
+      </div>
+    </div>
+
+    @if (chips().length > 0) {
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por el estado de la notificación">
+        @for (chip of chips(); track chip.etiqueta) {
+          <ui-button size="sm" [variant]="chip.grupo === grupoActivo() ? 'brand' : 'outline'" (onClick)="filtrarGrupo(chip.grupo)">
+            {{ chip.etiqueta }} · {{ chip.cantidad }}
+          </ui-button>
+        }
+      </div>
+    }
+
     <ui-table
       [columns]="columnas"
-      [data]="filas()"
+      [data]="filasPagina()"
       [loading]="cargando()"
       [actions]="acciones()"
       trackByKey="id"
       emptyMessage="Todavía no hay roles cargados en este período"
     />
+
+    @if (mostrarPaginacion()) {
+      <ui-pagination
+        [page]="paginaVisible()"
+        [pageSize]="tamanoPagina()"
+        [total]="filas().length"
+        [pageSizeOptions]="tamanos"
+        (pageChange)="pagina.set($event)"
+        (pageSizeChange)="cambiarTamano($event)"
+      />
+    }
   </div>
 </ui-card>

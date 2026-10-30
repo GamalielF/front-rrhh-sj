@@ -1,3 +1,9 @@
 @if (direccion(); as fuente) {
+  @if (permitirDescarga()) {
+    <div class="acciones">
+      <ui-button size="sm" variant="outline" icon="@tui.download" (onClick)="descargar()">Descargar PDF</ui-button>
+      <ui-button size="sm" variant="outline" icon="@tui.external-link" (onClick)="abrirAparte()">Abrir en otra pestaña</ui-button>
+    </div>
+  }
   <iframe class="visor" [src]="fuente" [title]="'Rol de pago ' + pdf().periodo"></iframe>
 }

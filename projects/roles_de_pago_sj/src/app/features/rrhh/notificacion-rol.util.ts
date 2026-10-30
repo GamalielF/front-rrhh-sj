@@ -1,6 +1,6 @@
 import { formatearFechaHora } from '@core/utils';
 import type { NotificacionRolResponse } from '@models';
-import type { VarianteNotificacion } from './rrhh.model';
+import type { GrupoNotificacion, VarianteNotificacion } from './rrhh.model';
 
 export interface DescripcionNotificacion {
   etiqueta: string;
@@ -63,4 +63,18 @@ export function describirNotificacion(
 function detalleDeReenvio(notificacion: NotificacionRolResponse): string {
   const veces = (notificacion.reenvios ?? 0) > 1 ? ` · ${notificacion.reenvios} reenvíos` : '';
   return `Reenviado el ${formatearFechaHora(notificacion.reenviadaEn ?? null)}${veces}`;
+}
+
+export function grupoDeNotificacion(notificacion: NotificacionRolResponse | null | undefined): GrupoNotificacion {
+  switch (notificacion?.estado) {
+    case 'ENVIADA':
+      return 'NOTIFICADO';
+    case 'PENDIENTE':
+      return 'EN_COLA';
+    case 'FALLIDA':
+    case 'OMITIDA':
+      return 'PROBLEMA';
+    default:
+      return 'SIN_AVISO';
+  }
 }
