@@ -19,6 +19,12 @@ const plantillas = (carpeta: string): string[] =>
     return ruta.endsWith('.html') ? [ruta] : [];
   });
 
+const rutasRelativas = (carpeta: string, prefijo = ''): string[] =>
+  readdirSync(carpeta).flatMap((nombre) => {
+    const ruta = join(carpeta, nombre);
+    return statSync(ruta).isDirectory() ? rutasRelativas(ruta, `${prefijo}${nombre}/`) : [`${prefijo}${nombre}`];
+  });
+
 describe('convenciones de la interfaz', () => {
   const todas = plantillas(join(raiz(), 'src/app'));
 
@@ -48,9 +54,20 @@ describe('convenciones de la interfaz', () => {
     expect(indice).toContain('name="description"');
   });
 
-  it('el ícono de la pestaña es un .ico válido y liviano', () => {
-    const icono = readFileSync(join(raiz(), 'public/favicon.ico'));
+  it('el ícono de la pestaña existe, es un .ico válido y liviano', () => {
+    const indice = readFileSync(join(raiz(), 'src/index.html'), 'utf-8');
+    const archivo = /<link rel="icon"[^>]*href="([^"]+)"/.exec(indice)?.[1] ?? '';
+    expect(archivo).not.toBe('');
+    const ruta = join(raiz(), 'public', archivo);
+    expect(existsSync(ruta)).toBe(true);
+    const icono = readFileSync(ruta);
     expect([...icono.subarray(0, 4)]).toEqual([0, 0, 1, 0]);
     expect(icono.length).toBeLessThan(50_000);
+  });
+
+  it('ningún recurso del proyecto comparte nombre con uno de libs/base/src/assets: angular.json copia esos después y lo pisarían', () => {
+    const propios = rutasRelativas(join(raiz(), 'public'));
+    const deLumen = new Set(rutasRelativas(join(raiz(), '../../libs/base/src/assets')));
+    expect(propios.filter((ruta) => deLumen.has(ruta))).toEqual([]);
   });
 });

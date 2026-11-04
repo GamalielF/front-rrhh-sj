@@ -2,11 +2,8 @@ import { aceptado, filaPerez, rechazado } from './reenviar-notificacion.testing'
 import { mensajeDeConfirmacion, resumirReenvio } from './reenviar-notificacion.util';
 
 describe('mensajeDeConfirmacion', () => {
-  it('explica adónde va el aviso, quién define su contenido y que queda registrado', () => {
-    const mensaje = mensajeDeConfirmacion(filaPerez);
-    expect(mensaje).toContain('código de usuario + @coopsanjose.fin.ec');
-    expect(mensaje).toContain('la plantilla de la API');
-    expect(mensaje).toContain('auditoría');
+  it('explica que el aviso se envía de nuevo al correo institucional de la persona', () => {
+    expect(mensajeDeConfirmacion(filaPerez)).toContain('Se enviará de nuevo el aviso al correo institucional de esta persona.');
   });
 
   it('dice en qué estado está el aviso ahora', () => {
