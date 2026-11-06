@@ -13,6 +13,8 @@ import { RrhhService } from '../rrhh.service';
 import { aFilasPeriodos } from '../rrhh.util';
 import { CargaMasivaComponent } from './carga-masiva';
 import { CoberturaPeriodoComponent } from './cobertura-periodo';
+import { MotivoCorreccionComponent } from './motivo-correccion';
+import type { CambioConMotivo } from './motivo-correccion/motivo-correccion.model';
 import { NotificacionesPeriodoComponent } from './notificaciones-periodo';
 import { ReenvioTerminado, ReenviarNotificacionComponent, ResumenReenvio, resumirReenvio } from './reenviar-notificacion';
 import { ResumenPeriodoComponent } from './resumen-periodo';
@@ -34,6 +36,7 @@ import { VerRolComponent } from './ver-rol';
     NotificacionesPeriodoComponent,
     CoberturaPeriodoComponent,
     VerRolComponent,
+    MotivoCorreccionComponent,
     ReenviarNotificacionComponent,
     ErrorCargaComponent,
   ],
@@ -62,6 +65,9 @@ export class PeriodoDetalleComponent {
   readonly rolSeleccionado = signal<RolFila | null>(null);
   readonly rolAReenviar = signal<RolFila | null>(null);
   readonly resultadoReenvio = signal<ResumenReenvio | null>(null);
+  /** Período publicado en modo edición: se puede corregir, siempre con motivo y con rastro en la auditoría. */
+  readonly editando = signal(false);
+  readonly cambioPendiente = signal<CambioConMotivo | null>(null);
   private avisos = viewChild(NotificacionesPeriodoComponent);
   readonly error = signal('');
   readonly estaPublicado = computed(
@@ -77,6 +83,8 @@ export class PeriodoDetalleComponent {
         return;
       }
       untracked(() => {
+        this.editando.set(false);
+        this.cambioPendiente.set(null);
         this.migas.setLabel(periodo, formatearPeriodo(periodo));
         this.cargar(periodo);
       });
@@ -92,11 +100,39 @@ export class PeriodoDetalleComponent {
   }
 
   inactivar(rol: RolFila): void {
+    if (this.estaPublicado()) {
+      this.cambioPendiente.set({ tipo: 'inactivar', rol });
+      return;
+    }
     this.cambiarEstado(this.servicio.inactivarRol(this.periodo(), rol.id));
   }
 
   activar(rol: RolFila): void {
+    if (this.estaPublicado()) {
+      this.cambioPendiente.set({ tipo: 'activar', rol });
+      return;
+    }
     this.cambiarEstado(this.servicio.activarRol(this.periodo(), rol.id));
+  }
+
+  /** En un período publicado el cambio espera el motivo: aquí llega ya escrito. */
+  confirmarCambio(motivo: string): void {
+    const cambio = this.cambioPendiente();
+    if (!cambio) {
+      return;
+    }
+    this.cambioPendiente.set(null);
+    const { tipo, rol } = cambio;
+    this.cambiarEstado(
+      tipo === 'inactivar'
+        ? this.servicio.inactivarRol(this.periodo(), rol.id, motivo)
+        : this.servicio.activarRol(this.periodo(), rol.id, motivo),
+    );
+  }
+
+  cargaTerminada(): void {
+    this.recargar();
+    this.avisos()?.actualizar();
   }
 
   pedirReenvio(rol: RolFila): void {

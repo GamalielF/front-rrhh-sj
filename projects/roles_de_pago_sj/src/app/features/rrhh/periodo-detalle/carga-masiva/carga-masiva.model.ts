@@ -6,6 +6,12 @@ export const MAX_ARCHIVOS_LOTE = 100;
 export const MAX_BYTES_LOTE = 80 * 1024 * 1024;
 export const PATRON_ARCHIVO = /^\d{10}\.pdf$/i;
 
+/** simular: solo revisar, sin guardar. motivo: obligatorio al corregir un período ya publicado. */
+export interface OpcionesCarga {
+  simular?: boolean;
+  motivo?: string;
+}
+
 export interface ArchivoDescartado {
   archivo: string;
   mensaje: string;

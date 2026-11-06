@@ -95,6 +95,8 @@ export const ETIQUETAS_ACCION: Record<string, string> = {
   NOTIFICACION_REENVIADA: 'Aviso reenviado',
   USUARIO_ROL_OTORGADO: 'Rol otorgado a un usuario',
   USUARIO_ROL_REVOCADO: 'Rol quitado a un usuario',
+  CARGA_CORRECCION: 'Corrección de un período publicado',
+  ROL_AGREGADO: 'Rol agregado a un período publicado',
 };
 
 export const OPCIONES_TIPO_ACCION: OpcionFiltro[] = [

@@ -1,0 +1,44 @@
+<div class="flex flex-col gap-4">
+  @if (hayCambios()) {
+    <app-aviso variante="warning">
+      Revise antes de confirmar. Cada persona con un rol reemplazado o agregado recibirá de nuevo el aviso por correo
+      ({{ avisos() }}).
+    </app-aviso>
+  } @else {
+    <app-aviso variante="info">Con estos archivos no cambia ningún rol: no hay nada que reemplazar ni agregar.</app-aviso>
+  }
+
+  @if (grupos().reemplazos.length > 0) {
+    <div class="flex flex-col gap-2">
+      <p class="m-0 text-sm font-medium text-gray-900">{{ textoReemplazo() }}</p>
+      <ui-table [columns]="columnasPersonas" [data]="grupos().reemplazos" emptyMessage="Sin reemplazos" />
+    </div>
+  }
+
+  @if (grupos().nuevos.length > 0) {
+    <div class="flex flex-col gap-2">
+      <p class="m-0 text-sm font-medium text-gray-900">{{ textoNuevos() }}</p>
+      <ui-table [columns]="columnasPersonas" [data]="grupos().nuevos" emptyMessage="Sin roles nuevos" />
+    </div>
+  }
+
+  <div class="flex flex-wrap items-center gap-2">
+    <ui-badge variant="neutral">{{ grupos().sinCambios }} sin cambios (no se envía correo)</ui-badge>
+    <ui-badge [variant]="grupos().rechazados.length > 0 ? 'danger' : 'neutral'">
+      {{ grupos().rechazados.length }} rechazados
+    </ui-badge>
+  </div>
+
+  @if (grupos().rechazados.length > 0) {
+    <ui-table [columns]="columnasRechazados" [data]="grupos().rechazados" emptyMessage="Sin rechazados" />
+  }
+
+  <ng-content />
+
+  <div class="flex flex-wrap gap-2">
+    <ui-button variant="brand" icon="@tui.refresh-cw" [disabled]="!hayCambios()" [loading]="aplicando()" (onClick)="confirmar.emit()">
+      Reemplazar y volver a enviar avisos
+    </ui-button>
+    <ui-button variant="ghost" [disabled]="aplicando()" (onClick)="cancelar.emit()">Cancelar</ui-button>
+  </div>
+</div>

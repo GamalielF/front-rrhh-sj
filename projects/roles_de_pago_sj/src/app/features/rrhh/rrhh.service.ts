@@ -15,6 +15,10 @@ import type {
   RolPagoResumenResponse,
 } from '@models';
 
+function conMotivo(motivo?: string): { motivo?: string } {
+  return motivo ? { motivo } : {};
+}
+
 @Injectable({ providedIn: 'root' })
 export class RrhhService {
   private api = inject(ApiService);
@@ -39,12 +43,13 @@ export class RrhhService {
     return this.obtener<CoberturaPeriodoResponse>(`rrhh/periodos/${periodo}/cobertura`);
   }
 
-  inactivarRol(periodo: string, idRol: number): Observable<RolPagoResumenResponse> {
-    return this.enviar<RolPagoResumenResponse>(`rrhh/periodos/${periodo}/roles-pago/${idRol}/inactivar`, {});
+  /** El motivo solo se envía con el período ya publicado: antes de publicar no hace falta. */
+  inactivarRol(periodo: string, idRol: number, motivo?: string): Observable<RolPagoResumenResponse> {
+    return this.enviar<RolPagoResumenResponse>(`rrhh/periodos/${periodo}/roles-pago/${idRol}/inactivar`, conMotivo(motivo));
   }
 
-  activarRol(periodo: string, idRol: number): Observable<RolPagoResumenResponse> {
-    return this.enviar<RolPagoResumenResponse>(`rrhh/periodos/${periodo}/roles-pago/${idRol}/activar`, {});
+  activarRol(periodo: string, idRol: number, motivo?: string): Observable<RolPagoResumenResponse> {
+    return this.enviar<RolPagoResumenResponse>(`rrhh/periodos/${periodo}/roles-pago/${idRol}/activar`, conMotivo(motivo));
   }
 
   verRol(periodo: string, idRol: number, motivo: string): Observable<RolPagoPdfResponse> {

@@ -1,0 +1,16 @@
+<ui-modal [isOpen]="!!cambio()" [title]="textos()?.titulo ?? ''" [subtitle]="cambio()?.rol?.nombre ?? ''" size="md" (close)="cancelado.emit()">
+  <div class="flex flex-col gap-4">
+    <p class="m-0 text-sm text-gray-700">{{ textos()?.explicacion }}</p>
+    <ui-input
+      type="text"
+      label="Motivo"
+      placeholder="Por ejemplo: se subió el rol de otra persona"
+      [formControl]="motivo"
+      [customErrorMessages]="mensajesMotivo"
+    />
+  </div>
+  <div slot="footer" class="flex justify-end gap-2">
+    <ui-button variant="ghost" (onClick)="cancelado.emit()">Cancelar</ui-button>
+    <ui-button variant="brand" [icon]="textos()?.icono ?? ''" (onClick)="confirmar()">{{ textos()?.boton }}</ui-button>
+  </div>
+</ui-modal>

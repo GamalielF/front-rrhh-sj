@@ -41,6 +41,8 @@ export interface ResultadoArchivoResponse {
   archivo: string;
   estado: EstadoCarga;
   mensaje: string | null;
+  /** Nombre que el AD tiene para esa cédula (null si el archivo se rechazó antes de identificar a la persona). */
+  titular: string | null;
 }
 
 export interface ResultadoCargaResponse {
@@ -50,6 +52,8 @@ export interface ResultadoCargaResponse {
   reemplazados: number;
   sinCambios: number;
   rechazados: number;
+  /** true cuando fue solo una revisión: no se guardó nada. */
+  simulacion: boolean;
   resultados: ResultadoArchivoResponse[];
 }
 

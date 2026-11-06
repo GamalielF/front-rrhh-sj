@@ -38,3 +38,25 @@ describe('RrhhService', () => {
     expect(api.post.mock.calls[0][1]).toEqual({ confirmarFaltantes: true });
   });
 });
+
+describe('RrhhService: retirar y reponer con motivo', () => {
+  const api = { post: vi.fn() };
+
+  beforeEach(() => {
+    api.post.mockReset().mockReturnValue(of({ content: 'resultado' }));
+    TestBed.configureTestingModule({ providers: [{ provide: ApiService, useValue: api }] });
+  });
+
+  it('con motivo (período publicado) lo envía en el cuerpo', async () => {
+    const servicio = TestBed.inject(RrhhService);
+    await firstValueFrom(servicio.inactivarRol('2026-09', 7, 'Se subió a la persona equivocada'));
+    await firstValueFrom(servicio.activarRol('2026-09', 7, 'Era correcto, se repone'));
+    expect(api.post.mock.calls[0][1]).toEqual({ motivo: 'Se subió a la persona equivocada' });
+    expect(api.post.mock.calls[1][1]).toEqual({ motivo: 'Era correcto, se repone' });
+  });
+
+  it('sin motivo (antes de publicar) el cuerpo queda vacío, como siempre', async () => {
+    await firstValueFrom(TestBed.inject(RrhhService).inactivarRol('2026-09', 7));
+    expect(api.post.mock.calls[0][1]).toEqual({});
+  });
+});

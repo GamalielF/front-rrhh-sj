@@ -1,6 +1,10 @@
 <ui-card
-  [title]="'Carga masiva de roles'"
-  subtitle="Un PDF por persona. El nombre de cada archivo debe ser su cédula de 10 dígitos, por ejemplo 1712345675.pdf"
+  [title]="correccion() ? 'Corregir los roles del período' : 'Carga masiva de roles'"
+  [subtitle]="
+    correccion()
+      ? 'Suba los PDF correctos. Primero se revisa qué cambiaría; no se guarda nada hasta que usted confirme.'
+      : 'Un PDF por persona. El nombre de cada archivo debe ser su cédula de 10 dígitos, por ejemplo 1712345675.pdf'
+  "
 >
   <div class="flex flex-col gap-4">
     <div
@@ -36,17 +40,41 @@
     }
 
     <div class="flex flex-wrap gap-2">
-      <ui-button
-        variant="brand"
-        icon="@tui.upload"
-        [loading]="subiendo()"
-        [disabled]="archivosValidos().length === 0"
-        (onClick)="subir()"
-      >
-        Subir {{ archivosValidos().length }} archivo(s)
-      </ui-button>
-      <ui-button variant="ghost" [disabled]="subiendo()" (onClick)="limpiar()">Limpiar</ui-button>
+      @if (correccion()) {
+        <ui-button
+          variant="brand"
+          icon="@tui.search"
+          [loading]="revisando()"
+          [disabled]="archivosValidos().length === 0 || subiendo() || !!previa()"
+          (onClick)="revisar()"
+        >
+          Revisar cambios de {{ archivosValidos().length }} archivo(s)
+        </ui-button>
+      } @else {
+        <ui-button
+          variant="brand"
+          icon="@tui.upload"
+          [loading]="subiendo()"
+          [disabled]="archivosValidos().length === 0"
+          (onClick)="subir()"
+        >
+          Subir {{ archivosValidos().length }} archivo(s)
+        </ui-button>
+      }
+      <ui-button variant="ghost" [disabled]="subiendo() || revisando()" (onClick)="limpiar()">Limpiar</ui-button>
     </div>
+
+    @if (previa(); as revision) {
+      <app-previa-correccion [resumen]="revision" [aplicando]="subiendo()" (confirmar)="subir()" (cancelar)="cancelarPrevia()">
+        <ui-input
+          type="text"
+          label="Motivo de la corrección"
+          placeholder="Por ejemplo: se subió el rol equivocado de una persona"
+          [formControl]="motivo"
+          [customErrorMessages]="mensajesMotivo"
+        />
+      </app-previa-correccion>
+    }
 
     @if (progreso(); as avance) {
       <div class="flex flex-col gap-3">

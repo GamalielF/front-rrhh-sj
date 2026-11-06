@@ -59,7 +59,8 @@ describe('acumularProgreso', () => {
     reemplazados: 0,
     sinCambios: 0,
     rechazados,
-    resultados: archivos.map((nombre) => ({ archivo: nombre, estado: 'CARGADO', mensaje: null })),
+    simulacion: false,
+    resultados: archivos.map((nombre) => ({ archivo: nombre, estado: 'CARGADO', mensaje: null, titular: null })),
   });
 
   it('suma los resultados de cada lote y avanza el contador', () => {

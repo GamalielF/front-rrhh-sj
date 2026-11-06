@@ -34,6 +34,7 @@ export class RolesPeriodoComponent {
   readonly periodo = input('');
   readonly cargando = input(false);
   readonly publicado = input(false);
+  readonly editando = input(false);
   readonly puedeVerAjenos = input(false);
   readonly ver = output<RolFila>();
   readonly inactivar = output<RolFila>();
@@ -71,7 +72,7 @@ export class RolesPeriodoComponent {
 
   readonly acciones = computed(() =>
     accionesDeRol(
-      { publicado: this.publicado(), puedeVerAjenos: this.puedeVerAjenos() },
+      { publicado: this.publicado(), puedeVerAjenos: this.puedeVerAjenos(), editando: this.editando() },
       {
         ver: (fila) => this.ver.emit(fila),
         inactivar: (fila) => this.inactivar.emit(fila),

@@ -3,6 +3,8 @@ import type { RolFila } from '../../rrhh.model';
 export interface ContextoAcciones {
   publicado: boolean;
   puedeVerAjenos: boolean;
+  /** Período publicado en modo edición: ahí sí se puede retirar y reponer (con motivo). */
+  editando?: boolean;
 }
 
 export interface ManejadoresAcciones {

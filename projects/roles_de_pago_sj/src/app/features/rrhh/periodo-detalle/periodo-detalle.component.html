@@ -15,7 +15,30 @@
       <app-cobertura-periodo [periodo]="periodo()" />
     }
 
-    <app-carga-masiva [periodo]="periodo()" (cargaFinalizada)="recargar()" />
+    @if (!estaPublicado() || editando()) {
+      @if (editando()) {
+        <app-aviso variante="warning">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span>
+              Está editando un período ya publicado. Cada cambio pide un motivo, queda en la auditoría y la persona afectada
+              recibe de nuevo su aviso.
+            </span>
+            <ui-button size="sm" variant="ghost" (onClick)="editando.set(false)">Terminar edición</ui-button>
+          </div>
+        </app-aviso>
+      }
+      <app-carga-masiva [periodo]="periodo()" [correccion]="editando()" (cargaFinalizada)="cargaTerminada()" />
+    } @else {
+      <app-aviso variante="info">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <span>
+            Este período ya está publicado. Si un rol se subió mal, puede corregirlo: se reemplaza, se vuelve a avisar a la
+            persona y queda registrado.
+          </span>
+          <ui-button size="sm" variant="outline" icon="@tui.pencil" (onClick)="editando.set(true)">Editar período</ui-button>
+        </div>
+      </app-aviso>
+    }
     @if (resultadoReenvio(); as reenvio) {
       <app-aviso [variante]="reenvio.variante">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -29,6 +52,7 @@
       [roles]="listado()?.roles ?? []"
       [cargando]="cargando()"
       [publicado]="estaPublicado()"
+      [editando]="editando()"
       [puedeVerAjenos]="puedeVerAjenos()"
       (ver)="verRol($event)"
       (inactivar)="inactivar($event)"
@@ -36,6 +60,7 @@
       (reenviar)="pedirReenvio($event)"
     />
     <app-ver-rol [periodo]="periodo()" [rol]="rolSeleccionado()" (cerrado)="rolSeleccionado.set(null)" />
+    <app-motivo-correccion [cambio]="cambioPendiente()" (confirmado)="confirmarCambio($event)" (cancelado)="cambioPendiente.set(null)" />
     <app-reenviar-notificacion
       [periodo]="periodo()"
       [rol]="rolAReenviar()"
