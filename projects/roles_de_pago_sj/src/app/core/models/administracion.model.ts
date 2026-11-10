@@ -12,6 +12,8 @@ export interface UsuarioAdminResponse {
   cargo: string | null;
   estadoDirectorio: string | null;
   roles: RolAsignadoResponse[];
+  /** Usuarios con los que inicia sesión cuando NO coinciden con su código del directorio (vínculos de un ADMIN). */
+  accesosVinculados?: string[] | null;
 }
 
 export interface OtorgarRolRequest {

@@ -33,6 +33,18 @@ describe('aFilasUsuarios', () => {
     expect(fila).toMatchObject({ esRrhh: true, rrhhVeAjenos: false, esAdmin: false });
   });
 
+  it('muestra con qué usuario inicia sesión quien tiene un vínculo, y un guion si no lo tiene', () => {
+    const [sinVinculo, conVinculo, conDos] = aFilasUsuarios([
+      usuario('jperez'),
+      usuario('scuri', { accesosVinculados: ['gcuri'] }),
+      usuario('mramos', { accesosVinculados: ['lramos', 'mramos.ad'] }),
+    ]);
+    expect(sinVinculo.accesoTexto).toBe('—');
+    expect(conVinculo.accesoTexto).toBe('gcuri');
+    expect(conDos.accesoTexto).toBe('lramos, mramos.ad');
+    expect(aFilasUsuarios([usuario('x', { accesosVinculados: null })])[0].accesoTexto).toBe('—');
+  });
+
   it('tolera datos faltantes del directorio y a quien ya no existe', () => {
     const [fila] = aFilasUsuarios([usuario('zz.baja', { nombre: null, cargo: null, estadoDirectorio: 'NO_EXISTE' })]);
     expect(fila).toMatchObject({ nombre: '—', cargo: '—', activo: false, estadoEtiqueta: 'No existe' });

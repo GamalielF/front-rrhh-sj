@@ -13,6 +13,7 @@ export function aFilasUsuarios(usuarios: UsuarioAdminResponse[]): UsuarioFila[] 
     const rrhh = usuario.roles.find((rol) => rol.rol === 'RRHH');
     return {
       username: usuario.username,
+      accesoTexto: (usuario.accesosVinculados ?? []).join(', ') || '—',
       nombre: usuario.nombre ?? '—',
       cargo: usuario.cargo ?? '—',
       estadoDirectorio: usuario.estadoDirectorio ?? 'NO_EXISTE',

@@ -1,2 +1,2 @@
 export * from './env.model';
-export * from './env.dev';
+export * from './env.prod';

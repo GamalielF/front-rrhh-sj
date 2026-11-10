@@ -3,6 +3,7 @@ import type { NombreRol } from '@models';
 
 export interface UsuarioFila {
   username: string;
+  accesoTexto: string;
   nombre: string;
   cargo: string;
   estadoDirectorio: string;
@@ -38,6 +39,7 @@ export const RETARDO_BUSQUEDA_MS = 300;
 
 export const COLUMNAS_USUARIOS: TableColumn<UsuarioFila>[] = [
   { key: 'username', title: 'Usuario' },
+  { key: 'accesoTexto', title: 'Inicia sesión como' },
   { key: 'nombre', title: 'Nombre' },
   { key: 'cargo', title: 'Cargo' },
   {

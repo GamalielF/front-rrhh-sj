@@ -1,13 +1,13 @@
 import { AppEnvironment } from './env.model';
 
 export const env: AppEnvironment = {
-  production: true,
+  production: false,
   enableDebugLogin: false,
-  loginUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/auth/login',
-  mfaVerifyUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/auth/mfa/verify',
-  refreshUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/auth/refresh',
-  apiBaseUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/v1/analitics/',
-  userProfileUrl: 'https://serviciossj.coopsanjose.fin.ec:443/api/v1/analitics/Usuarios/busca-usuario',
-  rolesPagoApiUrl: 'https://DOMINIO-DEL-BACKEND/api/v1/roles-pago/',
-  mesesFuturosPermitidos: 1,
+  loginUrl: 'https://pre-prod.coopsanjose.fin.ec/authenticator/api/v1/auth/login',
+  mfaVerifyUrl: 'https://pre-prod.coopsanjose.fin.ec/authenticator/api/v1/auth/mfa/verify',
+  refreshUrl: 'https://pre-prod.coopsanjose.fin.ec/authenticator/api/v1/auth/refresh',
+  apiBaseUrl: 'https://proxy.coopsanjose.fin.ec:8443/api/v1/analitics/',
+  userProfileUrl: 'https://proxy.coopsanjose.fin.ec:8443/api/v1/analitics/Usuarios/busca-usuario',
+  rolesPagoApiUrl: 'https://pre-prod.coopsanjose.fin.ec/rrhh-roll-administration/',
+  mesesFuturosPermitidos: 12,
 };
