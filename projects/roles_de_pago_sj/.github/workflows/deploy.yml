@@ -1,0 +1,20 @@
+name: Deploy Production
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+
+jobs:
+  production-deploy:
+    name: Deploy creditos-cop-sanjose
+    uses: COACSanJose/lumen/.github/workflows/deploy-angular.yml@main
+    with:
+      project_name: creditos-cop-sanjose
+      environment: prod
+    secrets:
+      LUMEN_REPO_TOKEN: ${{ secrets.LUMEN_REPO_TOKEN }}
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST_PROD }}

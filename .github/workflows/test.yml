@@ -1,0 +1,70 @@
+name: Deploy Test Front
+
+# El front (Angular) se compila a archivos estáticos dentro de una imagen con nginx y se publica detrás de Traefik, en el MISMO servidor
+# que el backend y el autenticador (https://pre-prod.coopsanjose.fin.ec). No lleva secretos: no necesita Vault ni Secrets de GitHub.
+# Cambiar la ruta (FRONT_PATH) exige cambiar también nginx.conf y el valor "front_url" del Vault del backend.
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+      - 'docs/**'
+  workflow_dispatch:
+
+env:
+  SERVICE_NAME: rrhh-roll-administration-front
+  FRONT_HOST: pre-prod.coopsanjose.fin.ec
+  FRONT_PATH: /roles-de-pago
+
+jobs:
+  test-deploy:
+    name: Deploy Test Angular Front
+    runs-on: [self-hosted, Rocky]
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure container variables
+        run: |
+          echo "CONTAINER_NAME=test-$SERVICE_NAME-app" >> $GITHUB_ENV
+          echo "IMAGE_NAME=app/$SERVICE_NAME:test" >> $GITHUB_ENV
+
+      - name: Build Angular Docker Image
+        run: |
+          docker build \
+            --build-arg ENTORNO=pruebas \
+            --build-arg BASE_HREF="${{ env.FRONT_PATH }}/" \
+            -t "${{ env.IMAGE_NAME }}" .
+
+      - name: Deploy Test Container
+        run: |
+          docker stop "${{ env.CONTAINER_NAME }}" || true
+          docker rm "${{ env.CONTAINER_NAME }}" || true
+
+          docker run -d \
+            --name "${{ env.CONTAINER_NAME }}" \
+            --restart always \
+            --network proxy-network \
+            --label "traefik.enable=true" \
+            --label "traefik.http.routers.${{ env.CONTAINER_NAME }}.rule=Host(\"${{ env.FRONT_HOST }}\") && PathPrefix(\"${{ env.FRONT_PATH }}\")" \
+            --label "traefik.http.routers.${{ env.CONTAINER_NAME }}.entrypoints=websecure" \
+            --label "traefik.http.routers.${{ env.CONTAINER_NAME }}.tls=true" \
+            --label "traefik.http.services.${{ env.CONTAINER_NAME }}.loadbalancer.server.port=8080" \
+            "${{ env.IMAGE_NAME }}"
+
+      - name: Info
+        run: |
+          echo "========================================================================="
+          echo "Container: ${{ env.CONTAINER_NAME }}"
+          echo "URL:       https://${{ env.FRONT_HOST }}${{ env.FRONT_PATH }}/"
+          echo "========================================================================="
+          sleep 5
+          docker logs --tail 15 "${{ env.CONTAINER_NAME }}" || true
+
+      - name: Clean up unused Docker images
+        run: docker image prune -f

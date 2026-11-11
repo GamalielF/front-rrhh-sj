@@ -1,0 +1,21 @@
+name: Deploy Test
+
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+
+jobs:
+  test-deploy:
+    name: Deploy roles-cop-sanjose
+    uses: COACSanJose/lumen/.github/workflows/deploy-angular.yml@main
+    with:
+      project_name: roles-cop-sanjose
+      base_path: /roles/
+      environment: test
+    secrets:
+      LUMEN_REPO_TOKEN: ${{ secrets.LUMEN_TOKEN }}
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST_TEST }}
